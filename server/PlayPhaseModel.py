@@ -30,10 +30,10 @@ class PlayPhaseModel(object):
         winner = random.randint(0, 3)
         print('winner has been chosen to be {}, they will now start'.format(winner + 1))
         [
+            turn_model.to_Pl_0,
             turn_model.to_Pl_1,
             turn_model.to_Pl_2,
-            turn_model.to_Pl_3,
-            turn_model.to_Pl_4
+            turn_model.to_Pl_3
         ][winner]()
         self.new_round()
 
