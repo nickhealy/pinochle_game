@@ -1,34 +1,46 @@
+import logging
 from TurnModel import turn_model
 import enum
 from transitions import Machine
+from RoundInfo import round_info
 import random
 
 
 count = 0
 
+# Set up logging; The basic log level will be DEBUG
+logging.basicConfig(level=logging.DEBUG)
+# Set transitions' log level to INFO; DEBUG messages will be omitted
+logging.getLogger('transitions').setLevel(logging.INFO)
+
 
 class PlayPhaseModel(object):
-    def on_exit_PLAY_START(self):
-        print("starting the play")
 
-    def on_enter_POS_A(self):
-        print("Moving to POS_A, beginning of round {}".format(count + 1))
+    def __init__(self, round_info):
+        self.__round_info = round_info
 
-    def log_new_position(self):
-        print("play now at position {}".format(self.state))
+    def on_exit_PLAY_START(self, _):
+        print("[PlayPhase]: starting the play")
 
-    def on_enter_PLAY_END(self):
-        print("play has ended")
+    def mark_round_start(self, _):
+        print("[PlayPhase]: Moving to POS_A, beginning of round {}".format(count + 1))
 
-    def on_enter_ROUND_END(self):
-        print('round has ended')
+    def log_new_position(self, _):
+        print("[PlayPhase]: play now at position {}".format(self.state))
+
+    def on_enter_PLAY_END(self, _):
+        print("[PlayPhase]: play has ended")
+
+    def end_round(self, _):
+        print('[PlayPhase]: round has ended')
         if (self.is_play_over):
-            print('play is over, ending play')
+            print('[PlayPhase]: play is over, ending play')
             self.play_end()
             return
 
-        winner = random.randint(0, 3)
-        print('winner has been chosen to be {}, they will now start'.format(winner + 1))
+        winner = 0
+        print('[PlayPhase]: winner has been chosen to be {}, they will now start'.format(
+            winner))
         [
             turn_model.to_Pl_0,
             turn_model.to_Pl_1,
@@ -37,8 +49,14 @@ class PlayPhaseModel(object):
         ][winner]()
         self.new_round()
 
-    def handle_played_card(self):
-        print("{} just played a card".format(turn_model.state))
+    def handle_played_card(self, event):
+        card_id = event.kwargs.get('card_id')
+        player = turn_model.state
+        print("[PlayPhase]: {} just played {}".format(
+            turn_model.state, card_id))
+        self.__round_info.add_play(player, card_id)
+
+    def advance_turn_state(self, _):
         turn_model.next_turn()
 
     @property
@@ -59,7 +77,7 @@ class States(enum.Enum):
     PLAY_END = 6,
 
 
-play_phase_model = PlayPhaseModel()
+play_phase_model = PlayPhaseModel(round_info=round_info)
 
 states = [
     States.PLAY_START,
@@ -73,15 +91,15 @@ states = [
 
 transitions = [
     {'trigger': 'new_round', 'source': [
-        States.PLAY_START, States.ROUND_END], 'dest': States.POS_A},
+        States.PLAY_START, States.ROUND_END], 'dest': States.POS_A, 'after': 'mark_round_start'},
     {'trigger': 'play_card', 'source': States.POS_A,
-        'dest': States.POS_B, 'after': 'handle_played_card'},
+        'dest': States.POS_B, 'before': 'handle_played_card', 'after': 'advance_turn_state'},
     {'trigger': 'play_card', 'source': States.POS_B,
-        'dest': States.POS_C, 'after': 'handle_played_card'},
+        'dest': States.POS_C, 'before': 'handle_played_card', 'after': 'advance_turn_state'},
     {'trigger': 'play_card', 'source': States.POS_C,
-        'dest': States.POS_D, 'after': 'handle_played_card'},
+        'dest': States.POS_D, 'before': 'handle_played_card', 'after': 'advance_turn_state'},
     {'trigger': 'play_card', 'source': States.POS_D,
-        'dest': States.ROUND_END, 'after': 'handle_played_card'},
+        'dest': States.ROUND_END, 'before': 'handle_played_card', 'after': 'end_round'},
     {'trigger': 'play_end', 'source': States.ROUND_END,
         'dest': States.PLAY_END},
 ]
@@ -92,20 +110,20 @@ play_phase_machine = Machine(
     transitions=transitions,
     initial=States.PLAY_START,
     auto_transitions=False,
-    queued=True,
+    send_event=True,
     after_state_change='log_new_position'
 )
 
 
-# play_phase_model.new_round()
-# play_phase_model.play_card()
-# play_phase_model.play_card()
-# play_phase_model.play_card()
-# play_phase_model.play_card()
-# play_phase_model.play_card()
-# play_phase_model.play_card()
-# play_phase_model.play_card()
-# play_phase_model.play_card()
+play_phase_model.new_round()
+play_phase_model.play_card(card_id='AS')
+play_phase_model.play_card(card_id='5H')
+play_phase_model.play_card(card_id='JD')
+play_phase_model.play_card(card_id='10D')
+# play_phase_model.play_card(card_id='AS')
+# play_phase_model.play_card(card_id='5H')
+# play_phase_model.play_card(card_id='JD')
+# play_phase_model.play_card(card_id='10D')
 # play_phase_model.play_card()
 # play_phase_model.play_card()
 # play_phase_model.play_card()

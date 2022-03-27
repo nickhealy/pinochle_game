@@ -8,7 +8,7 @@ class TurnModel(object):
     pass
 
 
-class States(enum.Enum):
+class States(enum.IntEnum):  # use intenum so we can index arrays
     Pl_0 = 0,
     Pl_1 = 1,
     Pl_2 = 2,
