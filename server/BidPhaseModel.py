@@ -1,17 +1,24 @@
 import enum
 from transitions import Machine
 from BidPhaseInfo import BidPhaseInfo
+from RoundInfo import RoundInfo
 from TurnModel import turn_model
 
 
 class BidPhaseModel(object):
-    def __init__(self):
+    def __init__(self, round_info):
         self.__bid_info = BidPhaseInfo()
+        self.__round_info = round_info
 
     # _event param is unused, but transitions requires it to be there
     def handle_bid_winner(self, _event):
+        winner = self.__bid_info.bid_winner
+        winning_bid = self.__bid_info.get_bid_for_player(winner)
+
         print("[bid_phase]: we have a winner: {}".format(
-            self.__bid_info.bid_winner))
+            winner))
+        self.__round_info.set_bid_win_info(
+            bid_winner=self.__bid_info.bid_winner, winning_bid=winning_bid)
 
     def handle_bid_turn_execute(self, event):
         player = event.kwargs.get('player')
@@ -33,6 +40,11 @@ class BidPhaseModel(object):
 
         turn_model.next_turn()
 
+    def handle_trump_chosen(self, event):
+        chosen_trump = event.kwargs.get('trump')
+        print("[bid_phase]: {} has been chosen as the trump suit".format(chosen_trump))
+        self.__round_info.set_trump_suit(chosen_trump)
+
 
 class States(enum.Enum):
     BID_START = 0,
@@ -41,7 +53,8 @@ class States(enum.Enum):
     BID_END = 3,
 
 
-bid_phase_model = BidPhaseModel()
+round_info = RoundInfo()
+bid_phase_model = BidPhaseModel(round_info=round_info)
 
 states = [
     States.BID_START,
@@ -57,7 +70,8 @@ transitions = [
         'after': 'handle_bid_turn_execute'},  # internal transition, do not leave state
     {'trigger': 'bid_winner', 'source': States.BID_IN_PROGRESS,
         'dest': States.BID_WON, 'after': 'handle_bid_winner'},
-    {'trigger': 'trump_chosen', 'source': States.BID_WON, 'dest': States.BID_END}
+    {'trigger': 'trump_chosen', 'source': States.BID_WON,
+        'dest': States.BID_END, 'before': 'handle_trump_chosen'}
 ]
 
 bid_phase_machine = Machine(
@@ -76,4 +90,4 @@ bid_phase_model.bid_turn_execute(player=2, bid='50')
 bid_phase_model.bid_turn_execute(player=3, bid=None)
 bid_phase_model.bid_turn_execute(player=0, bid='hez')
 bid_phase_model.bid_turn_execute(player=1, bid=None)
-# bid_phase_model.bid_turn_execute(player=2, bid='90')
+bid_phase_model.trump_chosen(trump="hearts")

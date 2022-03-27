@@ -1,17 +1,11 @@
-class BidPhaseInfo(object):
+from helpers import logging_changes
+from InfoBase import InfoBase
+
+
+class BidPhaseInfo(InfoBase):
     def __init__(self):
         self.__bid_status = [True, True, True, True]
         self.__bids = ["0", "0", "0", "0"]
-
-    def logging_changes(func):
-        def wrapper(*args, **kwargs):
-            _instance = args[0]
-            old_state = _instance.get_bid_state()
-            func(*args, **kwargs)
-            new_state = _instance.get_bid_state()
-            print('[bid_info]: info updated.\n\told state: {}\n\tnew state: {}'.format(
-                old_state, new_state))
-        return wrapper
 
     @logging_changes
     def update_bid(self, player_id, new_bid):
@@ -29,5 +23,5 @@ class BidPhaseInfo(object):
     def get_bid_for_player(self, player_id):
         return self.__bids[player_id]
 
-    def get_bid_state(self):
+    def get_state(self):
         return list(zip(self.__bids, self.__bid_status))
