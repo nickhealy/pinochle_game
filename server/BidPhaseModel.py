@@ -1,14 +1,14 @@
 import enum
 from transitions import Machine
 from BidPhaseInfo import BidPhaseInfo
-from RoundInfo import round_info
+from GameInfo import game_info
 from TurnModel import turn_model
 
 
 class BidPhaseModel(object):
-    def __init__(self, round_info):
+    def __init__(self, game_info):
         self.__bid_info = BidPhaseInfo()
-        self.__round_info = round_info
+        self.__game_info = game_info
 
     # second param is unused, but transitions requires it to be there
     def handle_bid_winner(self, _):
@@ -17,7 +17,7 @@ class BidPhaseModel(object):
 
         print("[bid_phase]: we have a winner: {}".format(
             winner))
-        self.__round_info.set_bid_win_info(
+        self.__game_info.set_bid_win_info(
             bid_winner=self.__bid_info.bid_winner, winning_bid=winning_bid)
 
     def handle_bid_turn_execute(self, event):
@@ -43,7 +43,7 @@ class BidPhaseModel(object):
     def handle_trump_chosen(self, event):
         chosen_trump = event.kwargs.get('trump')
         print("[bid_phase]: {} has been chosen as the trump suit".format(chosen_trump))
-        self.__round_info.set_trump_suit(chosen_trump)
+        self.__game_info.set_trump_suit(chosen_trump)
 
 
 class States(enum.Enum):
@@ -53,7 +53,7 @@ class States(enum.Enum):
     BID_END = 3,
 
 
-bid_phase_model = BidPhaseModel(round_info=round_info)
+bid_phase_model = BidPhaseModel(game_info=game_info)
 
 states = [
     States.BID_START,

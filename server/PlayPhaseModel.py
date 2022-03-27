@@ -1,23 +1,17 @@
-import logging
 from TurnModel import turn_model
 import enum
 from transitions import Machine
-from RoundInfo import round_info
+from GameInfo import game_info
 import random
 
 
 count = 0
 
-# Set up logging; The basic log level will be DEBUG
-logging.basicConfig(level=logging.DEBUG)
-# Set transitions' log level to INFO; DEBUG messages will be omitted
-logging.getLogger('transitions').setLevel(logging.INFO)
-
 
 class PlayPhaseModel(object):
 
-    def __init__(self, round_info):
-        self.__round_info = round_info
+    def __init__(self, game_info):
+        self.__game_info = game_info
 
     def on_exit_PLAY_START(self, _):
         print("[PlayPhase]: starting the play")
@@ -38,7 +32,8 @@ class PlayPhaseModel(object):
             self.play_end()
             return
 
-        winner = 0
+        winner = self.__game_info.get_hand_winner()
+        assert winner is not None
         print('[PlayPhase]: winner has been chosen to be {}, they will now start'.format(
             winner))
         [
@@ -54,7 +49,7 @@ class PlayPhaseModel(object):
         player = turn_model.state
         print("[PlayPhase]: {} just played {}".format(
             turn_model.state, card_id))
-        self.__round_info.add_play(player, card_id)
+        self.__game_info.add_play(player, card_id)
 
     def advance_turn_state(self, _):
         turn_model.next_turn()
@@ -77,7 +72,7 @@ class States(enum.Enum):
     PLAY_END = 6,
 
 
-play_phase_model = PlayPhaseModel(round_info=round_info)
+play_phase_model = PlayPhaseModel(game_info=game_info)
 
 states = [
     States.PLAY_START,
@@ -116,10 +111,10 @@ play_phase_machine = Machine(
 
 
 play_phase_model.new_round()
-play_phase_model.play_card(card_id='AS')
-play_phase_model.play_card(card_id='5H')
-play_phase_model.play_card(card_id='JD')
-play_phase_model.play_card(card_id='10D')
+play_phase_model.play_card(card_id='5S')
+play_phase_model.play_card(card_id='6S')
+play_phase_model.play_card(card_id='8S')
+play_phase_model.play_card(card_id='3S')
 # play_phase_model.play_card(card_id='AS')
 # play_phase_model.play_card(card_id='5H')
 # play_phase_model.play_card(card_id='JD')
