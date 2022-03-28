@@ -19,33 +19,22 @@ class Play(object):
     def __repr__(self) -> str:
         return str(self)
 
+    def __sub__(self, other):  # for comparing weight of cards
+        assert isinstance(other, Play)
+        return self.card - other.card
 
-class GameInfo(InfoBase):
+
+class PlayInfo(InfoBase):
     def __init__(self):
         self.__trump_suit = ''
-        self.__bid = None
-        self.__control_team = None
-        self.__team_1_points = {
-            "meld": 0,
-            "play": 0
-        }
-        self.__team_2_points = {
-            "meld": 0,
-            "play": 0
-        }
         self.__player_hands = [['5S', '2D'], [
-            '6S', '5H'], ['8S', 'JD'], ['3S', '10D']]
+            '6S', '5H'], ['2S', 'JD'], ['3S', '10D']]
         self.__current_play = []
         self.__past_plays = []
 
     @logging_changes
     def set_trump_suit(self, trump_suit):
         self.__trump_suit = trump_suit
-
-    @logging_changes
-    def set_bid_win_info(self, bid_winner, winning_bid):
-        self.__control_team = bid_winner
-        self.__bid = winning_bid
 
     @logging_changes
     def add_play(self, player, card_id):
@@ -61,7 +50,7 @@ class GameInfo(InfoBase):
     def __sort_plays(self, l, r):
         return l.card - r.card
 
-    # @logging_changes
+    @logging_changes
     def get_hand_winner(self):
         normal_plays = list(filter(self.__play_is_of_suit(
             self.__current_play[0].suit), self.__current_play))
@@ -79,16 +68,18 @@ class GameInfo(InfoBase):
         )[0]
         return winning_play.player
 
+    @logging_changes
+    def reset_game(self):
+        pass
+
+    # def
+
     def get_state(self):
         return dict({
             "trump": self.__trump_suit,
-            "bid": self.__bid,
-            "control_team": self.__control_team,
-            "team_1_points": self.__team_1_points,
-            "team_2_points": self.__team_2_points,
             "current_play": self.__current_play,
             "player_hands": self.__player_hands
         })
 
 
-game_info = GameInfo()
+play_info = PlayInfo()

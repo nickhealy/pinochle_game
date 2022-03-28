@@ -17,7 +17,7 @@ class Deck(object):
         self.__card_registry = {
             '5S': Card('5', 'S', 5),
             '6S': Card('6', 'S', 6),
-            '8S': Card('8', 'S', 8),
+            '2S': Card('2', 'S', 2),
             '3S': Card('3', 'S', 3)
         }
 

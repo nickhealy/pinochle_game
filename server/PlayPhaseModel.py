@@ -1,7 +1,8 @@
 from TurnModel import turn_model
 import enum
 from transitions import Machine
-from GameInfo import game_info
+from PlayInfo import play_info
+from GameScore import game_score
 import random
 
 
@@ -10,8 +11,9 @@ count = 0
 
 class PlayPhaseModel(object):
 
-    def __init__(self, game_info):
-        self.__game_info = game_info
+    def __init__(self, play_info, game_score):
+        self.__play_info = play_info
+        self.__game_score = game_score
 
     def on_exit_PLAY_START(self, _):
         print("[PlayPhase]: starting the play")
@@ -32,7 +34,7 @@ class PlayPhaseModel(object):
             self.play_end()
             return
 
-        winner = self.__game_info.get_hand_winner()
+        winner = self.__play_info.get_hand_winner()
         assert winner is not None
         print('[PlayPhase]: winner has been chosen to be {}, they will now start'.format(
             winner))
@@ -42,6 +44,7 @@ class PlayPhaseModel(object):
             turn_model.to_Pl_2,
             turn_model.to_Pl_3
         ][winner]()
+
         self.new_round()
 
     def handle_played_card(self, event):
@@ -49,7 +52,7 @@ class PlayPhaseModel(object):
         player = turn_model.state
         print("[PlayPhase]: {} just played {}".format(
             turn_model.state, card_id))
-        self.__game_info.add_play(player, card_id)
+        self.__play_info.add_play(player, card_id)
 
     def advance_turn_state(self, _):
         turn_model.next_turn()
@@ -72,7 +75,7 @@ class States(enum.Enum):
     PLAY_END = 6,
 
 
-play_phase_model = PlayPhaseModel(game_info=game_info)
+play_phase_model = PlayPhaseModel(play_info=play_info, game_score=game_score)
 
 states = [
     States.PLAY_START,
@@ -113,7 +116,7 @@ play_phase_machine = Machine(
 play_phase_model.new_round()
 play_phase_model.play_card(card_id='5S')
 play_phase_model.play_card(card_id='6S')
-play_phase_model.play_card(card_id='8S')
+play_phase_model.play_card(card_id='2S')
 play_phase_model.play_card(card_id='3S')
 # play_phase_model.play_card(card_id='AS')
 # play_phase_model.play_card(card_id='5H')
