@@ -31,7 +31,7 @@ class GameScore(InfoBase):
         }
 
     @logging_changes
-    def set_bid_win_info(self, bid_winner, winning_bid):
+    def set_bid_and_control(self, bid_winner, winning_bid):
         self.__control_team = bid_winner
         self.__bid = winning_bid
 
@@ -60,8 +60,8 @@ class GameScore(InfoBase):
 
     def get_state(self):
         return dict({
-            "bid": None,
-            "control_team": None,
+            "bid": self.__bid,
+            "control_team": self.__control_team,
             "team_1_points": self.__team_1_points,
             "team_2_points": self.__team_2_points
         })

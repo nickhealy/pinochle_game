@@ -17,9 +17,9 @@ class BidPhaseModel(object):
         winner = self.__bid_info.bid_winner
         winning_bid = self.__bid_info.get_bid_for_player(winner)
 
-        print("[bid_phase]: we have a winner: {}".format(
-            winner))
-        self.__game_score.set_bid_win_info(
+        print("[bid_phase]: we have a winner: {}, bidding {}".format(
+            winner, winning_bid))
+        self.__game_score.set_bid_and_control(
             bid_winner=self.__bid_info.bid_winner, winning_bid=winning_bid)
 
     def handle_bid_turn_execute(self, event):
