@@ -81,7 +81,15 @@ class PlayInfo(InfoBase):
     def current_plays(self):
         return self.__current_plays
 
-    # def
+    @property
+    def is_play_over(self):
+        # play is over once the last player has played their cards
+        return len(self.__player_hands[len(self.__player_hands) - 1]) == 0
+
+    @property
+    def round_number(self):
+        # if zero hands have been played, we are in the first round, etc.
+        return len(self.__past_plays) + 1
 
     def get_state(self):
         return dict({

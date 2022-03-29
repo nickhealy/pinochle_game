@@ -5,6 +5,15 @@ from transitions import Machine
 class TurnModel(object):
     def log_next_turn(self):
         print("[turn model]: now {}'s turn".format(self.state))
+
+    def change_start_player(self, new_start):
+        print("[turn model]: changing start player to {}".format(new_start))
+        [
+            turn_model.to_Pl_0,
+            turn_model.to_Pl_1,
+            turn_model.to_Pl_2,
+            turn_model.to_Pl_3
+        ][new_start]()
     pass
 
 

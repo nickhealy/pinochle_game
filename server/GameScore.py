@@ -1,11 +1,11 @@
-from functools import reduce
 import enum
+from functools import reduce
 from InfoBase import InfoBase
 from TurnModel import States
 from helpers import logging_changes
 
 
-class TeamSides(enum.Enum):
+class TeamSides(enum.IntEnum):
     ONE = 0,
     TWO = 1
 
@@ -19,16 +19,9 @@ def get_team_for_player(player):
 
 class GameScore(InfoBase):
     def __init__(self):
-        self.__bid = None
-        self.__control_team = None
-        self.__team_1_points = {
-            "meld": 0,
-            "play": 0
-        }
-        self.__team_2_points = {
-            "meld": 0,
-            "play": 0
-        }
+        self.__bid = "20"
+        self.__control_team = TeamSides.TWO
+        self.__points_won = ([0, 0], [0, 0])
 
     @logging_changes
     def set_bid_and_control(self, bid_winner, winning_bid):
@@ -40,14 +33,12 @@ class GameScore(InfoBase):
         played_points = self.__tally_played_points(
             played_hands)
 
-        if get_team_for_player(winner) is TeamSides.ONE:
-            self.__team_1_points["play"] += played_points
-        else:
-            self.__team_2_points["play"] += played_points
+        winning_team_tally = self.__points_won[get_team_for_player(winner)]
+        # we only update the points won from play
+        winning_team_tally[1] += played_points
 
         print('[GameScore]: {} has won {} points'.format(
             get_team_for_player(winner), played_points))
-        self.__reset_bid_and_control()
 
     def __tally_played_points(self, plays):
         def add_points(acc, curr):
@@ -58,12 +49,41 @@ class GameScore(InfoBase):
         self.__control_team = None
         self.__bid = None
 
+    @logging_changes
+    def handle_play_end(self):
+        print('[GameScore]: handling play end')
+        self.__appraise_winner()
+        self.__reset_bid_and_control()
+
+    @logging_changes
+    def __appraise_winner(self):
+        winning_team = self.__get_winning_team()
+
+        if winning_team is None:
+            print("[GameScore]: we have a tie")
+            return
+
+        if (self.__do_winning_team_points_exceed_bid(winning_team)):
+            print("[GameScore]: {} has exceeded their bid".format(winning_team))
+            return
+
+        print("[GameScore]: {} has NOT exceeded their bid".format(winning_team))
+
+    def __do_winning_team_points_exceed_bid(self, winning_team):
+        winning_team_points_split = self.__points_won[winning_team]
+        return (winning_team_points_split[0] + winning_team_points_split[1]) >= int(self.__bid)
+        # return (winning_team_points[0] + winning_team_points[1]) >= self.__bid
+
+    def __get_winning_team(self):
+        (team_1_points, team_2_points) = map(
+            lambda x: x[0] + x[1], self.__points_won)
+        return TeamSides.ONE if team_1_points > team_2_points else TeamSides.TWO if team_2_points > team_1_points else None
+
     def get_state(self):
         return dict({
             "bid": self.__bid,
             "control_team": self.__control_team,
-            "team_1_points": self.__team_1_points,
-            "team_2_points": self.__team_2_points
+            "points_won": self.__points_won
         })
 
 

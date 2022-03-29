@@ -3,10 +3,6 @@ import enum
 from transitions import Machine
 from PlayInfo import play_info
 from GameScore import game_score
-import random
-
-
-count = 0
 
 
 class PlayPhaseModel(object):
@@ -23,7 +19,8 @@ class PlayPhaseModel(object):
         self.__play_info.reset_game()
 
     def mark_round_start(self, _):
-        print("[PlayPhase]: Moving to POS_A, beginning of round {}".format(count + 1))
+        print("[PlayPhase]: Starting round {}".format(
+            self.__play_info.round_number))
 
     def log_new_position(self, _):
         print("[PlayPhase]: play now at position {}".format(self.state))
@@ -33,25 +30,21 @@ class PlayPhaseModel(object):
 
     def end_round(self, _):
         print('[PlayPhase]: round has ended')
-        if (self.is_play_over):
-            print('[PlayPhase]: play is over, ending play')
-            self.play_end()
-            return
 
         winner = self.__play_info.get_hand_winner()
         assert winner is not None
         self.__game_score.handle_round_end(winner=winner,
                                            played_hands=self.__play_info.current_plays)
-        print('[PlayPhase]: winner has been chosen to be {}, they will now start'.format(
-            winner))
-        [
-            turn_model.to_Pl_0,
-            turn_model.to_Pl_1,
-            turn_model.to_Pl_2,
-            turn_model.to_Pl_3
-        ][winner]()
 
-        self.new_round()
+        # either handle end of play or start next turn
+        if (self.__play_info.is_play_over):
+            print('[PlayPhase]: play is over, ending play')
+            self.play_end()
+        else:
+            print('[PlayPhase]: winner has been chosen to be {}, they will now start'.format(
+                winner))
+            turn_model.change_start_player(winner)
+            self.new_round()
 
     def handle_played_card(self, event):
         card_id = event.kwargs.get('card_id')
@@ -60,15 +53,11 @@ class PlayPhaseModel(object):
             turn_model.state, card_id))
         self.__play_info.add_play(player, card_id)
 
+    def handle_play_end(self, _):
+        self.__game_score.handle_play_end()
+
     def advance_turn_state(self, _):
         turn_model.next_turn()
-
-    @property
-    def is_play_over(self):
-        global count
-        count += 1
-        return count >= 3
-    pass
 
 
 class States(enum.Enum):
@@ -105,7 +94,7 @@ transitions = [
     {'trigger': 'play_card', 'source': States.POS_D,
         'dest': States.ROUND_END, 'before': 'handle_played_card', 'after': 'end_round'},
     {'trigger': 'play_end', 'source': States.ROUND_END,
-        'dest': States.PLAY_END},
+        'dest': States.PLAY_END, 'after': 'handle_play_end'},
 ]
 
 play_phase_machine = Machine(
