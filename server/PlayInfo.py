@@ -1,7 +1,8 @@
 import functools
+from copy import deepcopy
 from helpers import logging_changes
 from InfoBase import InfoBase
-from Deck import Card, deck
+from Deck import deck
 
 
 class Play(object):
@@ -12,6 +13,10 @@ class Play(object):
     @property
     def suit(self):
         return self.card.suit
+
+    @property
+    def points(self):
+        return self.card.points
 
     def __str__(self):
         return "{}({})".format(self.card, self.player)
@@ -38,7 +43,6 @@ class PlayInfo(InfoBase):
 
     @logging_changes
     def add_play(self, player, card_id):
-        print('adding play {}'.format(card_id))
         new_play = Play(player, card_id)
         self.__player_hands[player].remove(card_id)
         self.__current_plays.append(new_play)
@@ -61,7 +65,6 @@ class PlayInfo(InfoBase):
         # if there are any trump cards, one of those are guaranteed to win
         possible_winners = trump_plays if len(
             trump_plays) > 0 else normal_plays
-        print('possible winners: {}'.format(possible_winners))
         winning_play = sorted(
             possible_winners,
             reverse=True,
@@ -71,7 +74,8 @@ class PlayInfo(InfoBase):
 
     @logging_changes
     def reset_game(self):
-        pass
+        self.__past_plays.append(deepcopy(self.__current_plays))
+        self.__current_plays.clear()
 
     @property
     def current_plays(self):

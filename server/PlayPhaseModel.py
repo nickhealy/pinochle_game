@@ -18,6 +18,10 @@ class PlayPhaseModel(object):
     def on_exit_PLAY_START(self, _):
         print("[PlayPhase]: starting the play")
 
+    def on_exit_ROUND_END(self, _):
+        print("[PlayPhase]: resetting the table")
+        self.__play_info.reset_game()
+
     def mark_round_start(self, _):
         print("[PlayPhase]: Moving to POS_A, beginning of round {}".format(count + 1))
 
@@ -36,6 +40,8 @@ class PlayPhaseModel(object):
 
         winner = self.__play_info.get_hand_winner()
         assert winner is not None
+        self.__game_score.handle_round_end(winner=winner,
+                                           played_hands=self.__play_info.current_plays)
         print('[PlayPhase]: winner has been chosen to be {}, they will now start'.format(
             winner))
         [
@@ -45,8 +51,6 @@ class PlayPhaseModel(object):
             turn_model.to_Pl_3
         ][winner]()
 
-        self.__game_score.update_game_scores_and_reset(
-            plays=self.__play_info.current_plays)
         self.new_round()
 
     def handle_played_card(self, event):
@@ -120,10 +124,10 @@ play_phase_model.play_card(card_id='9S')
 play_phase_model.play_card(card_id='JS')
 play_phase_model.play_card(card_id='AS')
 play_phase_model.play_card(card_id='10S')
-# play_phase_model.play_card(card_id='AS')
-# play_phase_model.play_card(card_id='5H')
-# play_phase_model.play_card(card_id='JD')
-# play_phase_model.play_card(card_id='10D')
+play_phase_model.play_card(card_id='9D')
+play_phase_model.play_card(card_id='AD')
+play_phase_model.play_card(card_id='10D')
+play_phase_model.play_card(card_id='QH')
 # play_phase_model.play_card()
 # play_phase_model.play_card()
 # play_phase_model.play_card()
