@@ -45,6 +45,8 @@ class PlayPhaseModel(object):
             turn_model.to_Pl_3
         ][winner]()
 
+        self.__game_score.update_game_scores_and_reset(
+            plays=self.__play_info.current_plays)
         self.new_round()
 
     def handle_played_card(self, event):
@@ -114,10 +116,10 @@ play_phase_machine = Machine(
 
 
 play_phase_model.new_round()
-play_phase_model.play_card(card_id='5S')
-play_phase_model.play_card(card_id='6S')
-play_phase_model.play_card(card_id='2S')
-play_phase_model.play_card(card_id='3S')
+play_phase_model.play_card(card_id='9S')
+play_phase_model.play_card(card_id='JS')
+play_phase_model.play_card(card_id='AS')
+play_phase_model.play_card(card_id='10S')
 # play_phase_model.play_card(card_id='AS')
 # play_phase_model.play_card(card_id='5H')
 # play_phase_model.play_card(card_id='JD')

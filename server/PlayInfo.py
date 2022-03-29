@@ -27,9 +27,9 @@ class Play(object):
 class PlayInfo(InfoBase):
     def __init__(self):
         self.__trump_suit = ''
-        self.__player_hands = [['5S', '2D'], [
-            '6S', '5H'], ['2S', 'JD'], ['3S', '10D']]
-        self.__current_play = []
+        self.__player_hands = [['9S', '10D'], [
+            'JS', 'QH'], ['AS', '9D'], ['10S', 'AD']]
+        self.__current_plays = []
         self.__past_plays = []
 
     @logging_changes
@@ -38,9 +38,10 @@ class PlayInfo(InfoBase):
 
     @logging_changes
     def add_play(self, player, card_id):
+        print('adding play {}'.format(card_id))
         new_play = Play(player, card_id)
         self.__player_hands[player].remove(card_id)
-        self.__current_play.append(new_play)
+        self.__current_plays.append(new_play)
 
     def __play_is_of_suit(self, target_suit):
         def wrapped_comp(play):
@@ -53,9 +54,9 @@ class PlayInfo(InfoBase):
     @logging_changes
     def get_hand_winner(self):
         normal_plays = list(filter(self.__play_is_of_suit(
-            self.__current_play[0].suit), self.__current_play))
+            self.__current_plays[0].suit), self.__current_plays))
         trump_plays = list(filter(self.__play_is_of_suit(
-            self.__trump_suit), self.__current_play))
+            self.__trump_suit), self.__current_plays))
 
         # if there are any trump cards, one of those are guaranteed to win
         possible_winners = trump_plays if len(
@@ -72,12 +73,16 @@ class PlayInfo(InfoBase):
     def reset_game(self):
         pass
 
+    @property
+    def current_plays(self):
+        return self.__current_plays
+
     # def
 
     def get_state(self):
         return dict({
             "trump": self.__trump_suit,
-            "current_play": self.__current_play,
+            "current_plays": self.__current_plays,
             "player_hands": self.__player_hands
         })
 

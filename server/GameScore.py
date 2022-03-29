@@ -20,8 +20,20 @@ class GameScore(InfoBase):
         self.__control_team = bid_winner
         self.__bid = winning_bid
 
-    def __update_play_points(self):
+    @logging_changes
+    def update_game_scores_and_reset(self, plays):
+        [team_1_points, team_2_points] = self.__tally_played_points(plays)
         pass
+
+    def __tally_played_points(self, plays):
+        team_1_points = 0
+        team_2_points = 0
+
+        return [team_1_points, team_2_points]
+
+    def __reset_bid_and_control(self):
+        self.__control_team = None
+        self.__bid = None
 
     def get_state(self):
         return dict({
