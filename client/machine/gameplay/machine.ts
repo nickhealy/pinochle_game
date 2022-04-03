@@ -1,10 +1,7 @@
-import { createConfigItem } from "@babel/core";
 import { createMachine, assign, spawn, send, actions } from "xstate";
+import Deck from "./Deck";
 
-import TurnMachine, { TURN_MACHINE_ACTOR_ID } from "../turn/machine";
 import { Context, GameEvents } from "./types";
-
-const { log } = actions;
 
 const GameMachine = createMachine(
   {
@@ -21,36 +18,38 @@ const GameMachine = createMachine(
       bid: {
         status: [true, true, true, true],
         bids: [0, 0, 0, 0],
+        bidWinner: null,
+        winningBid: null,
       },
-      turnMachine: null,
+      play: {
+        currentPlays: [],
+        pastPlays: [],
+        playerHands: [],
+        trump: null,
+      },
+      game: {},
     },
     states: {
       pre_game: {
         on: {
-          BEGIN_GAME: { target: "game_in_progress" },
+          BEGIN_GAME: {
+            target: "game_in_progress",
+            actions: "dealCards",
+          },
         },
       },
       game_in_progress: {
         id: "gameMachine",
-        initial: "deal",
+        initial: "bid",
         type: "compound",
-        entry: assign({
-          turnMachine: () =>
-            spawn(TurnMachine, { name: TURN_MACHINE_ACTOR_ID, sync: true }),
-        }),
         states: {
-          deal: {
-            on: {
-              CARDS_DEALT: { target: "bid" },
-            },
-          },
           bid: {
             id: "bidMachine",
             initial: "awaiting_bid",
-            entry: log("starting bid", "[bid]"),
+            entry: actions.log("starting bid", "[bid]"),
             states: {
               awaiting_bid: {
-                entry: log("awaiting next bid", "[bid]"),
+                entry: actions.log("awaiting next bid", "[bid]"),
                 on: {
                   BID: {
                     target: "bid_choice_pseudostate",
@@ -64,7 +63,7 @@ const GameMachine = createMachine(
               },
               // choice pseudostate for either continuing with bid or declaring winner
               bid_choice_pseudostate: {
-                entry: log(
+                entry: actions.log(
                   (_, evt) =>
                     `bid turn executed, type: ${evt.type}, value: ${
                       // @ts-expect-error typing is weird here
@@ -74,7 +73,7 @@ const GameMachine = createMachine(
                 ),
                 always: [
                   {
-                    target: "#prePlayMachine.awaiting_trump",
+                    target: "bid_winner",
                     cond: "isBiddingWon",
                   },
                   {
@@ -82,6 +81,21 @@ const GameMachine = createMachine(
                     actions: "nextTurnBid",
                   },
                 ],
+              },
+              bid_winner: {
+                entry: [
+                  actions.log<Context, GameEvents>(
+                    (ctx, _) =>
+                      `player ${ctx.turn} has won the bid at ${
+                        ctx.bid.bids[ctx.turn]
+                      }`,
+                    "[bid]"
+                  ),
+                  "handleBidWinner",
+                ],
+                always: {
+                  target: "#prePlayMachine.awaiting_trump",
+                },
               },
             },
           },
@@ -92,7 +106,10 @@ const GameMachine = createMachine(
             states: {
               awaiting_trump: {
                 on: {
-                  TRUMP_CHOSEN: { target: "meld_submission" },
+                  TRUMP_CHOSEN: {
+                    target: "meld_submission",
+                    actions: "setTrump",
+                  },
                 },
               },
               meld_submission: {
@@ -158,7 +175,7 @@ const GameMachine = createMachine(
                 target: "#fullGameMachine.post_game",
                 cond: "isGamePlayOver",
               },
-              { target: "deal" },
+              { target: "bid", actions: "dealCards" },
             ],
           },
           history: {
@@ -192,9 +209,15 @@ const GameMachine = createMachine(
       isPlayOver: () => true,
     },
     actions: {
+      dealCards: assign({
+        play: (ctx, _) => ({
+          ...ctx.play,
+          playerHands: Deck.getNewHands(),
+        }),
+      }),
       playerBid: assign({
         bid: (ctx, evt) => ({
-          status: [...ctx.bid.status],
+          ...ctx.bid,
           // update bid at bidding player's index
           bids: ctx.bid.bids.map((bid, idx) =>
             idx == ctx.turn ? evt.value : bid
@@ -203,11 +226,11 @@ const GameMachine = createMachine(
       }),
       playerFold: assign({
         bid: (ctx, _) => ({
+          ...ctx.bid,
           // update status at folding player's index
           status: ctx.bid.status.map((st, idx) =>
             idx == ctx.turn ? false : st
           ),
-          bids: [...ctx.bid.bids],
         }),
       }),
       nextTurnBid: assign({
@@ -222,6 +245,21 @@ const GameMachine = createMachine(
           }
           return currentTurn;
         },
+      }),
+      handleBidWinner: assign({
+        bid: (ctx, _) => ({
+          ...ctx.bid,
+          // this is maybe a good place to somehow assert that our logic is in set
+          // add an error state for logic (current turn, vs index of bid winner) being out of sync
+          bidWinner: ctx.turn,
+          winningBid: ctx.bid.bids[ctx.turn],
+        }),
+      }),
+      setTrump: assign({
+        play: (ctx, evt) => ({
+          ...ctx.play,
+          trump: evt.trump,
+        }),
       }),
     },
   }

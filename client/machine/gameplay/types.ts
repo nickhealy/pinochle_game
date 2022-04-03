@@ -1,16 +1,28 @@
-import TurnMachine from "../turn/machine";
+import { CardKeys, Suit } from "./Deck";
 
 interface BidContext {
   status: boolean[];
   bids: number[];
+  winningBid: number | null;
+  bidWinner: number | null;
 }
 
 type TurnContext = number;
 
+interface PlayContext {
+  currentPlays: [];
+  pastPlays: [];
+  playerHands: CardKeys[][];
+  trump: Suit | null;
+}
+
+interface RoundScoreContext {}
+
 export type Context = {
   turn: TurnContext;
   bid: BidContext;
-  turnMachine: typeof TurnMachine | null;
+  play: PlayContext;
+  game: RoundScoreContext;
 };
 
 export type PlayEvents = { type: "PLAY_CARD" };
@@ -23,7 +35,7 @@ export type BidEvents =
   | { type: "FOLD"; isHez: boolean };
 
 export type PrePlayEvents =
-  | { type: "TRUMP_CHOSEN" }
+  | { type: "TRUMP_CHOSEN"; trump: Suit }
   | { type: "SUBMIT_MELDS" }
   | { type: "EDIT_MELDS" }
   | { type: "CONFIRM" }
