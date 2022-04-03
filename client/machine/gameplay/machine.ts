@@ -175,7 +175,7 @@ const GameMachine = createMachine(
                 target: "#fullGameMachine.post_game",
                 cond: "isGamePlayOver",
               },
-              { target: "bid", actions: "dealCards" },
+              { target: "#gameMachine.bid", actions: "dealCards" },
             ],
           },
           history: {
