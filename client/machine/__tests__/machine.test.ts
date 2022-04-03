@@ -1,9 +1,11 @@
 import { interpret } from "xstate";
 import GameMachine from "../gameplay/machine";
 
+jest.mock("../gameplay/Deck");
+
 describe("GameMachine", () => {
   describe("Bid phase", () => {
-    fit("handles the bid phase", () => {
+    it("handles the bid phase", () => {
       const gameService = interpret(GameMachine);
 
       gameService.start();
