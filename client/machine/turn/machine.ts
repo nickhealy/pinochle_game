@@ -1,6 +1,7 @@
 import { createMachine } from "xstate";
 import { Context, TurnEvents } from "./types";
 
+export const TURN_MACHINE_ACTOR_ID = "turn_machine";
 const TurnMachine = createMachine({
   tsTypes: {} as import("./machine.typegen").Typegen0,
   schema: {

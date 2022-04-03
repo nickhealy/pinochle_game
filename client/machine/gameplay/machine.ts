@@ -1,7 +1,10 @@
-import { createMachine, assign, spawn } from "xstate";
+import { createConfigItem } from "@babel/core";
+import { createMachine, assign, spawn, send, actions } from "xstate";
 
-import TurnMachine from "../turn/machine";
+import TurnMachine, { TURN_MACHINE_ACTOR_ID } from "../turn/machine";
 import { Context, GameEvents } from "./types";
+
+const { log } = actions;
 
 const GameMachine = createMachine(
   {
@@ -14,7 +17,12 @@ const GameMachine = createMachine(
     initial: "pre_game",
     type: "compound",
     context: {
-      turn_machine: null,
+      turn: 0,
+      bid: {
+        status: [true, true, true, true],
+        bids: [0, 0, 0, 0],
+      },
+      turnMachine: null,
     },
     states: {
       pre_game: {
@@ -27,7 +35,8 @@ const GameMachine = createMachine(
         initial: "deal",
         type: "compound",
         entry: assign({
-          turn_machine: () => spawn(TurnMachine),
+          turnMachine: () =>
+            spawn(TurnMachine, { name: TURN_MACHINE_ACTOR_ID, sync: true }),
         }),
         states: {
           deal: {
@@ -38,17 +47,41 @@ const GameMachine = createMachine(
           bid: {
             id: "bidMachine",
             initial: "awaiting_bid",
+            entry: log("starting bid", "[bid]"),
             states: {
               awaiting_bid: {
+                entry: log("awaiting next bid", "[bid]"),
                 on: {
-                  BID_TURN_EXECUTE: [
-                    {
-                      target: "#prePlayMachine.awaiting_trump",
-                      cond: "isBiddingWon",
-                    },
-                    { target: "awaiting_bid" },
-                  ],
+                  BID: {
+                    target: "bid_choice_pseudostate",
+                    actions: "playerBid",
+                  },
+                  FOLD: {
+                    target: "bid_choice_pseudostate",
+                    actions: "playerFold",
+                  },
                 },
+              },
+              // choice pseudostate for either continuing with bid or declaring winner
+              bid_choice_pseudostate: {
+                entry: log(
+                  (_, evt) =>
+                    `bid turn executed, type: ${evt.type}, value: ${
+                      // @ts-expect-error typing is weird here
+                      evt.type == "BID" ? evt.value : null
+                    }`,
+                  "[bid]"
+                ),
+                always: [
+                  {
+                    target: "#prePlayMachine.awaiting_trump",
+                    cond: "isBiddingWon",
+                  },
+                  {
+                    target: "awaiting_bid",
+                    actions: "nextTurnBid",
+                  },
+                ],
               },
             },
           },
@@ -128,6 +161,10 @@ const GameMachine = createMachine(
               { target: "deal" },
             ],
           },
+          history: {
+            type: "history",
+            history: "deep",
+          },
         },
       },
       post_game: {
@@ -136,15 +173,56 @@ const GameMachine = createMachine(
           START_NEW_GAME: { target: "pre_game" },
         },
       },
+      failed_heartbeat: {
+        on: {
+          RESUMED_HEARTBEAT: { target: "game_in_progress.history" },
+        },
+      },
+    },
+    on: {
+      FAILED_HEARTBEAT: { target: "failed_heartbeat" },
     },
   },
   {
     guards: {
-      isBiddingWon: () => true,
+      isBiddingWon: (ctx, _) => ctx.bid.status.filter((st) => st).length === 1,
       allPlayersReady: () => true,
       isGamePlayOver: () => true,
       allMeldsSubmitted: () => true,
       isPlayOver: () => true,
+    },
+    actions: {
+      playerBid: assign({
+        bid: (ctx, evt) => ({
+          status: [...ctx.bid.status],
+          // update bid at bidding player's index
+          bids: ctx.bid.bids.map((bid, idx) =>
+            idx == ctx.turn ? evt.value : bid
+          ),
+        }),
+      }),
+      playerFold: assign({
+        bid: (ctx, _) => ({
+          // update status at folding player's index
+          status: ctx.bid.status.map((st, idx) =>
+            idx == ctx.turn ? false : st
+          ),
+          bids: [...ctx.bid.bids],
+        }),
+      }),
+      nextTurnBid: assign({
+        turn: (ctx, _) => {
+          let currentTurn = ctx.turn;
+          // find the next player who has not dropped out of bidding
+          while (true) {
+            currentTurn = (currentTurn + 1) % 4;
+            if (ctx.bid.status[currentTurn]) {
+              break;
+            }
+          }
+          return currentTurn;
+        },
+      }),
     },
   }
 );
