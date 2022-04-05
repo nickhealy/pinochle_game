@@ -36,9 +36,10 @@ export type BidEvents =
 
 export type PrePlayEvents =
   | { type: "TRUMP_CHOSEN"; trump: Suit }
-  | { type: "SUBMIT_MELDS" }
-  | { type: "EDIT_MELDS" }
-  | { type: "CONFIRM" }
+  | { type: "SUBMIT_MELD"; player: number; meld: CardKeys[] }
+  | { type: "EDIT_MELD"; player: number }
+  | { type: "PLAYER_READY"; player: number }
+  | { type: "PLAYER_REJECT"; player: number }
   | { type: "REJECT" };
 
 export type GameControlEvents =

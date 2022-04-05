@@ -113,26 +113,84 @@ const GameMachine = createMachine(
                 },
               },
               meld_submission: {
-                on: {
-                  SUBMIT_MELDS: [
-                    { target: "meld_confirm", cond: "allMeldsSubmitted" },
-                    { target: "meld_submission" },
-                  ],
-                  EDIT_MELDS: { target: "meld_submission" },
+                id: "meldSubmissionMachine",
+                initial: "no_submit",
+                states: {
+                  no_submit: {
+                    on: {
+                      SUBMIT_MELD: {
+                        target: "one_submit",
+                      },
+                    },
+                  },
+                  one_submit: {
+                    on: {
+                      SUBMIT_MELD: {
+                        target: "two_submit",
+                      },
+                      EDIT_MELD: {
+                        target: "no_submit",
+                      },
+                    },
+                  },
+                  two_submit: {
+                    on: {
+                      SUBMIT_MELD: {
+                        target: "three_submit",
+                      },
+                      EDIT_MELD: {
+                        target: "one_submit",
+                      },
+                    },
+                  },
+                  three_submit: {
+                    on: {
+                      SUBMIT_MELD: {
+                        target: "#prePlayMachine.ready_confirm",
+                      },
+                      EDIT_MELD: {
+                        target: "two_submit",
+                      },
+                    },
+                  },
                 },
               },
-              meld_confirm: {
+              ready_confirm: {
+                initial: "zero_confirm",
+                states: {
+                  zero_confirm: {
+                    on: {
+                      PLAYER_READY: {
+                        target: "one_confirm",
+                      },
+                    },
+                  },
+                  one_confirm: {
+                    on: {
+                      PLAYER_READY: {
+                        target: "two_confirm",
+                      },
+                    },
+                  },
+                  two_confirm: {
+                    on: {
+                      PLAYER_READY: {
+                        target: "three_confirm",
+                      },
+                    },
+                  },
+                  three_confirm: {
+                    on: {
+                      PLAYER_READY: {
+                        target: "#playMachine",
+                      },
+                    },
+                  },
+                },
                 on: {
-                  CONFIRM: [
-                    {
-                      target: "#gameMachine.play",
-                      cond: "allPlayersReady",
-                    },
-                    {
-                      target: "meld_confirm",
-                    },
-                  ],
-                  REJECT: { target: "meld_submission" },
+                  PLAYER_REJECT: {
+                    target: "#meldSubmissionMachine.three_submit",
+                  },
                 },
               },
             },
@@ -203,9 +261,9 @@ const GameMachine = createMachine(
   {
     guards: {
       isBiddingWon: (ctx, _) => ctx.bid.status.filter((st) => st).length === 1,
-      allPlayersReady: () => true,
+      // allPlayersReady: () => true,
       isGamePlayOver: () => true,
-      allMeldsSubmitted: () => true,
+      // allMeldsSubmitted: () => true,
       isPlayOver: () => true,
     },
     actions: {
