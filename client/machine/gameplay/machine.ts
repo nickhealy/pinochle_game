@@ -1,5 +1,7 @@
 import { createMachine, assign, spawn, send, actions } from "xstate";
 import Deck from "./Deck";
+import { getPlayerTeam } from "./GameplayHelpers";
+import { sumPlayerMelds } from "./Meld";
 
 import { Context, GameEvents } from "./types";
 
@@ -21,13 +23,19 @@ const GameMachine = createMachine(
         bidWinner: null,
         winningBid: null,
       },
+      melds: [[], [], [], []],
       play: {
         currentPlays: [],
         pastPlays: [],
         playerHands: [],
         trump: null,
       },
-      game: {},
+      round: {
+        points: [
+          [0, 0],
+          [0, 0],
+        ],
+      },
     },
     states: {
       pre_game: {
@@ -118,38 +126,45 @@ const GameMachine = createMachine(
                 states: {
                   no_submit: {
                     on: {
-                      SUBMIT_MELD: {
+                      SUBMIT_MELDS: {
                         target: "one_submit",
+                        actions: "submitMeld",
                       },
                     },
                   },
                   one_submit: {
                     on: {
-                      SUBMIT_MELD: {
+                      SUBMIT_MELDS: {
                         target: "two_submit",
+                        actions: "submitMeld",
                       },
                       EDIT_MELD: {
                         target: "no_submit",
+                        actions: "editMeld",
                       },
                     },
                   },
                   two_submit: {
                     on: {
-                      SUBMIT_MELD: {
+                      SUBMIT_MELDS: {
                         target: "three_submit",
+                        actions: "submitMeld",
                       },
                       EDIT_MELD: {
                         target: "one_submit",
+                        actions: "editMeld",
                       },
                     },
                   },
                   three_submit: {
                     on: {
-                      SUBMIT_MELD: {
+                      SUBMIT_MELDS: {
                         target: "#prePlayMachine.ready_confirm",
+                        actions: "submitMeld",
                       },
                       EDIT_MELD: {
                         target: "two_submit",
+                        actions: "editMeld",
                       },
                     },
                   },
@@ -190,6 +205,7 @@ const GameMachine = createMachine(
                 on: {
                   PLAYER_REJECT: {
                     target: "#meldSubmissionMachine.three_submit",
+                    actions: "editMeld",
                   },
                 },
               },
@@ -318,6 +334,46 @@ const GameMachine = createMachine(
           ...ctx.play,
           trump: evt.trump,
         }),
+      }),
+      submitMeld: assign({
+        // To do: think about rejecting invalid melds, and about preventing
+        // duplicate melds
+        // save player's melds, update points for the team
+        melds: (ctx, evt) => {
+          const { melds, player } = evt;
+          return ctx.melds.map((entry, idx) =>
+            idx === player ? melds : entry
+          );
+        },
+        round: (ctx, evt) => {
+          const { player, melds } = evt;
+          return {
+            points: ctx.round.points.map((points, idx) => {
+              return idx === getPlayerTeam(player)
+                ? [
+                    points[0] + sumPlayerMelds(melds),
+                    points[1], // points[0] are meld points, points[1] are play points
+                  ]
+                : points;
+            }),
+          };
+        },
+      }),
+      editMeld: assign({
+        round: (ctx, evt) => {
+          const { player } = evt;
+          const playerMelds = ctx.melds[player];
+          return {
+            points: ctx.round.points.map((points, idx) => {
+              return idx === getPlayerTeam(player)
+                ? [
+                    points[0] - sumPlayerMelds(playerMelds),
+                    points[1], // points[0] are meld points, points[1] are play points
+                  ]
+                : points;
+            }),
+          };
+        },
       }),
     },
   }

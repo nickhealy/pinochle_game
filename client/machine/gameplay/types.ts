@@ -1,4 +1,5 @@
 import { CardKeys, Suit } from "./Deck";
+import { Meld } from "./Meld";
 
 interface BidContext {
   status: boolean[];
@@ -16,13 +17,18 @@ interface PlayContext {
   trump: Suit | null;
 }
 
-interface RoundScoreContext {}
+type MeldContext = Meld[][];
+
+interface RoundScoreContext {
+  points: number[][];
+}
 
 export type Context = {
   turn: TurnContext;
   bid: BidContext;
+  melds: MeldContext;
   play: PlayContext;
-  game: RoundScoreContext;
+  round: RoundScoreContext;
 };
 
 export type PlayEvents = { type: "PLAY_CARD" };
@@ -36,9 +42,13 @@ export type BidEvents =
 
 export type PrePlayEvents =
   | { type: "TRUMP_CHOSEN"; trump: Suit }
-  | { type: "SUBMIT_MELD"; player: number; meld: CardKeys[] }
+  | {
+      type: "SUBMIT_MELDS";
+      player: number;
+      melds: Meld[];
+    }
   | { type: "EDIT_MELD"; player: number }
-  | { type: "PLAYER_READY"; player: number }
+  | { type: "PLAYER_READY" }
   | { type: "PLAYER_REJECT"; player: number }
   | { type: "REJECT" };
 
