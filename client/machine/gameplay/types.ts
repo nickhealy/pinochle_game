@@ -4,7 +4,6 @@ import { Meld } from "./Meld";
 interface BidContext {
   status: boolean[];
   bids: number[];
-  winningBid: number | null;
   bidWinner: number | null;
 }
 

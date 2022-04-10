@@ -27,7 +27,6 @@ const GameMachine = createMachine(
         status: [true, true, true, true],
         bids: [0, 0, 0, 0],
         bidWinner: null,
-        winningBid: null,
       },
       melds: [[], [], [], []],
       play: {
@@ -71,7 +70,7 @@ const GameMachine = createMachine(
                 on: {
                   BID: {
                     target: "bid_choice_pseudostate",
-                    actions: "playerBid",
+                    actions: ["playerBid"],
                   },
                   FOLD: {
                     target: "bid_choice_pseudostate",
@@ -109,7 +108,6 @@ const GameMachine = createMachine(
                       }`,
                     "[bid]"
                   ),
-                  "handleBidWinner",
                 ],
                 always: {
                   target: "#prePlayMachine.awaiting_trump",
@@ -257,11 +255,27 @@ const GameMachine = createMachine(
               trick_end: {
                 entry: ["tallyTrickPoints"],
                 always: [
-                  { target: "#gameMachine.round_end", cond: "isPlayOver" },
+                  {
+                    target: "#gameMachine.round_end_pseudo_state",
+                    cond: "isPlayOver",
+                  },
                   { target: "pos_a", actions: "newTrick" },
                 ],
               },
             },
+          },
+          round_end_pseudo_state: {
+            always: [
+              {
+                target: "round_end",
+                actions: ["updateTeamScores"],
+                cond: "didBidderMakeBid",
+              },
+              {
+                target: "round_end",
+                actions: ["handleBidNotMade"],
+              },
+            ],
           },
           round_end: {
             always: [
@@ -271,15 +285,11 @@ const GameMachine = createMachine(
               },
               {
                 target: "#gameMachine.bid",
-                actions: [
-                  "updateGameScore",
-                  "resetRoundAndPlay",
-                  "changeDealer",
-                  "dealCards",
-                ],
+                actions: ["resetRoundAndPlay", "changeDealer", "dealCards"],
               },
             ],
           },
+
           history: {
             type: "history",
             history: "deep",
@@ -287,7 +297,6 @@ const GameMachine = createMachine(
         },
       },
       post_game: {
-        // id: 'post'
         on: {
           START_NEW_GAME: { target: "pre_game" },
         },
@@ -305,11 +314,17 @@ const GameMachine = createMachine(
   {
     guards: {
       isBiddingWon: (ctx, _) => ctx.bid.status.filter((st) => st).length === 1,
-      // allPlayersReady: () => true,
       isGamePlayOver: (ctx, _) =>
         ctx.game.score.some((score) => score >= WINNING_SCORE),
-      // allMeldsSubmitted: () => true,
       isPlayOver: (ctx, _) => getIsLastTrick(ctx.play.playerHands),
+      didBidderMakeBid: (ctx, _) => {
+        // safe to assert that bidWinner  both exist here
+        const { bidWinner, bids } = ctx.bid;
+        const bidWinnerPoints = ctx.round.points[
+          getPlayerTeam(bidWinner as number)
+        ].reduce((acc, curr) => acc + curr, 0);
+        return bidWinnerPoints >= bids[bidWinner as number];
+      },
     },
     actions: {
       dealCards: assign({
@@ -319,13 +334,17 @@ const GameMachine = createMachine(
         }),
       }),
       playerBid: assign({
-        bid: (ctx, evt) => ({
-          ...ctx.bid,
-          // update bid at bidding player's index
-          bids: ctx.bid.bids.map((bid, idx) =>
+        bid: (ctx, evt) => {
+          const updatedBids = ctx.bid.bids.map((bid, idx) =>
             idx == ctx.turn ? evt.value : bid
-          ),
-        }),
+          );
+          return {
+            ...ctx.bid,
+            // update bid at bidding player's index
+            bids: updatedBids,
+            bidWinner: updatedBids.indexOf(Math.max(...updatedBids)), // set the winner to be whatever is the highest
+          };
+        },
       }),
       playerFold: assign({
         bid: (ctx, _) => ({
@@ -348,15 +367,6 @@ const GameMachine = createMachine(
           }
           return currentTurn;
         },
-      }),
-      handleBidWinner: assign({
-        bid: (ctx, _) => ({
-          ...ctx.bid,
-          // this is maybe a good place to somehow assert that our logic is in set
-          // add an error state for logic (current turn, vs index of bid winner) being out of sync
-          bidWinner: ctx.turn,
-          winningBid: ctx.bid.bids[ctx.turn],
-        }),
       }),
       setTrump: assign({
         play: (ctx, evt) => ({
@@ -466,7 +476,19 @@ const GameMachine = createMachine(
           pastPlays: [...ctx.play.pastPlays, ctx.play.currentPlays],
         }),
       }),
-      updateGameScore: assign({
+      handleBidNotMade: assign({
+        game: (ctx, _) => ({
+          ...ctx.game,
+          // basically assert that bidwinner and winning bid are defined here
+          score: ctx.game.score.map((score, idx) =>
+            idx === getPlayerTeam(ctx.bid.bidWinner as number)
+              ? score - ctx.bid.bids[ctx.bid.bidWinner as number]
+              : score + ctx.round.points[idx][0] + ctx.round.points[idx][1]
+          ),
+        }),
+      }),
+      // updates scores of both teams
+      updateTeamScores: assign({
         game: (ctx, _) => {
           return {
             ...ctx.game,

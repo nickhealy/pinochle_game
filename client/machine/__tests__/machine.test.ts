@@ -11,7 +11,6 @@ describe("GameMachine", () => {
       gameService.start();
 
       gameService.send({ type: "BEGIN_GAME" });
-      gameService.send({ type: "BID", value: 100 });
       gameService.send({ type: "FOLD", isHez: true });
       gameService.send({ type: "BID", value: 180 });
       gameService.send({ type: "FOLD", isHez: false });
@@ -19,6 +18,8 @@ describe("GameMachine", () => {
       expect(
         gameService.state.matches("game_in_progress.pre_play.awaiting_trump")
       ).toBe(true);
+      const { bids, bidWinner } = gameService.getSnapshot().context.bid;
+      expect(bids[bidWinner as number]).toBe(180);
     });
 
     it("handles everyone passing", () => {
