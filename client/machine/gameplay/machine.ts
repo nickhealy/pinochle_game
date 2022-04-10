@@ -1,9 +1,15 @@
-import { createMachine, assign, spawn, send, actions } from "xstate";
-import Deck from "./Deck";
-import { getPlayerTeam } from "./GameplayHelpers";
+import { createMachine, assign, actions } from "xstate";
+import { WINNING_SCORE } from "./constants";
+import Deck, { Suit } from "./Deck";
+import {
+  getIsLastTrick,
+  getPlayerTeam,
+  getPlayPoints,
+  getWinningPlay,
+} from "./GameplayHelpers";
 import { sumPlayerMelds } from "./Meld";
 
-import { Context, GameEvents } from "./types";
+import { Context, GameEvents, Play } from "./types";
 
 const GameMachine = createMachine(
   {
@@ -35,6 +41,10 @@ const GameMachine = createMachine(
           [0, 0],
           [0, 0],
         ],
+      },
+      game: {
+        score: [0, 0],
+        dealer: 0,
       },
     },
     states: {
@@ -217,28 +227,38 @@ const GameMachine = createMachine(
             states: {
               pos_a: {
                 on: {
-                  PLAY_CARD: { target: "pos_b" },
+                  PLAY_CARD: {
+                    target: "pos_b",
+                    actions: ["playCard", "nextTurnPlay"],
+                  },
                 },
               },
               pos_b: {
                 on: {
-                  PLAY_CARD: { target: "pos_c" },
+                  PLAY_CARD: {
+                    target: "pos_c",
+                    actions: ["playCard", "nextTurnPlay"],
+                  },
                 },
               },
               pos_c: {
                 on: {
-                  PLAY_CARD: { target: "pos_d" },
+                  PLAY_CARD: {
+                    target: "pos_d",
+                    actions: ["playCard", "nextTurnPlay"],
+                  },
                 },
               },
               pos_d: {
                 on: {
-                  PLAY_CARD: { target: "trick_end" },
+                  PLAY_CARD: { target: "trick_end", actions: "playCard" },
                 },
               },
               trick_end: {
+                entry: ["tallyTrickPoints"],
                 always: [
                   { target: "#gameMachine.round_end", cond: "isPlayOver" },
-                  { target: "pos_a" },
+                  { target: "pos_a", actions: "newTrick" },
                 ],
               },
             },
@@ -249,7 +269,15 @@ const GameMachine = createMachine(
                 target: "#fullGameMachine.post_game",
                 cond: "isGamePlayOver",
               },
-              { target: "#gameMachine.bid", actions: "dealCards" },
+              {
+                target: "#gameMachine.bid",
+                actions: [
+                  "updateGameScore",
+                  "resetRoundAndPlay",
+                  "changeDealer",
+                  "dealCards",
+                ],
+              },
             ],
           },
           history: {
@@ -278,9 +306,10 @@ const GameMachine = createMachine(
     guards: {
       isBiddingWon: (ctx, _) => ctx.bid.status.filter((st) => st).length === 1,
       // allPlayersReady: () => true,
-      isGamePlayOver: () => true,
+      isGamePlayOver: (ctx, _) =>
+        ctx.game.score.some((score) => score >= WINNING_SCORE),
       // allMeldsSubmitted: () => true,
-      isPlayOver: () => true,
+      isPlayOver: (ctx, _) => getIsLastTrick(ctx.play.playerHands),
     },
     actions: {
       dealCards: assign({
@@ -360,6 +389,10 @@ const GameMachine = createMachine(
         },
       }),
       editMeld: assign({
+        melds: (ctx, evt) => {
+          const { player } = evt;
+          return ctx.melds.map((entry, idx) => (idx === player ? [] : entry));
+        },
         round: (ctx, evt) => {
           const { player } = evt;
           const playerMelds = ctx.melds[player];
@@ -374,6 +407,90 @@ const GameMachine = createMachine(
             }),
           };
         },
+      }),
+      playCard: assign({
+        play: (ctx, evt) => {
+          const { player, key } = evt;
+          return {
+            ...ctx.play,
+            currentPlays: [...ctx.play.currentPlays, { key, player }],
+            playerHands: ctx.play.playerHands.map((hand, idx) => {
+              if (idx === player) {
+                return hand.filter((card) => card !== key);
+              }
+              return hand;
+            }),
+          };
+        },
+      }),
+      nextTurnPlay: assign({
+        turn: (ctx, _) => (ctx.turn + 1) % 4,
+      }),
+      tallyTrickPoints: assign({
+        round: (ctx, _) => {
+          const { currentPlays, trump } = ctx.play;
+          const { player: winningPlayer } = getWinningPlay(
+            currentPlays,
+            // basically asserting that trump will be defined by this point
+            trump as Suit
+          );
+          const isLastTrick = getIsLastTrick(ctx.play.playerHands);
+          return {
+            points: ctx.round.points.map((teamPoints, idx) =>
+              idx === getPlayerTeam(winningPlayer)
+                ? [
+                    teamPoints[0],
+                    teamPoints[1] +
+                      getPlayPoints(ctx.play.currentPlays, isLastTrick),
+                  ]
+                : teamPoints
+            ),
+          };
+        },
+      }),
+      newTrick: assign({
+        // trick winner starts next round of play
+        turn: (ctx, _) => {
+          const { currentPlays, trump } = ctx.play;
+          const { player: winningPlayer } = getWinningPlay(
+            currentPlays,
+            // basically asserting that trump will be defined by this point
+            trump as Suit
+          );
+          return winningPlayer;
+        },
+        // reset the board
+        play: (ctx, _) => ({
+          ...ctx.play,
+          currentPlays: [],
+          pastPlays: [...ctx.play.pastPlays, ctx.play.currentPlays],
+        }),
+      }),
+      updateGameScore: assign({
+        game: (ctx, _) => {
+          return {
+            ...ctx.game,
+            score: ctx.game.score.map(
+              (score, idx) =>
+                score + ctx.round.points[idx][0] + ctx.round.points[idx][1] // sum up the melds and play points
+            ),
+          };
+        },
+      }),
+      resetRoundAndPlay: assign({
+        play: (_ctx, _) => ({
+          // for some reason the params need to be in the function here
+          currentPlays: [],
+          pastPlays: [],
+          playerHands: [],
+          trump: null,
+        }),
+      }),
+      changeDealer: assign({
+        game: (ctx, _) => ({
+          ...ctx.game,
+          dealer: (ctx.game.dealer + 1) % 4,
+        }),
       }),
     },
   }

@@ -1,9 +1,9 @@
 export default {
-  ...jest.requireActual("../Deck.ts"),
+  ...jest.requireActual("../Deck.ts").default,
   getNewHands: () => [
-    ["QH", "KS", "9C", "JH", "KD", "AC", "JC", "10C", "QS", "JD", "AS", "10S"],
-    ["QS", "AS", "QD", "10D", "AH", "10C", "10S", "KC", "9H", "QC", "9D", "KC"],
-    ["QH", "JD", "9S", "10H", "QC", "JC", "QD", "AH", "KH", "9D", "AC", "10D"],
-    ["KH", "9H", "KS", "JH", "JS", "AD", "AD", "9S", "JS", "9C", "10H", "KD"],
+    ["9C", "AC", "JC", "10C", "KD", "JD", "QH", "JH", "KS", "QS", "AS", "10S"],
+    ["10C", "KC", "QC", "KC", "QD", "10D", "9D", "AH", "9H", "QS", "AS", "10S"],
+    ["QC", "JC", "AC", "JD", "QD", "9D", "10D", "QH", "10H", "AH", "KH", "9S"],
+    ["9C", "AD", "AD", "KD", "KH", "9H", "JH", "10H", "KS", "JS", "9S", "JS"],
   ],
 };

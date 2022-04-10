@@ -26,7 +26,7 @@ export type CardKeys =
   | "10S"
   | "AS";
 
-class Card {
+export class Card {
   readonly key: CardKeys;
   readonly suit: Suit;
   readonly rank: Rank;
@@ -44,6 +44,10 @@ class Card {
     this.rank = rank;
     this.points = points;
     this.value = value;
+  }
+
+  isSuit(suit: Suit) {
+    return this.suit === suit;
   }
 }
 

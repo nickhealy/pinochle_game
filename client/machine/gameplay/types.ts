@@ -10,9 +10,14 @@ interface BidContext {
 
 type TurnContext = number;
 
+export interface Play {
+  key: CardKeys;
+  player: number;
+}
+
 interface PlayContext {
-  currentPlays: [];
-  pastPlays: [];
+  currentPlays: Play[];
+  pastPlays: Play[][];
   playerHands: CardKeys[][];
   trump: Suit | null;
 }
@@ -23,15 +28,21 @@ interface RoundScoreContext {
   points: number[][];
 }
 
+interface GameScoreContext {
+  dealer: number;
+  score: number[];
+}
+
 export type Context = {
   turn: TurnContext;
   bid: BidContext;
   melds: MeldContext;
   play: PlayContext;
   round: RoundScoreContext;
+  game: GameScoreContext;
 };
 
-export type PlayEvents = { type: "PLAY_CARD" };
+export type PlayEvents = { type: "PLAY_CARD"; key: CardKeys; player: number };
 export type GameMachineEvents = { type: "CARDS_DEALT" };
 export type BidEvents =
   | {
