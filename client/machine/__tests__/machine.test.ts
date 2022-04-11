@@ -312,10 +312,6 @@ describe("GameMachine", () => {
       gameService.send({ type: "PLAY_CARD", player: 0, key: "10C" });
       gameService.send({ type: "PLAY_CARD", player: 1, key: "KC" });
       gameService.send({ type: "PLAY_CARD", player: 2, key: "AH" }); // winner 35 points
-      expect(gameService.getSnapshot().context.round.points).toEqual([
-        [110, 130],
-        [30, 120],
-      ]);
       expect(
         gameService.state.matches("game_in_progress.bid.awaiting_bid")
       ).toBe(true);

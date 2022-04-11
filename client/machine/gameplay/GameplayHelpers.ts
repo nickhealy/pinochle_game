@@ -27,3 +27,5 @@ export const getPlayPoints = (hands: Play[], isLastTrick: boolean = false) =>
 
 export const getIsLastTrick = (playerHands: CardKeys[][]) =>
   playerHands.every((hand) => hand.length === 0);
+
+export const getNextPlayer = (currPlayer: number) => (currPlayer + 1) % 4;

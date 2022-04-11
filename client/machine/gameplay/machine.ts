@@ -3,6 +3,7 @@ import { WINNING_SCORE } from "./constants";
 import Deck, { Suit } from "./Deck";
 import {
   getIsLastTrick,
+  getNextPlayer,
   getPlayerTeam,
   getPlayPoints,
   getWinningPlay,
@@ -22,11 +23,11 @@ const GameMachine = createMachine(
     initial: "pre_game",
     type: "compound",
     context: {
-      turn: 0,
+      turn: 1,
       bid: {
         status: [true, true, true, true],
         bids: [0, 0, 0, 0],
-        bidWinner: null,
+        bidWinner: 0,
       },
       melds: [[], [], [], []],
       play: {
@@ -63,7 +64,7 @@ const GameMachine = createMachine(
           bid: {
             id: "bidMachine",
             initial: "awaiting_bid",
-            entry: actions.log("starting bid", "[bid]"),
+            entry: [actions.log("starting bid", "[bid]"), "setStartingTurn"],
             states: {
               awaiting_bid: {
                 entry: actions.log("awaiting next bid", "[bid]"),
@@ -285,7 +286,7 @@ const GameMachine = createMachine(
               },
               {
                 target: "#gameMachine.bid",
-                actions: ["resetRoundAndPlay", "changeDealer", "dealCards"],
+                actions: ["resetRound", "changeDealer", "dealCards"],
               },
             ],
           },
@@ -320,10 +321,11 @@ const GameMachine = createMachine(
       didBidderMakeBid: (ctx, _) => {
         // safe to assert that bidWinner  both exist here
         const { bidWinner, bids } = ctx.bid;
-        const bidWinnerPoints = ctx.round.points[
-          getPlayerTeam(bidWinner as number)
-        ].reduce((acc, curr) => acc + curr, 0);
-        return bidWinnerPoints >= bids[bidWinner as number];
+        const bidWinnerPoints = ctx.round.points.reduce(
+          (acc, curr) => acc + curr[getPlayerTeam(bidWinner)],
+          0
+        );
+        return bidWinnerPoints >= bids[bidWinner];
       },
     },
     actions: {
@@ -360,7 +362,7 @@ const GameMachine = createMachine(
           let currentTurn = ctx.turn;
           // find the next player who has not dropped out of bidding
           while (true) {
-            currentTurn = (currentTurn + 1) % 4;
+            currentTurn = getNextPlayer(currentTurn);
             if (ctx.bid.status[currentTurn]) {
               break;
             }
@@ -434,7 +436,7 @@ const GameMachine = createMachine(
         },
       }),
       nextTurnPlay: assign({
-        turn: (ctx, _) => (ctx.turn + 1) % 4,
+        turn: (ctx, _) => getNextPlayer(ctx.turn),
       }),
       tallyTrickPoints: assign({
         round: (ctx, _) => {
@@ -481,8 +483,8 @@ const GameMachine = createMachine(
           ...ctx.game,
           // basically assert that bidwinner and winning bid are defined here
           score: ctx.game.score.map((score, idx) =>
-            idx === getPlayerTeam(ctx.bid.bidWinner as number)
-              ? score - ctx.bid.bids[ctx.bid.bidWinner as number]
+            idx === getPlayerTeam(ctx.bid.bidWinner)
+              ? score - ctx.bid.bids[ctx.bid.bidWinner]
               : score + ctx.round.points[idx][0] + ctx.round.points[idx][1]
           ),
         }),
@@ -499,7 +501,7 @@ const GameMachine = createMachine(
           };
         },
       }),
-      resetRoundAndPlay: assign({
+      resetRound: assign({
         play: (_ctx, _) => ({
           // for some reason the params need to be in the function here
           currentPlays: [],
@@ -507,12 +509,27 @@ const GameMachine = createMachine(
           playerHands: [],
           trump: null,
         }),
+        bid: (_ctx, _) => ({
+          status: [true, true, true, true],
+          bids: [0, 0, 0, 0],
+          bidWinner: 0,
+        }),
+        melds: (_ctx, _) => [[], [], [], []],
+        round: (_ctx, _) => ({
+          points: [
+            [0, 0],
+            [0, 0],
+          ],
+        }),
       }),
       changeDealer: assign({
         game: (ctx, _) => ({
           ...ctx.game,
-          dealer: (ctx.game.dealer + 1) % 4,
+          dealer: getNextPlayer(ctx.game.dealer),
         }),
+      }),
+      setStartingTurn: assign({
+        turn: (ctx, _) => getNextPlayer(ctx.game.dealer),
       }),
     },
   }
