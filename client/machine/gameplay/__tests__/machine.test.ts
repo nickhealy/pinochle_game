@@ -1,7 +1,7 @@
 import { interpret } from "xstate";
-import GameMachine from "../gameplay/machine";
+import GameMachine from "../machine";
 
-jest.mock("../gameplay/Deck");
+jest.mock("../Deck");
 
 describe("GameMachine", () => {
   describe("Bid phase", () => {

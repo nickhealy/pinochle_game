@@ -1,5 +1,5 @@
-import { getPlayerTeam, getWinningPlay } from "../gameplay/GameplayHelpers";
-import { Play } from "../gameplay/types";
+import { getPlayerTeam, getWinningPlay } from "../GameplayHelpers";
+import { Play } from "../types";
 
 describe("gameplay helpers", () => {
   it("getPlayerTeam", () => {

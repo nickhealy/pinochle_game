@@ -14,6 +14,7 @@ import { Context, GameEvents, Play } from "./types";
 
 const GameMachine = createMachine(
   {
+    preserveActionOrder: true,
     tsTypes: {} as import("./machine.typegen").Typegen0,
     schema: {
       context: {} as Context,
