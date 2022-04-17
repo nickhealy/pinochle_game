@@ -34,6 +34,13 @@ import {
  * there is particular event that worker sends to supervisor that it has connected (entered the room)
  */
 
+/**
+ * client connects --> we need a unique way to recognize them again next time we see them
+ * cookie? user agent? probably cookie -- in any case,
+ *
+ * A -> join (and then whatever webrtc needs to start a connection, plus unique id maybe)
+ */
+
 const ConnectionSupervisorMachine = createMachine(
   {
     preserveActionOrder: true,
@@ -52,10 +59,13 @@ const ConnectionSupervisorMachine = createMachine(
     states: {
       waiting: {
         on: {
-          PLAYER_CONNECTED: {
-            target: "waiting_pseudostate",
-            actions: "upgradePendingWorker",
-          },
+          PLAYER_CONNECTED: [
+            {
+              target: "waiting_pseudostate",
+              actions: "upgradePendingWorker",
+              cond: "pendingWorkerExists",
+            },
+          ],
           PLAYER_CONNECTION_FAIL: {
             actions: "removePendingWorker",
           },
@@ -101,6 +111,7 @@ const ConnectionSupervisorMachine = createMachine(
   {
     guards: {
       allPlayersConnected: (ctx, _) => true,
+      pendingWorkerExists: (ctx, { id }) => !!ctx.pending_workers[id],
       roomNotFull: (ctx, _) =>
         ctx.connected_workers.length + ctx.pending_workers.length < 4,
     },
@@ -129,7 +140,9 @@ const ConnectionSupervisorMachine = createMachine(
         pending_workers: (ctx, evt) =>
           ctx.pending_workers.filter((_, idx) => idx !== evt.id),
       }),
-      clearWorker: () => {},
+      clearWorker: () => {
+        // see https://githubhot.com/repo/davidkpiano/xstate/issues/2531
+      },
     },
   }
 );
