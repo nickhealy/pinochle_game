@@ -5,13 +5,13 @@ import {
 } from "../gameplay/gamePlayEventTypes";
 
 export interface ConnectionSupervisorContext {
-  connected_workers: Spawnable[];
-  pending_workers: Spawnable[];
+  connected_workers: Record<string, Spawnable>;
+  pending_workers: Record<string, Spawnable>;
   workers_x_player_ids: number[];
 }
 
 export type ConnectionSupervisorEvents =
-  | { type: "PLAYER_CONNECTED"; id: number }
+  | { type: "PLAYER_CONNECTED"; metadata: string }
   | { type: "PLAYER_CONNECTION_FAIL"; id: number }
   | {
       type: "GAME_PLAY_UPDATE";
@@ -33,5 +33,5 @@ export type ConnectionSupervisorEvents =
     }
   | {
       type: "PLAYER_JOIN_REQUEST";
-      info: string; // obvi will be actual info
+      metadata: string; // obvi will be actual info
     };

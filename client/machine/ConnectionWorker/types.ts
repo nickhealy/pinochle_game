@@ -1,7 +1,8 @@
 export interface ConnectionWorkerContext {
+  connection_metadata: string | undefined;
   incoming_queue: {}[];
   outgoing_queue: {}[];
-  last_heartbeat: string;
+  last_heartbeat: string | undefined;
 }
 
 export type ConnectionWorkerEvent =

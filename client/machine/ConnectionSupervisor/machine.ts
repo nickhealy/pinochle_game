@@ -1,45 +1,11 @@
 import { assign, createMachine, spawn } from "xstate";
+import { pure, send, sendTo } from "xstate/lib/actions";
 import ConnectionWorkerMachine from "../ConnectionWorker/machine";
+import { getWorkerId } from "./helpers";
 import {
   ConnectionSupervisorContext,
   ConnectionSupervisorEvents,
 } from "./types";
-
-// const spawnWorkers = () => {
-//   const workers = [];
-//   for (let i = 0; i < 4; i++) {
-//     workers.push(spawn(ConnectionWorkerMachine, `connection_worker_${i}`));
-//   }
-//   return workers;
-// };
-
-// need to figure out how to keep track of these workers
-// look up spawning workers on init in xstate
-
-// how does killing the game if a player terminates connection make this easier?
-
-// after a connection is terminated, the player has 15 seconds to rejoin before terminating the game
-
-// could also be a dictionary
-/**
- * {
- *  '0' : worker,
- *  '1' : worker,
- *  '2' : worker,
- *  '3' : worker
- * }
- */
-
-/**
- * there is particular event that worker sends to supervisor that it has connected (entered the room)
- */
-
-/**
- * client connects --> we need a unique way to recognize them again next time we see them
- * cookie? user agent? probably cookie -- in any case,
- *
- * A -> join (and then whatever webrtc needs to start a connection, plus unique id maybe)
- */
 
 const ConnectionSupervisorMachine = createMachine(
   {
@@ -50,8 +16,8 @@ const ConnectionSupervisorMachine = createMachine(
       events: {} as ConnectionSupervisorEvents,
     },
     context: {
-      connected_workers: [],
-      pending_workers: [],
+      connected_workers: {},
+      pending_workers: {},
       workers_x_player_ids: [],
     },
     id: "ConnectionSupervisorMachine",
@@ -62,7 +28,7 @@ const ConnectionSupervisorMachine = createMachine(
           PLAYER_CONNECTED: [
             {
               target: "waiting_pseudostate",
-              actions: "upgradePendingWorker",
+              actions: ["upgradePendingWorker"],
               cond: "pendingWorkerExists",
             },
           ],
@@ -70,7 +36,7 @@ const ConnectionSupervisorMachine = createMachine(
             actions: "removePendingWorker",
           },
           PLAYER_JOIN_REQUEST: {
-            actions: "createPendingWorker",
+            actions: ["createPendingWorker", "connectPendingWorker"],
             cond: "roomNotFull",
           },
         },
@@ -110,35 +76,50 @@ const ConnectionSupervisorMachine = createMachine(
   },
   {
     guards: {
-      allPlayersConnected: (ctx, _) => true,
-      pendingWorkerExists: (ctx, { id }) => !!ctx.pending_workers[id],
+      allPlayersConnected: (ctx, _) =>
+        Object.keys(ctx.connected_workers).length === 3,
+      pendingWorkerExists: (ctx, { metadata }) =>
+        !!ctx.pending_workers[metadata],
       roomNotFull: (ctx, _) =>
-        ctx.connected_workers.length + ctx.pending_workers.length < 4,
+        Object.keys(ctx.connected_workers).length +
+          Object.keys(ctx.pending_workers).length <
+        3,
     },
     actions: {
       handleGameplayUpdate: () => {},
       handlePlayerEvent: () => {},
       handleFailedHeartbeat: () => {},
       createPendingWorker: assign({
-        pending_workers: (ctx, _) => [
+        pending_workers: (ctx, evt) => ({
           ...ctx.pending_workers,
-          spawn(
+          [evt.metadata]: spawn(
             ConnectionWorkerMachine,
-            `connection_worker_${ctx.pending_workers.length}`
+            getWorkerId(evt.metadata)
           ),
-        ],
+        }),
       }),
+      connectPendingWorker: send(
+        (_, evt) => ({ type: "CONNECT", metadata: evt.metadata }),
+        {
+          to: (_, evt) => getWorkerId(evt.metadata),
+        }
+      ),
       upgradePendingWorker: assign((ctx, evt) => {
-        const { id } = evt;
-        const connectedWorker = ctx.pending_workers[id];
+        const { [evt.metadata]: connectedWorker, ...otherWorkers } =
+          ctx.pending_workers;
         return {
-          connected_workers: [...ctx.connected_workers, connectedWorker],
-          pending_workers: ctx.pending_workers.filter((_, idx) => idx !== id),
+          connected_workers: {
+            ...ctx.connected_workers,
+            [evt.metadata]: connectedWorker,
+          },
+          pending_workers: otherWorkers,
         };
       }),
       removePendingWorker: assign({
-        pending_workers: (ctx, evt) =>
-          ctx.pending_workers.filter((_, idx) => idx !== evt.id),
+        pending_workers: (ctx, evt) => {
+          delete ctx.pending_workers[evt.id];
+          return ctx.pending_workers;
+        },
       }),
       clearWorker: () => {
         // see https://githubhot.com/repo/davidkpiano/xstate/issues/2531

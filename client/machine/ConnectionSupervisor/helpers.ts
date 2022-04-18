@@ -1,1 +1,2 @@
-export const getWorkerId = (player: number) => `connection_worker_${player}`;
+export const getWorkerId = (metadata: string) =>
+  `connection_worker_${metadata}`;
