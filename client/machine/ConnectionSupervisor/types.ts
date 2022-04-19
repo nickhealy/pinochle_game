@@ -1,13 +1,17 @@
-import { Spawnable } from "xstate";
+import { ActorRef, Spawnable } from "xstate";
+import {
+  ConnectionWorkerContext,
+  ConnectionWorkerEvent,
+} from "../ConnectionWorker/types";
 import {
   GamePlayUpdatePayload,
   PlayerEventPayload,
 } from "../gameplay/gamePlayEventTypes";
 
 export interface ConnectionSupervisorContext {
-  connected_workers: Record<string, Spawnable>;
-  pending_workers: Record<string, Spawnable>;
-  workers_x_player_ids: number[];
+  connected_workers: Record<string, ActorRef<ConnectionWorkerEvent>>;
+  pending_workers: Record<string, ActorRef<ConnectionWorkerEvent>>;
+  workers_x_player_ids: Array<string | null>;
 }
 
 export type ConnectionSupervisorEvents =

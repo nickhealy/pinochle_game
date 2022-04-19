@@ -18,7 +18,7 @@ const ConnectionSupervisorMachine = createMachine(
     context: {
       connected_workers: {},
       pending_workers: {},
-      workers_x_player_ids: [],
+      workers_x_player_ids: [null, null, null, null],
     },
     id: "ConnectionSupervisorMachine",
     initial: "waiting",
@@ -28,7 +28,7 @@ const ConnectionSupervisorMachine = createMachine(
           PLAYER_CONNECTED: [
             {
               target: "waiting_pseudostate",
-              actions: ["upgradePendingWorker"],
+              actions: ["upgradePendingWorker", "storeWorkerMetadata"],
               cond: "pendingWorkerExists",
             },
           ],
@@ -86,7 +86,22 @@ const ConnectionSupervisorMachine = createMachine(
         3,
     },
     actions: {
-      handleGameplayUpdate: () => {},
+      handleGameplayUpdate: pure((ctx, evt) => {
+        return Object.entries(ctx.connected_workers).map(
+          ([metadata, worker]) => {
+            if (ctx.workers_x_player_ids[evt.player] !== metadata) {
+              return send(
+                (_, _evt) => ({
+                  type: "GAMEPLAY_UPDATE",
+                  action_data: _evt.payload,
+                }),
+                { to: () => worker }
+              );
+            }
+            return send("NO_OP"); // FIX-ME: see if you can send to only some workers in array
+          }
+        );
+      }),
       handlePlayerEvent: () => {},
       handleFailedHeartbeat: () => {},
       createPendingWorker: assign({
@@ -115,6 +130,13 @@ const ConnectionSupervisorMachine = createMachine(
           pending_workers: otherWorkers,
         };
       }),
+      storeWorkerMetadata: assign((ctx, evt) => ({
+        workers_x_player_ids: ctx.workers_x_player_ids.splice(
+          ctx.workers_x_player_ids.indexOf(null),
+          1,
+          evt.metadata
+        ),
+      })),
       removePendingWorker: assign({
         pending_workers: (ctx, evt) => {
           delete ctx.pending_workers[evt.id];

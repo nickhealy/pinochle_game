@@ -1,5 +1,7 @@
 import { assign, createMachine } from "xstate";
-import { log, pure, send, sendParent } from "xstate/lib/actions";
+import { sendParent } from "xstate/lib/actions";
+import Connection from "../networking/types";
+import webRTCConnect from "../networking/webrtc";
 import { ConnectionWorkerContext, ConnectionWorkerEvent } from "./types";
 
 const ConnectionWorkerMachine = createMachine(
@@ -15,6 +17,7 @@ const ConnectionWorkerMachine = createMachine(
       outgoing_queue: [],
       last_heartbeat: undefined,
       connection_metadata: undefined,
+      connection_ref: null,
     },
     id: "ConnectionWorkerMachine",
     initial: "idle",
@@ -30,23 +33,37 @@ const ConnectionWorkerMachine = createMachine(
       connecting: {
         invoke: {
           id: "webrtcConnection",
-          src: () => {
-            return new Promise((res, rej) => setTimeout(res, 1000));
-          },
+          src: webRTCConnect,
           onDone: {
             target: "connected",
+            actions: ["saveConnectionRef"],
           },
           onError: {
-            actions: (_, evt) => console.log("error connecting : ", evt.data),
+            actions: [
+              "sendConnectionFail",
+              (_, evt) =>
+                console.log("Error connecting to remote client : ", evt.data),
+            ],
+            target: "idle",
           },
         },
       },
       connected: {
         entry: ["sendConnected"],
-        on: {
-          PLAYER_ACTION: {
-            actions: "handlePlayerAction",
+        invoke: {
+          id: "heartbeat",
+          src: () => {
+            return Promise.resolve();
           },
+          onError: {
+            actions: "sendHeartbeatFail",
+          },
+        },
+        on: {
+          GAMEPLAY_UPDATE: {
+            actions: ["enqueueAction", "sendAction"],
+          },
+          NO_OP: {}, // FIXME : look into if this is actually necessary
         },
       },
     },
@@ -56,10 +73,24 @@ const ConnectionWorkerMachine = createMachine(
       saveMetadata: assign({
         connection_metadata: (_, evt) => evt.metadata,
       }),
-      sendConnected: sendParent((ctx, evt) => ({
+      saveConnectionRef: assign({
+        connection_ref: (_, evt) => evt.data as Connection,
+      }),
+      sendConnected: sendParent((ctx) => ({
         type: "PLAYER_CONNECTED",
         metadata: ctx.connection_metadata,
       })),
+      sendConnectionFail: sendParent((ctx) => ({
+        type: "PLAYER_CONNECTION_FAIL",
+        metadata: ctx.connection_metadata,
+      })),
+      sendHeartbeatFail: sendParent((ctx) => ({
+        type: "FAILED_HEARTBEAT",
+        metadata: ctx.connection_metadata,
+      })),
+      enqueueAction: assign({
+        outgoing_queue: (ctx, evt) => [...ctx.outgoing_queue, evt.action_data],
+      }),
     },
   }
 );
