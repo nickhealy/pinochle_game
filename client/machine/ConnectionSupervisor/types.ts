@@ -21,7 +21,7 @@ export type ConnectionSupervisorEvents =
   | { type: "PLAYER_CONNECTED"; metadata: string }
   | { type: "PLAYER_CONNECTION_FAIL"; id: number }
   | {
-      type: "GAME_PLAY_UPDATE";
+      type: "GAMEPLAY_UPDATE";
       player: number;
       payload: GamePlayUpdatePayload;
     }

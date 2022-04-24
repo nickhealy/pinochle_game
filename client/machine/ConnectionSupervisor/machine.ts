@@ -2,6 +2,7 @@ import { assign, createMachine, spawn } from "xstate";
 import { pure, send, sendTo } from "xstate/lib/actions";
 import ConnectionWorkerMachine from "../ConnectionWorker/machine";
 import GameMachine from "../gameplay/machine";
+import { createGameplayUpdate } from "../helpers";
 import { getWorkerId } from "./helpers";
 import {
   ConnectionSupervisorContext,
@@ -59,7 +60,7 @@ const ConnectionSupervisorMachine = createMachine(
       waiting_pseudostate: {
         always: [
           {
-            target: "ready",
+            target: "active",
             cond: "allPlayersConnected",
           },
           {
@@ -67,17 +68,9 @@ const ConnectionSupervisorMachine = createMachine(
           },
         ],
       },
-      ready: {
-        on: {
-          START_GAME: {
-            target: "active",
-            actions: "startGame",
-          },
-        },
-      },
       active: {
         on: {
-          GAME_PLAY_UPDATE: {
+          GAMEPLAY_UPDATE: {
             actions: "handleGameplayUpdate",
           },
           PLAYER_EVENT: {
@@ -111,13 +104,15 @@ const ConnectionSupervisorMachine = createMachine(
       handleGameplayUpdate: pure((ctx, evt) => {
         return Object.entries(ctx.connected_workers)
           .filter(
-            ([metadata, _]) => ctx.workers_x_player_ids[evt.player] !== metadata
+            ([metadata, _]) =>
+              // if no source player is specified, we can send to all players
+              !evt.player || ctx.workers_x_player_ids[evt.player] !== metadata
           )
           .map(([_, worker]) =>
             send(
               (_, _evt) => ({
                 type: "GAMEPLAY_UPDATE",
-                action_data: _evt.payload,
+                payload: _evt.payload,
               }),
               { to: () => worker }
             )
@@ -128,30 +123,24 @@ const ConnectionSupervisorMachine = createMachine(
           .filter(([metadata, _]) => evt.metadata !== metadata)
           .map(([_, worker]) =>
             send(
-              (ctx, _evt) => ({
-                type: "GAMEPLAY_UPDATE", // maybe this event should be different
-                action_data: {
-                  type: "lobby.player_join",
+              (ctx, _evt) =>
+                createGameplayUpdate("lobby.player_join", null, {
                   player_info: {
                     name: ctx.player_info[_evt.metadata].name,
-                    // we would also send name, etc.
+                    // ... plus avatar, etc.
                   },
-                },
-              }),
+                }),
               { to: () => worker }
             )
           );
       }),
       sendRoomDescription: send(
-        (ctx, evt) => ({
-          type: "GAMEPLAY_UPDATE",
-          action_data: {
-            type: "lobby.room_description",
+        (ctx) =>
+          createGameplayUpdate("lobby.room_description", null, {
             players: Object.keys(ctx.connected_workers).map((wkr) => ({
               name: ctx.player_info[wkr].name,
             })),
-          },
-        }),
+          }),
         {
           to: (ctx, evt) => ctx.connected_workers[evt.metadata],
         }
@@ -212,7 +201,6 @@ const ConnectionSupervisorMachine = createMachine(
           return ctx.pending_workers;
         },
       }),
-      startGame: send({ type: "BEGIN_GAME" }, { to: "game_player_machine" }),
       clearWorker: () => {
         // see https://githubhot.com/repo/davidkpiano/xstate/issues/2531
       },

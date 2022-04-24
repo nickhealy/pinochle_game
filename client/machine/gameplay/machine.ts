@@ -1,6 +1,9 @@
 import { createMachine, assign, actions } from "xstate";
+import { sendParent } from "xstate/lib/actions";
+import { createGameplayUpdate } from "../helpers";
 import { WINNING_SCORE } from "./constants";
 import Deck, { Suit } from "./Deck";
+import { processIncomingPlayerEvent } from "./events";
 import {
   getIsLastTrick,
   getNextPlayer,
@@ -53,7 +56,7 @@ const GameMachine = createMachine(
         on: {
           BEGIN_GAME: {
             target: "game_in_progress",
-            actions: "dealCards",
+            actions: ["announceGameStart", "announceTeams", "dealCards"],
           },
         },
       },
@@ -309,6 +312,11 @@ const GameMachine = createMachine(
         },
       },
     },
+    invoke: {
+      src: () => (cb, onReceive) => {
+        onReceive((e) => processIncomingPlayerEvent(e, cb));
+      },
+    },
     on: {
       FAILED_HEARTBEAT: { target: "failed_heartbeat" },
     },
@@ -330,6 +338,7 @@ const GameMachine = createMachine(
       },
     },
     actions: {
+      announceGameStart: sendParent(createGameplayUpdate("lobby.game_start")),
       dealCards: assign({
         play: (ctx, _) => ({
           ...ctx.play,

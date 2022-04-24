@@ -13,8 +13,8 @@ export type ConnectionWorkerEvent =
   | { type: "CONNECTED"; connection: any } // obviously wont be any once we hook up webrtc code
   | { type: "HEARTBEAT_SUCCESS" }
   | { type: "HEARTBEAT_FAIL"; metadata: string }
-  | { type: "GAMEPLAY_UPDATE"; action_data: any }
-  | { type: "PLAYER_ACTION"; action_data: string };
+  | { type: "GAMEPLAY_UPDATE"; payload: any }
+  | { type: "PLAYER_ACTION"; payload: string };
 
 export const connectionExists = (ref: null | Connection): ref is Connection =>
   !!ref?.send && !!ref.onmessage;
