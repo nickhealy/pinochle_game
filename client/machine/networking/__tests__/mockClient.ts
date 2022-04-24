@@ -10,7 +10,7 @@ class MockWebRTCConnection implements Connection {
       );
     }
     this._client.onmessage(data);
-    this.onmessage = jest.fn();
+    this.onmessage = jest.fn(this.onmessage);
   }
 
   onmessage(data: string): void {}
@@ -26,7 +26,7 @@ class TestClient {
   constructor(connection: MockWebRTCConnection, id: string) {
     this._connection = connection;
     this.id = id;
-    this.onmessage = jest.fn();
+    this.onmessage = jest.fn(this.onmessage);
 
     this._connection.addTestClient(this);
   }

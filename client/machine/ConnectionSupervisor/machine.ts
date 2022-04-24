@@ -1,6 +1,7 @@
 import { assign, createMachine, spawn } from "xstate";
 import { pure, send, sendTo } from "xstate/lib/actions";
 import ConnectionWorkerMachine from "../ConnectionWorker/machine";
+import GameMachine from "../gameplay/machine";
 import { getWorkerId } from "./helpers";
 import {
   ConnectionSupervisorContext,
@@ -18,17 +19,27 @@ const ConnectionSupervisorMachine = createMachine(
     context: {
       connected_workers: {},
       pending_workers: {},
+      player_info: {},
       workers_x_player_ids: [null, null, null, null],
+      gameplay_ref: null,
     },
     id: "ConnectionSupervisorMachine",
     initial: "waiting",
+    entry: assign({
+      gameplay_ref: () => spawn(GameMachine, "gameplay_machine"),
+    }),
     states: {
       waiting: {
         on: {
           PLAYER_CONNECTED: [
             {
               target: "waiting_pseudostate",
-              actions: ["upgradePendingWorker", "storeWorkerMetadata"],
+              actions: [
+                "upgradePendingWorker",
+                "storeWorkerMetadata",
+                "announceNewPlayer",
+                "sendRoomDescription",
+              ],
               cond: "pendingWorkerExists",
             },
           ],
@@ -36,7 +47,11 @@ const ConnectionSupervisorMachine = createMachine(
             actions: "removePendingWorker",
           },
           PLAYER_JOIN_REQUEST: {
-            actions: ["createPendingWorker", "connectPendingWorker"],
+            actions: [
+              "createPendingWorker",
+              "savePlayerInfo",
+              "connectPendingWorker",
+            ],
             cond: "roomNotFull",
           },
         },
@@ -52,7 +67,14 @@ const ConnectionSupervisorMachine = createMachine(
           },
         ],
       },
-      ready: {},
+      ready: {
+        on: {
+          START_GAME: {
+            target: "active",
+            actions: "startGame",
+          },
+        },
+      },
       active: {
         on: {
           GAME_PLAY_UPDATE: {
@@ -77,46 +99,92 @@ const ConnectionSupervisorMachine = createMachine(
   {
     guards: {
       allPlayersConnected: (ctx, _) =>
-        Object.keys(ctx.connected_workers).length === 3,
+        Object.keys(ctx.connected_workers).length === 4,
       pendingWorkerExists: (ctx, { metadata }) =>
         !!ctx.pending_workers[metadata],
       roomNotFull: (ctx, _) =>
         Object.keys(ctx.connected_workers).length +
           Object.keys(ctx.pending_workers).length <
-        3,
+        4,
     },
     actions: {
       handleGameplayUpdate: pure((ctx, evt) => {
-        return Object.entries(ctx.connected_workers).map(
-          ([metadata, worker]) => {
-            if (ctx.workers_x_player_ids[evt.player] !== metadata) {
-              return send(
-                (_, _evt) => ({
-                  type: "GAMEPLAY_UPDATE",
-                  action_data: _evt.payload,
-                }),
-                { to: () => worker }
-              );
-            }
-            return send("NO_OP"); // FIX-ME: see if you can send to only some workers in array
-          }
-        );
+        return Object.entries(ctx.connected_workers)
+          .filter(
+            ([metadata, _]) => ctx.workers_x_player_ids[evt.player] !== metadata
+          )
+          .map(([_, worker]) =>
+            send(
+              (_, _evt) => ({
+                type: "GAMEPLAY_UPDATE",
+                action_data: _evt.payload,
+              }),
+              { to: () => worker }
+            )
+          );
       }),
-      handlePlayerEvent: () => {},
+      announceNewPlayer: pure((ctx, evt) => {
+        return Object.entries(ctx.connected_workers)
+          .filter(([metadata, _]) => evt.metadata !== metadata)
+          .map(([_, worker]) =>
+            send(
+              (ctx, _evt) => ({
+                type: "GAMEPLAY_UPDATE", // maybe this event should be different
+                action_data: {
+                  type: "lobby.player_join",
+                  player_info: {
+                    name: ctx.player_info[_evt.metadata].name,
+                    // we would also send name, etc.
+                  },
+                },
+              }),
+              { to: () => worker }
+            )
+          );
+      }),
+      sendRoomDescription: send(
+        (ctx, evt) => ({
+          type: "GAMEPLAY_UPDATE",
+          action_data: {
+            type: "lobby.room_description",
+            players: Object.keys(ctx.connected_workers).map((wkr) => ({
+              name: ctx.player_info[wkr].name,
+            })),
+          },
+        }),
+        {
+          to: (ctx, evt) => ctx.connected_workers[evt.metadata],
+        }
+      ),
+      handlePlayerEvent: send(
+        (_, evt) => ({
+          type: "PLAYER_EVENT",
+          payload: evt.payload,
+        }),
+        { to: "gameplay_machine" }
+      ),
       handleFailedHeartbeat: () => {},
       createPendingWorker: assign({
         pending_workers: (ctx, evt) => ({
           ...ctx.pending_workers,
-          [evt.metadata]: spawn(
+          [evt.connection_info]: spawn(
             ConnectionWorkerMachine,
-            getWorkerId(evt.metadata)
+            getWorkerId(evt.connection_info)
           ),
         }),
       }),
+      savePlayerInfo: assign({
+        player_info: (ctx, evt) => ({
+          ...ctx.player_info,
+          [evt.connection_info]: {
+            name: evt.name,
+          },
+        }),
+      }),
       connectPendingWorker: send(
-        (_, evt) => ({ type: "CONNECT", metadata: evt.metadata }),
+        (_, evt) => ({ type: "CONNECT", metadata: evt.connection_info }),
         {
-          to: (_, evt) => getWorkerId(evt.metadata),
+          to: (_, evt) => getWorkerId(evt.connection_info),
         }
       ),
       upgradePendingWorker: assign((ctx, evt) => {
@@ -137,12 +205,14 @@ const ConnectionSupervisorMachine = createMachine(
           evt.metadata
         ),
       })),
+      // announceNewPlayer:
       removePendingWorker: assign({
         pending_workers: (ctx, evt) => {
           delete ctx.pending_workers[evt.id];
           return ctx.pending_workers;
         },
       }),
+      startGame: send({ type: "BEGIN_GAME" }, { to: "game_player_machine" }),
       clearWorker: () => {
         // see https://githubhot.com/repo/davidkpiano/xstate/issues/2531
       },

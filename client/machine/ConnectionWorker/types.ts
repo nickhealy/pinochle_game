@@ -10,8 +10,11 @@ export interface ConnectionWorkerContext {
 
 export type ConnectionWorkerEvent =
   | { type: "CONNECT"; metadata: string }
-  | { type: "CONNECTED" }
+  | { type: "CONNECTED"; connection: any } // obviously wont be any once we hook up webrtc code
   | { type: "HEARTBEAT_SUCCESS" }
-  | { type: "HEARTBEAT_FAIL" }
-  | { type: "GAMEPLAY_UPDATE"; action_data: string }
-  | { type: "NO_OP" };
+  | { type: "HEARTBEAT_FAIL"; metadata: string }
+  | { type: "GAMEPLAY_UPDATE"; action_data: any }
+  | { type: "PLAYER_ACTION"; action_data: string };
+
+export const connectionExists = (ref: null | Connection): ref is Connection =>
+  !!ref?.send && !!ref.onmessage;

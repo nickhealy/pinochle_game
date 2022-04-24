@@ -7,11 +7,14 @@ import {
   GamePlayUpdatePayload,
   PlayerEventPayload,
 } from "../gameplay/gamePlayEventTypes";
+import { GameEvents } from "../gameplay/types";
 
 export interface ConnectionSupervisorContext {
   connected_workers: Record<string, ActorRef<ConnectionWorkerEvent>>;
   pending_workers: Record<string, ActorRef<ConnectionWorkerEvent>>;
+  player_info: Record<string, { name: string }>;
   workers_x_player_ids: Array<string | null>;
+  gameplay_ref: ActorRef<GameEvents> | null;
 }
 
 export type ConnectionSupervisorEvents =
@@ -37,5 +40,9 @@ export type ConnectionSupervisorEvents =
     }
   | {
       type: "PLAYER_JOIN_REQUEST";
-      metadata: string; // obvi will be actual info
+      connection_info: string; // obvi will be actual info
+      name: string;
+    }
+  | {
+      type: "START_GAME";
     };

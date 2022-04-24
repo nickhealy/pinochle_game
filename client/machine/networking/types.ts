@@ -1,6 +1,7 @@
 abstract class Connection {
   constructor() {}
-  abstract send(data: Record<any, any>): void;
+  abstract send(data: string): void;
+  abstract onmessage(data: string): void;
 }
 
 export default Connection;
