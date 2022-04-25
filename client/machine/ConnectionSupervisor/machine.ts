@@ -2,7 +2,11 @@ import { assign, createMachine, spawn } from "xstate";
 import { pure, send, sendTo } from "xstate/lib/actions";
 import ConnectionWorkerMachine from "../ConnectionWorker/machine";
 import GameMachine from "../gameplay/machine";
-import { createGameplayUpdate } from "../helpers";
+import {
+  createGameplayUpdate,
+  createPlayerGameEvent,
+  processSupervisorAction,
+} from "../helpers";
 import { getWorkerId } from "./helpers";
 import {
   ConnectionSupervisorContext,
@@ -69,12 +73,30 @@ const ConnectionSupervisorMachine = createMachine(
         ],
       },
       active: {
+        entry: "sendPlayersConnected",
+        invoke: {
+          id: "connection_supervisor_listener",
+          src: (ctx) => (cb, onReceive) => {
+            onReceive((e) => {
+              const processedAction = processSupervisorAction(e);
+              console.log({ processedAction });
+              if (!processedAction) {
+                console.error("Unrecognized supervisor action : ", e);
+                return;
+              }
+              cb(processedAction);
+            });
+          },
+        },
         on: {
           GAMEPLAY_UPDATE: {
-            actions: "handleGameplayUpdate",
+            actions: "forwardGameplayUpdate",
           },
-          PLAYER_EVENT: {
-            actions: "handlePlayerEvent",
+          INCOMING_ACTION: {
+            actions: "forwardToListener",
+          },
+          PLAYER_GAME_EVENT: {
+            actions: "forwardPlayerGameEvent",
           },
           PLAYER_DISCONNECT: {
             target: "waiting",
@@ -101,32 +123,27 @@ const ConnectionSupervisorMachine = createMachine(
         4,
     },
     actions: {
-      handleGameplayUpdate: pure((ctx, evt) => {
+      forwardToListener: send((_, evt) => evt, {
+        to: "connection_supervisor_listenet",
+      }),
+      forwardGameplayUpdate: pure((ctx, evt) => {
         return Object.entries(ctx.connected_workers)
           .filter(
             ([metadata, _]) =>
               // if no source player is specified, we can send to all players
               !evt.player || ctx.workers_x_player_ids[evt.player] !== metadata
           )
-          .map(([_, worker]) =>
-            send(
-              (_, _evt) => ({
-                type: "GAMEPLAY_UPDATE",
-                payload: _evt.payload,
-              }),
-              { to: () => worker }
-            )
-          );
+          .map(([_, worker]) => send(evt, { to: () => worker }));
       }),
       announceNewPlayer: pure((ctx, evt) => {
         return Object.entries(ctx.connected_workers)
           .filter(([metadata, _]) => evt.metadata !== metadata)
           .map(([_, worker]) =>
             send(
-              (ctx, _evt) =>
+              (ctx) =>
                 createGameplayUpdate("lobby.player_join", null, {
                   player_info: {
-                    name: ctx.player_info[_evt.metadata].name,
+                    name: ctx.player_info[evt.metadata].name,
                     // ... plus avatar, etc.
                   },
                 }),
@@ -144,13 +161,6 @@ const ConnectionSupervisorMachine = createMachine(
         {
           to: (ctx, evt) => ctx.connected_workers[evt.metadata],
         }
-      ),
-      handlePlayerEvent: send(
-        (_, evt) => ({
-          type: "PLAYER_EVENT",
-          payload: evt.payload,
-        }),
-        { to: "gameplay_machine" }
       ),
       handleFailedHeartbeat: () => {},
       createPendingWorker: assign({
@@ -201,9 +211,19 @@ const ConnectionSupervisorMachine = createMachine(
           return ctx.pending_workers;
         },
       }),
+      sendPlayersConnected: pure((ctx) =>
+        Object.values(ctx.connected_workers).map((worker) =>
+          send(createGameplayUpdate("lobby.all_players_connected", null), {
+            to: () => worker,
+          })
+        )
+      ),
       clearWorker: () => {
         // see https://githubhot.com/repo/davidkpiano/xstate/issues/2531
       },
+      forwardPlayerGameEvent: send((_, evt) => evt.event, {
+        to: "gameplay_machine",
+      }),
     },
   }
 );
