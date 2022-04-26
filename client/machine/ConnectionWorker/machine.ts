@@ -1,11 +1,13 @@
 import { assign, createMachine, DoneInvokeEvent, send } from "xstate";
 import { sendParent } from "xstate/lib/actions";
+import { createIncomingAction } from "../helpers";
 import Connection from "../networking/types";
 import getWebRtcConnection from "../networking/webrtc";
 import {
   connectionExists,
   ConnectionWorkerContext,
   ConnectionWorkerEvent,
+  metadataExists,
 } from "./types";
 
 const ConnectionWorkerMachine = createMachine(
@@ -53,12 +55,12 @@ const ConnectionWorkerMachine = createMachine(
         },
         on: {
           CONNECTED: {
-            actions: ["sendConnected", "saveConnectionRef"],
             target: "connected",
           },
         },
       },
       connected: {
+        entry: ["sendConnected", "saveConnectionRef"],
         invoke: {
           id: "rxtxLoop",
           src: (ctx) => (cb, onReceive) => {
@@ -67,25 +69,29 @@ const ConnectionWorkerMachine = createMachine(
             }
 
             ctx.connection_ref.onmessage = (message) => {
+              // TODO: validate the fields of the incoming request, try/catch around JSON.parse
               const parsedMessage = JSON.parse(message);
-              switch (parsedMessage.type) {
-                case "PLAYER_ACTION":
-                  cb({
-                    type: "PLAYER_ACTION",
-                    action_data: parsedMessage.payload,
-                  });
-                  break;
-                default:
-                  console.error("Message not recognized : ", parsedMessage);
+              if (!metadataExists(ctx.connection_metadata)) {
+                throw new Error("Connection does not exists"); // should not get here
               }
+              cb(
+                createIncomingAction(
+                  ctx.connection_metadata,
+                  parsedMessage.type,
+                  parsedMessage.payload
+                )
+              );
+              // obviously, some sort of error handling here
             };
 
             onReceive((e) => {
+              console.log("in worker", e);
               if (!connectionExists(ctx.connection_ref)) {
                 throw new Error("Connection does not exists"); // should not get here
               }
               switch (e.type) {
                 case "GAMEPLAY_UPDATE":
+                  console.log("should be sending", e);
                   ctx.connection_ref.send(JSON.stringify(e.payload));
                   break;
                 default:
@@ -98,8 +104,8 @@ const ConnectionWorkerMachine = createMachine(
           GAMEPLAY_UPDATE: {
             actions: ["forwardGameplayEvent"],
           },
-          PLAYER_ACTION: {
-            actions: "handlePlayerAction",
+          INCOMING_ACTION: {
+            actions: "forwardIncomingAction",
           },
         },
       },
@@ -125,13 +131,8 @@ const ConnectionWorkerMachine = createMachine(
         type: "PLAYER_CONNECTION_FAIL",
         metadata: ctx.connection_metadata,
       })),
-      forwardGameplayEvent: send(
-        (_, evt) => ({
-          type: "GAMEPLAY_UPDATE",
-          payload: evt.action_data,
-        }),
-        { to: "rxtxLoop" }
-      ),
+      forwardGameplayEvent: send((_, evt) => evt, { to: "rxtxLoop" }),
+      forwardIncomingAction: sendParent((_, evt) => evt),
       // sendHeartbeatFail: sendParent((ctx) => ({
       //   type: "FAILED_HEARTBEAT",
       //   metadata: ctx.connection_metadata,

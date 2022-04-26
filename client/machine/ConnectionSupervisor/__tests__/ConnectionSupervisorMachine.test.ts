@@ -175,7 +175,7 @@ describe("ConnectionSupervisorMachine", () => {
     });
   });
 
-  xit("can handle game start", async () => {
+  it("can handle game start", async () => {
     const [player1] = getTestClient();
     const [player2] = getTestClient();
     const [player3] = getTestClient();
@@ -205,6 +205,15 @@ describe("ConnectionSupervisorMachine", () => {
       name: "chris",
     });
 
+    await waitForExpect(() => {
+      expect(player1.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "lobby.all_players_connected",
+          data: {},
+        })
+      );
+    });
+
     player1.send(
       JSON.stringify({
         type: "start_game",
@@ -214,22 +223,26 @@ describe("ConnectionSupervisorMachine", () => {
     await waitForExpect(() => {
       expect(player1.onmessage).toHaveBeenCalledWith(
         JSON.stringify({
-          type: "lobby.start_game",
+          type: "lobby.game_start",
+          data: {},
         })
       );
       expect(player2.onmessage).toHaveBeenCalledWith(
         JSON.stringify({
-          type: "lobby.start_game",
+          type: "lobby.game_start",
+          data: {},
         })
       );
       expect(player3.onmessage).toHaveBeenCalledWith(
         JSON.stringify({
-          type: "lobby.start_game",
+          type: "lobby.game_start",
+          data: {},
         })
       );
       expect(player4.onmessage).toHaveBeenCalledWith(
         JSON.stringify({
-          type: "lobby.start_game",
+          type: "lobby.game_start",
+          data: {},
         })
       );
     });

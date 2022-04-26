@@ -79,7 +79,6 @@ const ConnectionSupervisorMachine = createMachine(
           src: (ctx) => (cb, onReceive) => {
             onReceive((e) => {
               const processedAction = processSupervisorAction(e);
-              console.log({ processedAction });
               if (!processedAction) {
                 console.error("Unrecognized supervisor action : ", e);
                 return;
@@ -124,14 +123,15 @@ const ConnectionSupervisorMachine = createMachine(
     },
     actions: {
       forwardToListener: send((_, evt) => evt, {
-        to: "connection_supervisor_listenet",
+        to: "connection_supervisor_listener",
       }),
       forwardGameplayUpdate: pure((ctx, evt) => {
         return Object.entries(ctx.connected_workers)
           .filter(
             ([metadata, _]) =>
               // if no source player is specified, we can send to all players
-              !evt.player || ctx.workers_x_player_ids[evt.player] !== metadata
+              !evt.src_player ||
+              ctx.workers_x_player_ids[evt.src_player] !== metadata
           )
           .map(([_, worker]) => send(evt, { to: () => worker }));
       }),

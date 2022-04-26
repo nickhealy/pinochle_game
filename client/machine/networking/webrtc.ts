@@ -2,9 +2,10 @@ import Connection from "./types";
 
 class WebRTCConnection implements Connection {
   constructor() {}
-  send(data: Record<any, any>): void {}
+  send(data: string): void {}
+  onmessage(data: string): void {}
 }
 
-export default function webRTCConnect() {
+export default function getWebRtcConnection(metadata: string | undefined) {
   return Promise.resolve(new WebRTCConnection());
 }

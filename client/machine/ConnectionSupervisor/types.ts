@@ -22,13 +22,17 @@ export type ConnectionSupervisorEvents =
   | { type: "PLAYER_CONNECTION_FAIL"; id: number }
   | {
       type: "GAMEPLAY_UPDATE";
-      player: number;
+      src_player: number;
       payload: GamePlayUpdatePayload;
     }
   | {
-      type: "PLAYER_EVENT";
-      player: number;
+      type: "INCOMING_ACTION";
+      connection_info: string;
       payload: PlayerEventPayload;
+    }
+  | {
+      type: "PLAYER_GAME_EVENT";
+      event: GameEvents;
     }
   | {
       type: "FAILED_HEARTBEAT";

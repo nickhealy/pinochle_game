@@ -12,4 +12,14 @@ describe("mockWebRtcClient", () => {
     expect(connection.onmessage).toBeCalledTimes(1);
     expect(connection.onmessage).toBeCalledWith("hello connection");
   });
+
+  it("can handle overriding onmessage method", () => {
+    const overridingMethod = jest.fn();
+    const [client, connection] = getTestClient();
+    connection.onmessage = overridingMethod;
+
+    client.send("hello new method");
+    expect(overridingMethod).toBeCalledTimes(1);
+    expect(overridingMethod).toBeCalledWith("hello new method");
+  });
 });

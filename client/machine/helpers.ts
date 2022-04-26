@@ -31,7 +31,7 @@ export const createPlayerGameEvent = (event: GameEvents) => ({
 
 const processIncomingAction = (e: ReturnType<typeof createIncomingAction>) => {
   switch (e.action_id) {
-    case "lobby.game_start":
+    case "start_game":
       return createPlayerGameEvent({
         type: "BEGIN_GAME",
       });
@@ -46,8 +46,4 @@ export const processSupervisorAction = (
   if (e.type === "INCOMING_ACTION") {
     return processIncomingAction(e);
   }
-
-  // split up incoming vs outgoing, either in this function or in listening thing calling this
-
-  // if (e.type === )
 };

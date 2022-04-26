@@ -1,5 +1,6 @@
+import { Sender } from "xstate";
 import Deck, { Card, CardKeys, Suit } from "./Deck";
-import { Play } from "./types";
+import { GameEvents, Play } from "./types";
 
 const LAST_TRICK_POINTS = 10;
 export const getPlayerTeam = (playerId: number) => playerId % 2;
@@ -29,3 +30,14 @@ export const getIsLastTrick = (playerHands: CardKeys[][]) =>
   playerHands.every((hand) => hand.length === 0);
 
 export const getNextPlayer = (currPlayer: number) => (currPlayer + 1) % 4;
+
+export const processIncomingGameEvent = (e: any, send: Sender<GameEvents>) => {
+  // FIX ME -- lets add typings for this event object
+  if (e.type !== "PLAYER_EVENT") {
+    console.error("Game machine received invalid event : ", e);
+    return;
+  }
+  const { name, payload } = e;
+  switch (name) {
+  }
+};

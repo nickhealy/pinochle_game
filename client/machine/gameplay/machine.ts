@@ -56,7 +56,7 @@ const GameMachine = createMachine(
         on: {
           BEGIN_GAME: {
             target: "game_in_progress",
-            actions: ["announceGameStart", "announceTeams", "dealCards"],
+            actions: ["createTeams", "announceGameStart", "dealCards"],
           },
         },
       },
@@ -338,6 +338,7 @@ const GameMachine = createMachine(
       },
     },
     actions: {
+      // createTeams: assign(),
       announceGameStart: sendParent(createGameplayUpdate("lobby.game_start")),
       dealCards: assign({
         play: (ctx, _) => ({

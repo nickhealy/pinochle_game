@@ -70,10 +70,13 @@ export type ConnectionEvents =
   | { type: "FAILED_HEARTBEAT" }
   | { type: "RESUMED_HEARTBEAT" };
 
+type SupervisorEvents = { type: "PLAYER_EVENT"; payload: any };
+
 export type GameEvents =
   | ConnectionEvents
   | GameControlEvents
   | GameMachineEvents
   | PlayEvents
   | BidEvents
-  | PrePlayEvents;
+  | PrePlayEvents
+  | SupervisorEvents;

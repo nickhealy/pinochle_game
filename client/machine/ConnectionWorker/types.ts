@@ -14,7 +14,11 @@ export type ConnectionWorkerEvent =
   | { type: "HEARTBEAT_SUCCESS" }
   | { type: "HEARTBEAT_FAIL"; metadata: string }
   | { type: "GAMEPLAY_UPDATE"; payload: any }
-  | { type: "PLAYER_ACTION"; payload: string };
+  | { type: "INCOMING_ACTION"; connection_id: string; payload: string };
 
 export const connectionExists = (ref: null | Connection): ref is Connection =>
   !!ref?.send && !!ref.onmessage;
+
+export const metadataExists = (
+  metadata: undefined | string
+): metadata is string => !!metadata && metadata !== "";

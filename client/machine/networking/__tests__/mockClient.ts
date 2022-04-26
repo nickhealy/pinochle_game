@@ -35,9 +35,7 @@ class TestClient {
     this._connection.onmessage(data);
   }
 
-  onmessage(data: string) {
-    return jest.fn();
-  }
+  onmessage(data: string) {}
 }
 
 export function getTestClient() {
