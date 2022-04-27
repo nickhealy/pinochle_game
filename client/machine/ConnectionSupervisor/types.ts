@@ -31,7 +31,7 @@ export type ConnectionSupervisorEvents =
       payload: PlayerEventPayload;
     }
   | {
-      type: "PLAYER_GAME_EVENT";
+      type: "INCOMING_GAME_EVENT";
       event: GameEvents;
     }
   | {

@@ -1,4 +1,5 @@
 import Connection from "../networking/types";
+import { createIncomingAction } from "./eventHelpers";
 
 export interface ConnectionWorkerContext {
   connection_metadata: string | undefined;
@@ -14,7 +15,7 @@ export type ConnectionWorkerEvent =
   | { type: "HEARTBEAT_SUCCESS" }
   | { type: "HEARTBEAT_FAIL"; metadata: string }
   | { type: "GAMEPLAY_UPDATE"; payload: any }
-  | { type: "INCOMING_ACTION"; connection_id: string; payload: string };
+  | ReturnType<typeof createIncomingAction>;
 
 export const connectionExists = (ref: null | Connection): ref is Connection =>
   !!ref?.send && !!ref.onmessage;

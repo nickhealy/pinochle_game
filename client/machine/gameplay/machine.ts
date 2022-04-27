@@ -1,6 +1,6 @@
 import { createMachine, assign, actions } from "xstate";
 import { sendParent } from "xstate/lib/actions";
-import { createGameplayUpdate } from "../helpers";
+import { createGameplayUpdate } from "../ConnectionSupervisor/helpers";
 import { WINNING_SCORE } from "./constants";
 import Deck, { Suit } from "./Deck";
 import { processIncomingPlayerEvent } from "./events";
@@ -13,14 +13,14 @@ import {
 } from "./GameplayHelpers";
 import { sumPlayerMelds } from "./Meld";
 
-import { Context, GameEvents, Play } from "./types";
+import { GameplayContext, GameEvents, Play } from "./types";
 
 const GameMachine = createMachine(
   {
     preserveActionOrder: true,
     tsTypes: {} as import("./machine.typegen").Typegen0,
     schema: {
-      context: {} as Context,
+      context: {} as GameplayContext,
       events: {} as GameEvents,
     },
     id: "fullGameMachine",
@@ -56,7 +56,7 @@ const GameMachine = createMachine(
         on: {
           BEGIN_GAME: {
             target: "game_in_progress",
-            actions: ["createTeams", "announceGameStart", "dealCards"],
+            actions: ["dealCards", "sendTeamsAndCards"],
           },
         },
       },
@@ -106,7 +106,7 @@ const GameMachine = createMachine(
               },
               bid_winner: {
                 entry: [
-                  actions.log<Context, GameEvents>(
+                  actions.log<GameplayContext, GameEvents>(
                     (ctx, _) =>
                       `player ${ctx.turn} has won the bid at ${
                         ctx.bid.bids[ctx.turn]
@@ -314,7 +314,16 @@ const GameMachine = createMachine(
     },
     invoke: {
       src: () => (cb, onReceive) => {
-        onReceive((e) => processIncomingPlayerEvent(e, cb));
+        onReceive((e) => {
+          const processedEvent = processIncomingPlayerEvent(e);
+
+          if (!processedEvent) {
+            console.error("Gameplay machine received invalid action : ", e);
+            return;
+          }
+
+          cb(processedEvent);
+        });
       },
     },
     on: {
@@ -338,14 +347,13 @@ const GameMachine = createMachine(
       },
     },
     actions: {
-      // createTeams: assign(),
-      announceGameStart: sendParent(createGameplayUpdate("lobby.game_start")),
       dealCards: assign({
         play: (ctx, _) => ({
           ...ctx.play,
           playerHands: Deck.getNewHands(),
         }),
       }),
+      sendTeamsAndCards: sendParent(createGameplayUpdate("lobby.game_start")),
       playerBid: assign({
         bid: (ctx, evt) => {
           const updatedBids = ctx.bid.bids.map((bid, idx) =>

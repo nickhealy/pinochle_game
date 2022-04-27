@@ -216,7 +216,7 @@ describe("ConnectionSupervisorMachine", () => {
 
     player1.send(
       JSON.stringify({
-        type: "start_game",
+        event: "start_game",
       })
     );
 

@@ -1,12 +1,8 @@
 import { assign, createMachine, spawn } from "xstate";
-import { pure, send, sendTo } from "xstate/lib/actions";
+import { pure, send } from "xstate/lib/actions";
 import ConnectionWorkerMachine from "../ConnectionWorker/machine";
 import GameMachine from "../gameplay/machine";
-import {
-  createGameplayUpdate,
-  createPlayerGameEvent,
-  processSupervisorAction,
-} from "../helpers";
+import { createGameplayUpdate, parseSupervisorEvent } from "./helpers";
 import { getWorkerId } from "./helpers";
 import {
   ConnectionSupervisorContext,
@@ -78,12 +74,12 @@ const ConnectionSupervisorMachine = createMachine(
           id: "connection_supervisor_listener",
           src: (ctx) => (cb, onReceive) => {
             onReceive((e) => {
-              const processedAction = processSupervisorAction(e);
-              if (!processedAction) {
-                console.error("Unrecognized supervisor action : ", e);
+              const parsedEvent = parseSupervisorEvent(e);
+              if (!parsedEvent) {
+                console.error("Unrecognized supervisor event : ", e);
                 return;
               }
-              cb(processedAction);
+              cb(parsedEvent);
             });
           },
         },
@@ -94,8 +90,8 @@ const ConnectionSupervisorMachine = createMachine(
           INCOMING_ACTION: {
             actions: "forwardToListener",
           },
-          PLAYER_GAME_EVENT: {
-            actions: "forwardPlayerGameEvent",
+          INCOMING_GAME_EVENT: {
+            actions: "forwardToGameplayMachine",
           },
           PLAYER_DISCONNECT: {
             target: "waiting",
@@ -221,7 +217,7 @@ const ConnectionSupervisorMachine = createMachine(
       clearWorker: () => {
         // see https://githubhot.com/repo/davidkpiano/xstate/issues/2531
       },
-      forwardPlayerGameEvent: send((_, evt) => evt.event, {
+      forwardToGameplayMachine: send((_, evt) => evt.event, {
         to: "gameplay_machine",
       }),
     },

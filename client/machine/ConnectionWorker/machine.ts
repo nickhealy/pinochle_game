@@ -1,8 +1,8 @@
 import { assign, createMachine, DoneInvokeEvent, send } from "xstate";
 import { sendParent } from "xstate/lib/actions";
-import { createIncomingAction } from "../helpers";
 import Connection from "../networking/types";
 import getWebRtcConnection from "../networking/webrtc";
+import { createIncomingAction } from "./eventHelpers";
 import {
   connectionExists,
   ConnectionWorkerContext,
@@ -77,7 +77,7 @@ const ConnectionWorkerMachine = createMachine(
               cb(
                 createIncomingAction(
                   ctx.connection_metadata,
-                  parsedMessage.type,
+                  parsedMessage.event,
                   parsedMessage.payload
                 )
               );
@@ -85,13 +85,11 @@ const ConnectionWorkerMachine = createMachine(
             };
 
             onReceive((e) => {
-              console.log("in worker", e);
               if (!connectionExists(ctx.connection_ref)) {
                 throw new Error("Connection does not exists"); // should not get here
               }
               switch (e.type) {
                 case "GAMEPLAY_UPDATE":
-                  console.log("should be sending", e);
                   ctx.connection_ref.send(JSON.stringify(e.payload));
                   break;
                 default:
@@ -105,7 +103,7 @@ const ConnectionWorkerMachine = createMachine(
             actions: ["forwardGameplayEvent"],
           },
           INCOMING_ACTION: {
-            actions: "forwardIncomingAction",
+            actions: "forwardToSupervisor",
           },
         },
       },
@@ -132,7 +130,7 @@ const ConnectionWorkerMachine = createMachine(
         metadata: ctx.connection_metadata,
       })),
       forwardGameplayEvent: send((_, evt) => evt, { to: "rxtxLoop" }),
-      forwardIncomingAction: sendParent((_, evt) => evt),
+      forwardToSupervisor: sendParent((_, evt) => evt),
       // sendHeartbeatFail: sendParent((ctx) => ({
       //   type: "FAILED_HEARTBEAT",
       //   metadata: ctx.connection_metadata,

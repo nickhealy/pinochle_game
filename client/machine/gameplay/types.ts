@@ -32,7 +32,7 @@ interface GameScoreContext {
   score: number[];
 }
 
-export type Context = {
+export type GameplayContext = {
   turn: TurnContext;
   bid: BidContext;
   melds: MeldContext;
