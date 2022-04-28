@@ -72,7 +72,7 @@ const ConnectionWorkerMachine = createMachine(
               // TODO: validate the fields of the incoming request, try/catch around JSON.parse
               const parsedMessage = JSON.parse(message);
               if (!metadataExists(ctx.connection_metadata)) {
-                throw new Error("Connection does not exists"); // should not get here
+                throw new Error("Metadata does not exists"); // should not get here
               }
               cb(
                 createIncomingAction(

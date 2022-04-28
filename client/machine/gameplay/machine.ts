@@ -1,6 +1,6 @@
-import { createMachine, assign, actions } from "xstate";
-import { sendParent } from "xstate/lib/actions";
-import { createGameplayUpdate } from "../ConnectionSupervisor/helpers";
+import { createMachine, assign } from "xstate";
+import { sendParent, log } from "xstate/lib/actions";
+import { createGameplayUpdate } from "./events";
 import { WINNING_SCORE } from "./constants";
 import Deck, { Suit } from "./Deck";
 import { processIncomingPlayerEvent } from "./events";
@@ -68,10 +68,10 @@ const GameMachine = createMachine(
           bid: {
             id: "bidMachine",
             initial: "awaiting_bid",
-            entry: [actions.log("starting bid", "[bid]"), "setStartingTurn"],
+            entry: [log("starting bid", "[bid]"), "setStartingTurn"],
             states: {
               awaiting_bid: {
-                entry: actions.log("awaiting next bid", "[bid]"),
+                entry: log("awaiting next bid", "[bid]"),
                 on: {
                   BID: {
                     target: "bid_choice_pseudostate",
@@ -85,7 +85,7 @@ const GameMachine = createMachine(
               },
               // choice pseudostate for either continuing with bid or declaring winner
               bid_choice_pseudostate: {
-                entry: actions.log(
+                entry: log(
                   (_, evt) =>
                     `bid turn executed, type: ${evt.type}, value: ${
                       // @ts-expect-error typing is weird here
@@ -106,7 +106,7 @@ const GameMachine = createMachine(
               },
               bid_winner: {
                 entry: [
-                  actions.log<GameplayContext, GameEvents>(
+                  log<GameplayContext, GameEvents>(
                     (ctx, _) =>
                       `player ${ctx.turn} has won the bid at ${
                         ctx.bid.bids[ctx.turn]

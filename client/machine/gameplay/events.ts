@@ -1,5 +1,17 @@
-import { createGameplayUpdate } from "../ConnectionSupervisor/helpers";
 import { GameEvents } from "./types";
+
+export const createGameplayUpdate = (
+  payloadType: string,
+  targets: number[] | null = null,
+  payloadData: any = {}
+) => ({
+  type: "GAMEPLAY_UPDATE" as const,
+  targets,
+  payload: {
+    type: payloadType,
+    data: payloadData,
+  },
+});
 
 export enum IncomingGameplayEvents {
   START_GAME = "start_game",

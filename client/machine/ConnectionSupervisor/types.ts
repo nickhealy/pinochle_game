@@ -3,6 +3,7 @@ import {
   ConnectionWorkerContext,
   ConnectionWorkerEvent,
 } from "../ConnectionWorker/types";
+import { createGameplayUpdate } from "../gameplay/events";
 import {
   GamePlayUpdatePayload,
   PlayerEventPayload,
@@ -20,11 +21,7 @@ export interface ConnectionSupervisorContext {
 export type ConnectionSupervisorEvents =
   | { type: "PLAYER_CONNECTED"; metadata: string }
   | { type: "PLAYER_CONNECTION_FAIL"; id: number }
-  | {
-      type: "GAMEPLAY_UPDATE";
-      src_player: number;
-      payload: GamePlayUpdatePayload;
-    }
+  | ReturnType<typeof createGameplayUpdate>
   | {
       type: "INCOMING_ACTION";
       connection_info: string;

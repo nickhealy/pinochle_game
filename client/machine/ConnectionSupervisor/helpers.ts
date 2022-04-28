@@ -5,7 +5,9 @@ import { GameEvents } from "../gameplay/types";
 export const getWorkerId = (metadata: string) =>
   `connection_worker_${metadata}`;
 
-export const createGameplayUpdate = (
+// temporary until i decide if i want to extract
+// lobby stuff into its own machine (probably should)
+export const createLobbyUpdate = (
   payloadType: string,
   srcPlayer: number | null = null,
   payloadData: any = {}

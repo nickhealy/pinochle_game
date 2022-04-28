@@ -2,7 +2,7 @@ import { assign, createMachine, spawn } from "xstate";
 import { pure, send } from "xstate/lib/actions";
 import ConnectionWorkerMachine from "../ConnectionWorker/machine";
 import GameMachine from "../gameplay/machine";
-import { createGameplayUpdate, parseSupervisorEvent } from "./helpers";
+import { createLobbyUpdate, parseSupervisorEvent } from "./helpers";
 import { getWorkerId } from "./helpers";
 import {
   ConnectionSupervisorContext,
@@ -122,14 +122,15 @@ const ConnectionSupervisorMachine = createMachine(
         to: "connection_supervisor_listener",
       }),
       forwardGameplayUpdate: pure((ctx, evt) => {
-        return Object.entries(ctx.connected_workers)
-          .filter(
-            ([metadata, _]) =>
-              // if no source player is specified, we can send to all players
-              !evt.src_player ||
-              ctx.workers_x_player_ids[evt.src_player] !== metadata
-          )
-          .map(([_, worker]) => send(evt, { to: () => worker }));
+        // sends event to each worker explicitly listed or, if none listed, to all players
+        const targetWorkers = evt.targets
+          ? evt.targets.map(
+              (target) =>
+                // @ts-expect-error it is safe to assume here that ctx.workers_x_player_ids[targetId] will not be null
+                ctx.connected_workers[ctx.workers_x_player_ids[target]]
+            )
+          : Object.values(ctx.connected_workers);
+        return targetWorkers.map((wkr) => send(evt, { to: () => wkr }));
       }),
       announceNewPlayer: pure((ctx, evt) => {
         return Object.entries(ctx.connected_workers)
@@ -137,7 +138,7 @@ const ConnectionSupervisorMachine = createMachine(
           .map(([_, worker]) =>
             send(
               (ctx) =>
-                createGameplayUpdate("lobby.player_join", null, {
+                createLobbyUpdate("lobby.player_join", null, {
                   player_info: {
                     name: ctx.player_info[evt.metadata].name,
                     // ... plus avatar, etc.
@@ -149,7 +150,7 @@ const ConnectionSupervisorMachine = createMachine(
       }),
       sendRoomDescription: send(
         (ctx) =>
-          createGameplayUpdate("lobby.room_description", null, {
+          createLobbyUpdate("lobby.room_description", null, {
             players: Object.keys(ctx.connected_workers).map((wkr) => ({
               name: ctx.player_info[wkr].name,
             })),
@@ -209,7 +210,7 @@ const ConnectionSupervisorMachine = createMachine(
       }),
       sendPlayersConnected: pure((ctx) =>
         Object.values(ctx.connected_workers).map((worker) =>
-          send(createGameplayUpdate("lobby.all_players_connected", null), {
+          send(createLobbyUpdate("lobby.all_players_connected", null), {
             to: () => worker,
           })
         )
