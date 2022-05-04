@@ -54,7 +54,7 @@ const GameMachine = createMachine(
     states: {
       pre_game: {
         on: {
-          BEGIN_GAME: {
+          START_GAME: {
             target: "game_in_progress",
             actions: ["dealCards", "sendTeamsAndCards"],
           },
@@ -303,7 +303,7 @@ const GameMachine = createMachine(
       },
       post_game: {
         on: {
-          START_NEW_GAME: { target: "pre_game" },
+          NEW_GAME: { target: "pre_game" },
         },
       },
       failed_heartbeat: {
@@ -354,6 +354,7 @@ const GameMachine = createMachine(
         }),
       }),
       sendTeamsAndCards: sendParent(createGameplayUpdate("lobby.game_start")),
+
       playerBid: assign({
         bid: (ctx, evt) => {
           const updatedBids = ctx.bid.bids.map((bid, idx) =>

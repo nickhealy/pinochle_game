@@ -48,7 +48,7 @@ describe("integration test", () => {
 
     player1.send(
       JSON.stringify({
-        event: "start_game",
+        event: "lobby.start_game",
       })
     );
 

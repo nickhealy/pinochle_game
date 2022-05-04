@@ -62,9 +62,7 @@ export type PrePlayEvents =
   | { type: "PLAYER_REJECT"; player: number }
   | { type: "REJECT" };
 
-export type GameControlEvents =
-  | { type: "BEGIN_GAME" }
-  | { type: "START_NEW_GAME" };
+export type GameControlEvents = { type: "START_GAME" } | { type: "NEW_GAME" };
 
 export type ConnectionEvents =
   | { type: "FAILED_HEARTBEAT" }

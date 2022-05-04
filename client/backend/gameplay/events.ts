@@ -14,7 +14,7 @@ export const createGameplayUpdate = (
 });
 
 export enum IncomingGameplayEvents {
-  START_GAME = "start_game",
+  START_GAME = "gameplay.start_game",
   BID = "bid",
   FOLD = "bid_fold",
   TRUMP_CHOSEN = "choose_trump",
@@ -31,7 +31,7 @@ export const processIncomingPlayerEvent = (
   const { type, data } = e.payload;
   switch (type) {
     case IncomingGameplayEvents.START_GAME:
-      return { type: "BEGIN_GAME" };
+      return { type: "START_GAME" };
     case IncomingGameplayEvents.BID:
       return { type: "BID", value: data.value };
     case IncomingGameplayEvents.FOLD:

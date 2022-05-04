@@ -72,7 +72,7 @@ const ConnectionSupervisorMachine = createMachine(
         entry: "sendPlayersConnected",
         invoke: {
           id: "connection_supervisor_listener",
-          src: (ctx) => (cb, onReceive) => {
+          src: () => (cb, onReceive) => {
             onReceive((e) => {
               const parsedEvent = parseSupervisorEvent(e);
               if (!parsedEvent) {
@@ -96,6 +96,9 @@ const ConnectionSupervisorMachine = createMachine(
           PLAYER_DISCONNECT: {
             target: "waiting",
             actions: "clearWorker",
+          },
+          START_GAME: {
+            actions: ["sendTeams", "sendStartToGameplayMachine"],
           },
         },
       },
@@ -194,6 +197,7 @@ const ConnectionSupervisorMachine = createMachine(
           pending_workers: otherWorkers,
         };
       }),
+      // this does not need to happen until the game has already started
       storeWorkerMetadata: assign((ctx, evt) => ({
         workers_x_player_ids: ctx.workers_x_player_ids.splice(
           ctx.workers_x_player_ids.indexOf(null),
@@ -201,7 +205,6 @@ const ConnectionSupervisorMachine = createMachine(
           evt.metadata
         ),
       })),
-      // announceNewPlayer:
       removePendingWorker: assign({
         pending_workers: (ctx, evt) => {
           delete ctx.pending_workers[evt.id];
@@ -221,6 +224,11 @@ const ConnectionSupervisorMachine = createMachine(
       forwardToGameplayMachine: send((_, evt) => evt.event, {
         to: "gameplay_machine",
       }),
+      sendTeams: () => console.log("SENDING TEAMS"),
+      sendStartToGameplayMachine: send(
+        { type: "START_GAME" },
+        { to: "gameplay_machine" }
+      ),
     },
   }
 );

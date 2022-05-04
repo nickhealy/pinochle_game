@@ -2,6 +2,7 @@ import { createIncomingAction } from "../ConnectionWorker/eventHelpers";
 import { IncomingGameplayEvents } from "../gameplay/events";
 import { GameEvents } from "../gameplay/types";
 import { LobbyEvents } from "./events";
+import { ConnectionSupervisorEvents } from "./types";
 
 export const getWorkerId = (metadata: string) =>
   `connection_worker_${metadata}`;
@@ -26,22 +27,17 @@ export const createIncomingGameplayEvent = (event: GameEvents) => ({
   event,
 });
 
-// need to examine the typings of this event object, this is a mess
-// ffs
-
-// look up how other games handle this
-
 const getEventDomain = (event: IncomingGameplayEvents | LobbyEvents) => {
   // the enum type under the hood is typed this way in TS
   const _includes = (obj: { [s: number]: string }, field: string) =>
     Object.values(obj).includes(field);
 
-  if (_includes(IncomingGameplayEvents, event)) {
-    return "gameplay";
-  }
-
   if (_includes(LobbyEvents, event)) {
     return "lobby";
+  }
+
+  if (_includes(IncomingGameplayEvents, event)) {
+    return "gameplay";
   }
 };
 
@@ -51,8 +47,19 @@ const processIncomingGameEvent = (
   switch (e.event) {
     case IncomingGameplayEvents.START_GAME:
       return createIncomingGameplayEvent({
-        type: "BEGIN_GAME",
+        type: "START_GAME",
       });
+  }
+};
+
+const processIncomingLobbyEvent = (
+  e: ReturnType<typeof createIncomingAction>["payload"]
+): ConnectionSupervisorEvents | null => {
+  switch (e.event) {
+    case LobbyEvents.START_GAME:
+      return { type: "START_GAME" };
+    default:
+      return null;
   }
 };
 
@@ -62,7 +69,10 @@ const processIncomingAction = (
   switch (getEventDomain(e.event)) {
     case "gameplay":
       return processIncomingGameEvent(e);
+    case "lobby":
+      return processIncomingLobbyEvent(e);
     default:
+      console.log("not gameplay nor lobby");
       return null;
   }
 };
