@@ -8,7 +8,6 @@ jest.mock("../networking/webrtc");
 
 describe("integration test", () => {
   it("gameplay", async () => {
-    console.log(getTestClient);
     const [player1] = getTestClient();
     const [player2] = getTestClient();
     const [player3] = getTestClient();
