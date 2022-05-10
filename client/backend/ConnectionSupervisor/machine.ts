@@ -2,8 +2,9 @@ import { assign, createMachine, spawn } from "xstate";
 import { pure, send } from "xstate/lib/actions";
 import ConnectionWorkerMachine from "../ConnectionWorker/machine";
 import GameMachine from "../gameplay/machine";
-import { createLobbyUpdate, parseSupervisorEvent } from "./helpers";
-import { getWorkerId } from "./helpers";
+import { createLobbyUpdate, parseSupervisorEvent } from "./eventHelpers";
+import { getWorkerId } from "./eventHelpers";
+import { sendToPlayers, shuffleConnectedWorkerKeys } from "./lobbyHelpers";
 import {
   ConnectionSupervisorContext,
   ConnectionSupervisorEvents,
@@ -21,7 +22,7 @@ const ConnectionSupervisorMachine = createMachine(
       connected_workers: {},
       pending_workers: {},
       player_info: {},
-      workers_x_player_ids: [null, null, null, null],
+      workers_x_player_ids: [],
       gameplay_ref: null,
     },
     id: "ConnectionSupervisorMachine",
@@ -37,7 +38,7 @@ const ConnectionSupervisorMachine = createMachine(
               target: "waiting_pseudostate",
               actions: [
                 "upgradePendingWorker",
-                "storeWorkerMetadata",
+                // "storeWorkerMetadata",
                 "announceNewPlayer",
                 "sendRoomDescription",
               ],
@@ -98,7 +99,7 @@ const ConnectionSupervisorMachine = createMachine(
             actions: "clearWorker",
           },
           START_GAME: {
-            actions: ["sendTeams", "sendStartToGameplayMachine"],
+            actions: ["createTeams", "sendTeams", "sendStartToGameplayMachine"],
           },
         },
       },
@@ -129,7 +130,6 @@ const ConnectionSupervisorMachine = createMachine(
         const targetWorkers = evt.targets
           ? evt.targets.map(
               (target) =>
-                // @ts-expect-error it is safe to assume here that ctx.workers_x_player_ids[targetId] will not be null
                 ctx.connected_workers[ctx.workers_x_player_ids[target]]
             )
           : Object.values(ctx.connected_workers);
@@ -197,14 +197,6 @@ const ConnectionSupervisorMachine = createMachine(
           pending_workers: otherWorkers,
         };
       }),
-      // this does not need to happen until the game has already started
-      storeWorkerMetadata: assign((ctx, evt) => ({
-        workers_x_player_ids: ctx.workers_x_player_ids.splice(
-          ctx.workers_x_player_ids.indexOf(null),
-          1,
-          evt.metadata
-        ),
-      })),
       removePendingWorker: assign({
         pending_workers: (ctx, evt) => {
           delete ctx.pending_workers[evt.id];
@@ -224,7 +216,35 @@ const ConnectionSupervisorMachine = createMachine(
       forwardToGameplayMachine: send((_, evt) => evt.event, {
         to: "gameplay_machine",
       }),
-      sendTeams: () => console.log("SENDING TEAMS"),
+      createTeams: assign((ctx) => {
+        const connectedWorkers = Object.keys(ctx.connected_workers);
+        return {
+          workers_x_player_ids: shuffleConnectedWorkerKeys(connectedWorkers),
+        };
+      }),
+      sendTeams: pure((ctx) => {
+        const _playerName = (playerId: string) =>
+          ctx.player_info[playerId].name;
+        return Object.values(ctx.connected_workers).map((worker) =>
+          send(
+            createLobbyUpdate("lobby.player_teams", null, {
+              teams: [
+                [
+                  _playerName(ctx.workers_x_player_ids[0]),
+                  _playerName(ctx.workers_x_player_ids[2]),
+                ],
+                [
+                  _playerName(ctx.workers_x_player_ids[1]),
+                  _playerName(ctx.workers_x_player_ids[3]),
+                ],
+              ],
+            }),
+            {
+              to: () => worker,
+            }
+          )
+        );
+      }),
       sendStartToGameplayMachine: send(
         { type: "START_GAME" },
         { to: "gameplay_machine" }

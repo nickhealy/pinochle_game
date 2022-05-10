@@ -1,3 +1,4 @@
+import { mockRandom } from "jest-mock-random";
 import waitForExpect from "wait-for-expect";
 import { interpret } from "xstate";
 import ConnectionSupervisorMachine from "../ConnectionSupervisor/machine";
@@ -7,6 +8,10 @@ jest.mock("../gameplay/Deck");
 jest.mock("../networking/webrtc");
 
 describe("integration test", () => {
+  beforeAll(() => {
+    mockRandom([0.9, 0.7, 0.3, 0.1]);
+  });
+
   it("gameplay", async () => {
     const [player1] = getTestClient();
     const [player2] = getTestClient();
@@ -52,6 +57,47 @@ describe("integration test", () => {
       })
     );
 
+    // getting teams
+    await waitForExpect(() => {
+      const teams = [
+        ["chris", "nick"],
+        ["scott", "annabelle"],
+      ];
+      expect(player1.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "lobby.player_teams",
+          data: {
+            teams,
+          },
+        })
+      );
+      expect(player2.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "lobby.player_teams",
+          data: {
+            teams,
+          },
+        })
+      );
+      expect(player3.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "lobby.player_teams",
+          data: {
+            teams,
+          },
+        })
+      );
+      expect(player4.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "lobby.player_teams",
+          data: {
+            teams,
+          },
+        })
+      );
+    });
+
+    // game start
     await waitForExpect(() => {
       expect(player1.onmessage).toHaveBeenCalledWith(
         JSON.stringify({
@@ -78,5 +124,7 @@ describe("integration test", () => {
         })
       );
     });
+
+    // send cards to each player
   });
 });

@@ -56,7 +56,7 @@ const GameMachine = createMachine(
         on: {
           START_GAME: {
             target: "game_in_progress",
-            actions: ["dealCards", "sendTeamsAndCards"],
+            actions: ["sendGameStart", "dealCards", "sendCards"],
           },
         },
       },
@@ -353,8 +353,8 @@ const GameMachine = createMachine(
           playerHands: Deck.getNewHands(),
         }),
       }),
-      sendTeamsAndCards: sendParent(createGameplayUpdate("lobby.game_start")),
-
+      sendGameStart: sendParent(createGameplayUpdate("lobby.game_start")),
+      sendCards: () => {},
       playerBid: assign({
         bid: (ctx, evt) => {
           const updatedBids = ctx.bid.bids.map((bid, idx) =>

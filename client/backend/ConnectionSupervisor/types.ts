@@ -14,7 +14,7 @@ export interface ConnectionSupervisorContext {
   connected_workers: Record<string, ActorRef<ConnectionWorkerEvent>>;
   pending_workers: Record<string, ActorRef<ConnectionWorkerEvent>>;
   player_info: Record<string, { name: string }>;
-  workers_x_player_ids: Array<string | null>;
+  workers_x_player_ids: Array<string>;
   gameplay_ref: ActorRef<GameEvents> | null;
 }
 
