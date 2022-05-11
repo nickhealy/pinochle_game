@@ -126,5 +126,95 @@ describe("integration test", () => {
     });
 
     // send cards to each player
+    await waitForExpect(() => {
+      // chris --- 0 , scott -- 1, nick -- 2, annabelle -- 3
+      expect(player4.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "gameplay.player_cards",
+          data: {
+            hand: [
+              "9C",
+              "AC",
+              "JC",
+              "10C",
+              "KD",
+              "JD",
+              "QH",
+              "JH",
+              "KS",
+              "QS",
+              "AS",
+              "10S",
+            ],
+          },
+        })
+      );
+
+      expect(player3.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "gameplay.player_cards",
+          data: {
+            hand: [
+              "10C",
+              "KC",
+              "QC",
+              "KC",
+              "QD",
+              "10D",
+              "9D",
+              "AH",
+              "9H",
+              "QS",
+              "AS",
+              "10S",
+            ],
+          },
+        })
+      );
+
+      expect(player1.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "gameplay.player_cards",
+          data: {
+            hand: [
+              "QC",
+              "JC",
+              "AC",
+              "JD",
+              "QD",
+              "9D",
+              "10D",
+              "QH",
+              "10H",
+              "AH",
+              "KH",
+              "9S",
+            ],
+          },
+        })
+      );
+
+      expect(player2.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "gameplay.player_cards",
+          data: {
+            hand: [
+              "9C",
+              "AD",
+              "AD",
+              "KD",
+              "KH",
+              "9H",
+              "JH",
+              "10H",
+              "KS",
+              "JS",
+              "9S",
+              "JS",
+            ],
+          },
+        })
+      );
+    });
   });
 });

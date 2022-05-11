@@ -1,5 +1,5 @@
 import { createMachine, assign } from "xstate";
-import { sendParent, log } from "xstate/lib/actions";
+import { sendParent, log, pure } from "xstate/lib/actions";
 import { createGameplayUpdate } from "./events";
 import { WINNING_SCORE } from "./constants";
 import Deck, { Suit } from "./Deck";
@@ -354,7 +354,13 @@ const GameMachine = createMachine(
         }),
       }),
       sendGameStart: sendParent(createGameplayUpdate("lobby.game_start")),
-      sendCards: () => {},
+      sendCards: pure((ctx) =>
+        ctx.play.playerHands.map((hand, idx) =>
+          sendParent(
+            createGameplayUpdate("gameplay.player_cards", [idx], { hand })
+          )
+        )
+      ),
       playerBid: assign({
         bid: (ctx, evt) => {
           const updatedBids = ctx.bid.bids.map((bid, idx) =>
