@@ -128,50 +128,6 @@ describe("integration test", () => {
     // send cards to each player
     await waitForExpect(() => {
       // chris --- 0 , scott -- 1, nick -- 2, annabelle -- 3
-      expect(player4.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.player_cards",
-          data: {
-            hand: [
-              "9C",
-              "AC",
-              "JC",
-              "10C",
-              "KD",
-              "JD",
-              "QH",
-              "JH",
-              "KS",
-              "QS",
-              "AS",
-              "10S",
-            ],
-          },
-        })
-      );
-
-      expect(player3.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.player_cards",
-          data: {
-            hand: [
-              "10C",
-              "KC",
-              "QC",
-              "KC",
-              "QD",
-              "10D",
-              "9D",
-              "AH",
-              "9H",
-              "QS",
-              "AS",
-              "10S",
-            ],
-          },
-        })
-      );
-
       expect(player1.onmessage).toHaveBeenCalledWith(
         JSON.stringify({
           type: "gameplay.player_cards",
@@ -213,6 +169,78 @@ describe("integration test", () => {
               "JS",
             ],
           },
+        })
+      );
+
+      expect(player3.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "gameplay.player_cards",
+          data: {
+            hand: [
+              "10C",
+              "KC",
+              "QC",
+              "KC",
+              "QD",
+              "10D",
+              "9D",
+              "AH",
+              "9H",
+              "QS",
+              "AS",
+              "10S",
+            ],
+          },
+        })
+      );
+
+      expect(player4.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "gameplay.player_cards",
+          data: {
+            hand: [
+              "9C",
+              "AC",
+              "JC",
+              "10C",
+              "KD",
+              "JD",
+              "QH",
+              "JH",
+              "KS",
+              "QS",
+              "AS",
+              "10S",
+            ],
+          },
+        })
+      );
+    });
+
+    // player @ index 1 (scott's) turn to make a bid
+    await waitForExpect(() => {
+      expect(player1.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "gameplay.bid.awaiting_bid",
+          data: { player: 1 },
+        })
+      );
+      expect(player2.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "gameplay.bid.awaiting_bid",
+          data: { player: 1 },
+        })
+      );
+      expect(player3.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "gameplay.bid.awaiting_bid",
+          data: { player: 1 },
+        })
+      );
+      expect(player4.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "gameplay.bid.awaiting_bid",
+          data: { player: 1 },
         })
       );
     });

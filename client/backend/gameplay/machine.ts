@@ -71,7 +71,7 @@ const GameMachine = createMachine(
             entry: [log("starting bid", "[bid]"), "setStartingTurn"],
             states: {
               awaiting_bid: {
-                entry: log("awaiting next bid", "[bid]"),
+                entry: [log("awaiting next bid", "[bid]"), "promptPlayerBid"],
                 on: {
                   BID: {
                     target: "bid_choice_pseudostate",
@@ -360,6 +360,11 @@ const GameMachine = createMachine(
             createGameplayUpdate("gameplay.player_cards", [idx], { hand })
           )
         )
+      ),
+      promptPlayerBid: sendParent((ctx) =>
+        createGameplayUpdate("gameplay.bid.awaiting_bid", null, {
+          player: ctx.turn,
+        })
       ),
       playerBid: assign({
         bid: (ctx, evt) => {
