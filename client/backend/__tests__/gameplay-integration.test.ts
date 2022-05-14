@@ -23,22 +23,22 @@ describe("integration test", () => {
 
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
-      connection_info: player1.id,
+      connection_info: player1.metadata,
       name: "nick",
     });
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
-      connection_info: player2.id,
+      connection_info: player2.metadata,
       name: "annabelle",
     });
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
-      connection_info: player3.id,
+      connection_info: player3.metadata,
       name: "scott",
     });
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
-      connection_info: player4.id,
+      connection_info: player4.metadata,
       name: "chris",
     });
 
@@ -60,8 +60,8 @@ describe("integration test", () => {
     // getting teams
     await waitForExpect(() => {
       const teams = [
-        ["chris", "nick"],
-        ["scott", "annabelle"],
+        [player4.id, player2.id],
+        [player3.id, player1.id],
       ];
       expect(player1.onmessage).toHaveBeenCalledWith(
         JSON.stringify({
@@ -133,28 +133,6 @@ describe("integration test", () => {
           type: "gameplay.player_cards",
           data: {
             hand: [
-              "QC",
-              "JC",
-              "AC",
-              "JD",
-              "QD",
-              "9D",
-              "10D",
-              "QH",
-              "10H",
-              "AH",
-              "KH",
-              "9S",
-            ],
-          },
-        })
-      );
-
-      expect(player2.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.player_cards",
-          data: {
-            hand: [
               "9C",
               "AD",
               "AD",
@@ -167,6 +145,28 @@ describe("integration test", () => {
               "JS",
               "9S",
               "JS",
+            ],
+          },
+        })
+      );
+
+      expect(player2.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "gameplay.player_cards",
+          data: {
+            hand: [
+              "QC",
+              "JC",
+              "AC",
+              "JD",
+              "QD",
+              "9D",
+              "10D",
+              "QH",
+              "10H",
+              "AH",
+              "KH",
+              "9S",
             ],
           },
         })
@@ -245,4 +245,42 @@ describe("integration test", () => {
       );
     });
   });
+
+  // scott.send(
+  //   JSON.stringify({ event: "gameplay.bid.player_bid", data: { value: 140 } })
+  // );
+
+  // to do: maybe reconfigure mocked random to make tests easier to read
+  // maybe reset mocks after each assert or something?
+  // figure how BE can know which player sent which event
+
+  //   await waitForExpect(() => {
+  //     expect(nick.onmessage).toHaveBeenCalledWith(
+  //       JSON.stringify({
+  //         type: "gameplay.bid.player_bid",
+  //         data: { player: 1, bid: 140 },
+  //       })
+  //     );
+  //     expect(annabelle.onmessage).toHaveBeenCalledWith(
+  //       JSON.stringify({
+  //         type: "gameplay.bid.player_bid",
+  //         data: { player: 1, bid: 140 },
+  //       })
+  //     );
+  //     expect(chris.onmessage).toHaveBeenCalledWith(
+  //       JSON.stringify({
+  //         type: "gameplay.bid.player_bid",
+  //         data: { player: 1, bid: 140 },
+  //       })
+  //     );
+  //     // it would be nice to assert that scott didn't receive anything here
+
+  //     // expect(scott.onmessage).toHaveBeenCalledWith(
+  //     //   JSON.stringify({
+  //     //     type: "gameplay.bid.awaiting_bid",
+  //     //     data: { player: 1 },
+  //     //   })
+  //     // );
+  //   });
+  // });
 });

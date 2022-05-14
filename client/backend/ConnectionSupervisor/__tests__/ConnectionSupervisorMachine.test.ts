@@ -17,22 +17,22 @@ describe("ConnectionSupervisorMachine", () => {
 
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
-      connection_info: player1.id,
+      connection_info: player1.metadata,
       name: "nick",
     });
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
-      connection_info: player2.id,
+      connection_info: player2.metadata,
       name: "annabelle",
     });
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
-      connection_info: player3.id,
+      connection_info: player3.metadata,
       name: "scott",
     });
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
-      connection_info: player4.id,
+      connection_info: player4.metadata,
       name: "chris",
     });
 
@@ -44,7 +44,7 @@ describe("ConnectionSupervisorMachine", () => {
         JSON.stringify({
           type: "lobby.room_description",
           data: {
-            players: [{ name: "nick" }],
+            players: [{ name: "nick", id: player1.id }],
           },
         })
       );
@@ -53,7 +53,7 @@ describe("ConnectionSupervisorMachine", () => {
         JSON.stringify({
           type: "lobby.player_join",
           data: {
-            player_info: { name: "annabelle" },
+            player_info: { name: "annabelle", id: player2.id },
           },
         })
       );
@@ -62,7 +62,7 @@ describe("ConnectionSupervisorMachine", () => {
         JSON.stringify({
           type: "lobby.player_join",
           data: {
-            player_info: { name: "scott" },
+            player_info: { name: "scott", id: player3.id },
           },
         })
       );
@@ -71,7 +71,7 @@ describe("ConnectionSupervisorMachine", () => {
         JSON.stringify({
           type: "lobby.player_join",
           data: {
-            player_info: { name: "chris" },
+            player_info: { name: "chris", id: player4.id },
           },
         })
       );
@@ -89,7 +89,10 @@ describe("ConnectionSupervisorMachine", () => {
         JSON.stringify({
           type: "lobby.room_description",
           data: {
-            players: [{ name: "nick" }, { name: "annabelle" }],
+            players: [
+              { name: "nick", id: player1.id },
+              { name: "annabelle", id: player2.id },
+            ],
           },
         })
       );
@@ -98,7 +101,7 @@ describe("ConnectionSupervisorMachine", () => {
         JSON.stringify({
           type: "lobby.player_join",
           data: {
-            player_info: { name: "scott" },
+            player_info: { name: "scott", id: player3.id },
           },
         })
       );
@@ -107,7 +110,7 @@ describe("ConnectionSupervisorMachine", () => {
         JSON.stringify({
           type: "lobby.player_join",
           data: {
-            player_info: { name: "chris" },
+            player_info: { name: "chris", id: player4.id },
           },
         })
       );
@@ -126,9 +129,9 @@ describe("ConnectionSupervisorMachine", () => {
           type: "lobby.room_description",
           data: {
             players: [
-              { name: "nick" },
-              { name: "annabelle" },
-              { name: "scott" },
+              { name: "nick", id: player1.id },
+              { name: "annabelle", id: player2.id },
+              { name: "scott", id: player3.id },
             ],
           },
         })
@@ -138,7 +141,7 @@ describe("ConnectionSupervisorMachine", () => {
         JSON.stringify({
           type: "lobby.player_join",
           data: {
-            player_info: { name: "chris" },
+            player_info: { name: "chris", id: player4.id },
           },
         })
       );
@@ -157,10 +160,10 @@ describe("ConnectionSupervisorMachine", () => {
           type: "lobby.room_description",
           data: {
             players: [
-              { name: "nick" },
-              { name: "annabelle" },
-              { name: "scott" },
-              { name: "chris" },
+              { name: "nick", id: player1.id },
+              { name: "annabelle", id: player2.id },
+              { name: "scott", id: player3.id },
+              { name: "chris", id: player4.id },
             ],
           },
         })
@@ -186,22 +189,22 @@ describe("ConnectionSupervisorMachine", () => {
 
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
-      connection_info: player1.id,
+      connection_info: player1.metadata,
       name: "nick",
     });
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
-      connection_info: player2.id,
+      connection_info: player2.metadata,
       name: "annabelle",
     });
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
-      connection_info: player3.id,
+      connection_info: player3.metadata,
       name: "scott",
     });
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
-      connection_info: player4.id,
+      connection_info: player4.metadata,
       name: "chris",
     });
 

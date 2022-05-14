@@ -144,6 +144,7 @@ const ConnectionSupervisorMachine = createMachine(
                 createLobbyUpdate("lobby.player_join", null, {
                   player_info: {
                     name: ctx.player_info[evt.metadata].name,
+                    id: window.btoa(evt.metadata),
                     // ... plus avatar, etc.
                   },
                 }),
@@ -156,6 +157,7 @@ const ConnectionSupervisorMachine = createMachine(
           createLobbyUpdate("lobby.room_description", null, {
             players: Object.keys(ctx.connected_workers).map((wkr) => ({
               name: ctx.player_info[wkr].name,
+              id: window.btoa(wkr),
             })),
           }),
         {
@@ -223,19 +225,17 @@ const ConnectionSupervisorMachine = createMachine(
         };
       }),
       sendTeams: pure((ctx) => {
-        const _playerName = (playerId: string) =>
-          ctx.player_info[playerId].name;
         return Object.values(ctx.connected_workers).map((worker) =>
           send(
             createLobbyUpdate("lobby.player_teams", null, {
               teams: [
                 [
-                  _playerName(ctx.workers_x_player_ids[0]),
-                  _playerName(ctx.workers_x_player_ids[2]),
+                  window.btoa(ctx.workers_x_player_ids[0]),
+                  window.btoa(ctx.workers_x_player_ids[2]),
                 ],
                 [
-                  _playerName(ctx.workers_x_player_ids[1]),
-                  _playerName(ctx.workers_x_player_ids[3]),
+                  window.btoa(ctx.workers_x_player_ids[1]),
+                  window.btoa(ctx.workers_x_player_ids[3]),
                 ],
               ],
             }),
