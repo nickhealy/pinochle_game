@@ -3,6 +3,7 @@ import { createIncomingAction } from "./eventHelpers";
 
 export interface ConnectionWorkerContext {
   connection_metadata: string | undefined;
+  worker_key: string | undefined;
   incoming_queue: {}[];
   outgoing_queue: {}[];
   last_heartbeat: string | undefined;
@@ -10,7 +11,7 @@ export interface ConnectionWorkerContext {
 }
 
 export type ConnectionWorkerEvent =
-  | { type: "CONNECT"; metadata: string }
+  | { type: "CONNECT"; metadata: string; worker_key: string }
   | { type: "CONNECTED"; connection: any } // obviously wont be any once we hook up webrtc code
   | { type: "HEARTBEAT_SUCCESS" }
   | { type: "HEARTBEAT_FAIL"; metadata: string }

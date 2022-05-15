@@ -23,6 +23,7 @@ const ConnectionWorkerMachine = createMachine(
       outgoing_queue: [],
       last_heartbeat: undefined,
       connection_metadata: undefined,
+      worker_key: undefined,
       connection_ref: null,
     },
     id: "ConnectionWorkerMachine",
@@ -31,7 +32,7 @@ const ConnectionWorkerMachine = createMachine(
       idle: {
         on: {
           CONNECT: {
-            actions: "saveMetadata",
+            actions: "registerConnectionInfo",
             target: "connecting",
           },
         },
@@ -111,8 +112,9 @@ const ConnectionWorkerMachine = createMachine(
   },
   {
     actions: {
-      saveMetadata: assign({
+      registerConnectionInfo: assign({
         connection_metadata: (_, evt) => evt.metadata,
+        worker_key: (_, evt) => evt.worker_key,
       }),
       saveConnectionRef: assign({
         connection_ref: (_, evt) => evt.connection as Connection,
@@ -123,11 +125,11 @@ const ConnectionWorkerMachine = createMachine(
       })),
       sendConnected: sendParent((ctx) => ({
         type: "PLAYER_CONNECTED",
-        metadata: ctx.connection_metadata,
+        worker_key: ctx.worker_key,
       })),
       sendConnectionFail: sendParent((ctx) => ({
         type: "PLAYER_CONNECTION_FAIL",
-        metadata: ctx.connection_metadata,
+        worker_key: ctx.worker_key,
       })),
       forwardGameplayEvent: send((_, evt) => evt, { to: "rxtxLoop" }),
       forwardToSupervisor: sendParent((_, evt) => evt),

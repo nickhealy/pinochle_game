@@ -38,7 +38,6 @@ const ConnectionSupervisorMachine = createMachine(
               target: "waiting_pseudostate",
               actions: [
                 "upgradePendingWorker",
-                // "storeWorkerMetadata",
                 "announceNewPlayer",
                 "sendRoomDescription",
               ],
@@ -49,11 +48,7 @@ const ConnectionSupervisorMachine = createMachine(
             actions: "removePendingWorker",
           },
           PLAYER_JOIN_REQUEST: {
-            actions: [
-              "createPendingWorker",
-              "savePlayerInfo",
-              "connectPendingWorker",
-            ],
+            actions: ["createPendingWorker", "connectPendingWorker"],
             cond: "roomNotFull",
           },
         },
@@ -114,8 +109,8 @@ const ConnectionSupervisorMachine = createMachine(
     guards: {
       allPlayersConnected: (ctx, _) =>
         Object.keys(ctx.connected_workers).length === 4,
-      pendingWorkerExists: (ctx, { metadata }) =>
-        !!ctx.pending_workers[metadata],
+      pendingWorkerExists: (ctx, { worker_key }) =>
+        !!ctx.pending_workers[worker_key],
       roomNotFull: (ctx, _) =>
         Object.keys(ctx.connected_workers).length +
           Object.keys(ctx.pending_workers).length <
@@ -136,15 +131,16 @@ const ConnectionSupervisorMachine = createMachine(
         return targetWorkers.map((wkr) => send(evt, { to: () => wkr }));
       }),
       announceNewPlayer: pure((ctx, evt) => {
+        const workerKey = evt.worker_key;
         return Object.entries(ctx.connected_workers)
-          .filter(([metadata, _]) => evt.metadata !== metadata)
+          .filter(([key, _]) => workerKey !== key)
           .map(([_, worker]) =>
             send(
               (ctx) =>
                 createLobbyUpdate("lobby.player_join", null, {
                   player_info: {
-                    name: ctx.player_info[evt.metadata].name,
-                    id: window.btoa(evt.metadata),
+                    name: ctx.player_info[workerKey].name,
+                    id: workerKey,
                     // ... plus avatar, etc.
                   },
                 }),
@@ -157,44 +153,53 @@ const ConnectionSupervisorMachine = createMachine(
           createLobbyUpdate("lobby.room_description", null, {
             players: Object.keys(ctx.connected_workers).map((wkr) => ({
               name: ctx.player_info[wkr].name,
-              id: window.btoa(wkr),
+              id: wkr,
             })),
           }),
         {
-          to: (ctx, evt) => ctx.connected_workers[evt.metadata],
+          to: (ctx, evt) => ctx.connected_workers[evt.worker_key],
         }
       ),
       handleFailedHeartbeat: () => {},
-      createPendingWorker: assign({
-        pending_workers: (ctx, evt) => ({
-          ...ctx.pending_workers,
-          [evt.connection_info]: spawn(
-            ConnectionWorkerMachine,
-            getWorkerId(evt.connection_info)
-          ),
-        }),
-      }),
-      savePlayerInfo: assign({
-        player_info: (ctx, evt) => ({
-          ...ctx.player_info,
-          [evt.connection_info]: {
-            name: evt.name,
+      createPendingWorker: assign((ctx, evt) => {
+        const encodedId = window.btoa(evt.connection_info);
+        return {
+          // create the worker
+          pending_workers: {
+            ...ctx.pending_workers,
+            [encodedId]: spawn(
+              ConnectionWorkerMachine,
+              getWorkerId(evt.connection_info)
+            ),
           },
-        }),
+          // store player info
+          player_info: {
+            ...ctx.player_info,
+            [encodedId]: {
+              connection_info: evt.connection_info,
+              name: evt.name,
+            },
+          },
+        };
       }),
       connectPendingWorker: send(
-        (_, evt) => ({ type: "CONNECT", metadata: evt.connection_info }),
+        (_, evt) => ({
+          type: "CONNECT",
+          metadata: evt.connection_info,
+          worker_key: window.btoa(evt.connection_info), // duplicated here, but we don't have reference to this from here
+        }),
         {
           to: (_, evt) => getWorkerId(evt.connection_info),
         }
       ),
       upgradePendingWorker: assign((ctx, evt) => {
-        const { [evt.metadata]: connectedWorker, ...otherWorkers } =
+        const workerKey = evt.worker_key;
+        const { [workerKey]: connectedWorker, ...otherWorkers } =
           ctx.pending_workers;
         return {
           connected_workers: {
             ...ctx.connected_workers,
-            [evt.metadata]: connectedWorker,
+            [workerKey]: connectedWorker,
           },
           pending_workers: otherWorkers,
         };
@@ -229,14 +234,8 @@ const ConnectionSupervisorMachine = createMachine(
           send(
             createLobbyUpdate("lobby.player_teams", null, {
               teams: [
-                [
-                  window.btoa(ctx.workers_x_player_ids[0]),
-                  window.btoa(ctx.workers_x_player_ids[2]),
-                ],
-                [
-                  window.btoa(ctx.workers_x_player_ids[1]),
-                  window.btoa(ctx.workers_x_player_ids[3]),
-                ],
+                [ctx.workers_x_player_ids[0], ctx.workers_x_player_ids[2]],
+                [ctx.workers_x_player_ids[1], ctx.workers_x_player_ids[3]],
               ],
             }),
             {

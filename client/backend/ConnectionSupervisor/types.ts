@@ -13,13 +13,13 @@ import { GameEvents } from "../gameplay/types";
 export interface ConnectionSupervisorContext {
   connected_workers: Record<string, ActorRef<ConnectionWorkerEvent>>;
   pending_workers: Record<string, ActorRef<ConnectionWorkerEvent>>;
-  player_info: Record<string, { name: string }>;
+  player_info: Record<string, { name: string; connection_info: string }>;
   workers_x_player_ids: Array<string>;
   gameplay_ref: ActorRef<GameEvents> | null;
 }
 
 export type ConnectionSupervisorEvents =
-  | { type: "PLAYER_CONNECTED"; metadata: string }
+  | { type: "PLAYER_CONNECTED"; worker_key: string }
   | { type: "PLAYER_CONNECTION_FAIL"; id: number }
   | ReturnType<typeof createGameplayUpdate>
   | {
