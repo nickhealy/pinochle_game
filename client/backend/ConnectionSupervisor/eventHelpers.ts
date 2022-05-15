@@ -54,6 +54,11 @@ const processIncomingGameEvent = (
         type: "BID",
         value: e.data.value, // to do: maybe get some better typing here
       });
+    case IncomingGameplayEvents.FOLD:
+      return createIncomingGameplayEvent({
+        type: "FOLD",
+        isHez: false, // we can add support for this later
+      });
     default:
       console.log("incoming game event type not recognized : ", e.event);
       return null;

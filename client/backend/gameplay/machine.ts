@@ -76,11 +76,11 @@ const GameMachine = createMachine(
                 on: {
                   BID: {
                     target: "bid_choice_pseudostate",
-                    actions: ["playerBid"],
+                    actions: ["playerBid", "sendPlayerBid"],
                   },
                   FOLD: {
                     target: "bid_choice_pseudostate",
-                    actions: "playerFold",
+                    actions: ["playerFold", "sendPlayerFold"],
                   },
                 },
               },
@@ -88,23 +88,26 @@ const GameMachine = createMachine(
               bid_choice_pseudostate: {
                 entry: [
                   log(
-                    (_, evt) =>
-                      `bid turn executed, type: ${evt.type}, value: ${
+                    (ctx, evt) =>
+                      // @ts-expect-error typing is weird here
+                      `bid turn executed by player ${ctx.turn}, type: ${
+                        evt.type
+                      }, value: ${
                         // @ts-expect-error typing is weird here
                         evt.type == "BID" ? evt.value : null
                       }`,
                     "[bid]"
                   ),
-                  "sendPlayerBid",
                 ],
                 always: [
                   {
                     target: "bid_winner",
                     cond: "isBiddingWon",
+                    actions: ["nextTurnBid"], // person who remains is the winner
                   },
                   {
                     target: "awaiting_bid",
-                    actions: ["nextTurnBid"],
+                    actions: ["nextTurnBid"], // go to next person still in the game
                   },
                 ],
               },
@@ -117,6 +120,7 @@ const GameMachine = createMachine(
                       }`,
                     "[bid]"
                   ),
+                  "sendBidWinner",
                 ],
                 always: {
                   target: "#prePlayMachine.awaiting_trump",
@@ -130,6 +134,7 @@ const GameMachine = createMachine(
             initial: "awaiting_trump",
             states: {
               awaiting_trump: {
+                entry: "promptTrumpChoice",
                 on: {
                   TRUMP_CHOSEN: {
                     target: "meld_submission",
@@ -402,6 +407,15 @@ const GameMachine = createMachine(
           ),
         }),
       }),
+      sendPlayerFold: sendParent((ctx, evt) =>
+        createGameplayUpdate(
+          "gameplay.bid.player_fold",
+          allButCurrentPlayer(ctx.turn),
+          {
+            player: ctx.turn,
+          }
+        )
+      ),
       nextTurnBid: assign({
         turn: (ctx, _) => {
           let currentTurn = ctx.turn;
@@ -415,6 +429,16 @@ const GameMachine = createMachine(
           return currentTurn;
         },
       }),
+      sendBidWinner: sendParent((ctx) =>
+        createGameplayUpdate("gameplay.bid.bid_winner", null, {
+          player: ctx.turn,
+        })
+      ),
+      promptTrumpChoice: sendParent((ctx) =>
+        createGameplayUpdate("gameplay.pre_play.trump_choosing", null, {
+          player: ctx.turn,
+        })
+      ),
       setTrump: assign({
         play: (ctx, evt) => ({
           ...ctx.play,
