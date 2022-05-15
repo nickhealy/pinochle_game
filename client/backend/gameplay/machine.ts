@@ -5,6 +5,7 @@ import { WINNING_SCORE } from "./constants";
 import Deck, { Suit } from "./Deck";
 import { processIncomingPlayerEvent } from "./events";
 import {
+  allButCurrentPlayer,
   getIsLastTrick,
   getNextPlayer,
   getPlayerTeam,
@@ -85,14 +86,17 @@ const GameMachine = createMachine(
               },
               // choice pseudostate for either continuing with bid or declaring winner
               bid_choice_pseudostate: {
-                entry: log(
-                  (_, evt) =>
-                    `bid turn executed, type: ${evt.type}, value: ${
-                      // @ts-expect-error typing is weird here
-                      evt.type == "BID" ? evt.value : null
-                    }`,
-                  "[bid]"
-                ),
+                entry: [
+                  log(
+                    (_, evt) =>
+                      `bid turn executed, type: ${evt.type}, value: ${
+                        // @ts-expect-error typing is weird here
+                        evt.type == "BID" ? evt.value : null
+                      }`,
+                    "[bid]"
+                  ),
+                  "sendPlayerBid",
+                ],
                 always: [
                   {
                     target: "bid_winner",
@@ -100,7 +104,7 @@ const GameMachine = createMachine(
                   },
                   {
                     target: "awaiting_bid",
-                    actions: "nextTurnBid",
+                    actions: ["nextTurnBid"],
                   },
                 ],
               },
@@ -379,6 +383,16 @@ const GameMachine = createMachine(
           };
         },
       }),
+      sendPlayerBid: sendParent((ctx, evt) =>
+        createGameplayUpdate(
+          "gameplay.bid.player_bid",
+          allButCurrentPlayer(ctx.turn),
+          {
+            player: ctx.turn,
+            bid: evt.value,
+          }
+        )
+      ),
       playerFold: assign({
         bid: (ctx, _) => ({
           ...ctx.bid,

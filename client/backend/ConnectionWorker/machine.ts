@@ -79,7 +79,7 @@ const ConnectionWorkerMachine = createMachine(
                 createIncomingAction(
                   ctx.connection_metadata,
                   parsedMessage.event,
-                  parsedMessage.payload
+                  parsedMessage.data
                 )
               );
               // obviously, some sort of error handling here

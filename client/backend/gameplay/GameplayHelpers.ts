@@ -1,8 +1,9 @@
 import { Sender } from "xstate";
 import Deck, { Card, CardKeys, Suit } from "./Deck";
-import { GameEvents, Play } from "./types";
+import { GameEvents, GameplayContext, Play } from "./types";
 
 const LAST_TRICK_POINTS = 10;
+const NUM_PLAYERS = 4;
 export const getPlayerTeam = (playerId: number) => playerId % 2;
 
 // sort plays highest to lowest (so highest is at front of array)
@@ -29,15 +30,8 @@ export const getPlayPoints = (hands: Play[], isLastTrick: boolean = false) =>
 export const getIsLastTrick = (playerHands: CardKeys[][]) =>
   playerHands.every((hand) => hand.length === 0);
 
-export const getNextPlayer = (currPlayer: number) => (currPlayer + 1) % 4;
+export const getNextPlayer = (currPlayer: number) =>
+  (currPlayer + 1) % NUM_PLAYERS;
 
-export const processIncomingGameEvent = (e: any, send: Sender<GameEvents>) => {
-  // FIX ME -- lets add typings for this event object
-  if (e.type !== "PLAYER_EVENT") {
-    console.error("Game machine received invalid event : ", e);
-    return;
-  }
-  const { name, payload } = e;
-  switch (name) {
-  }
-};
+export const allButCurrentPlayer = (currentPlayer: number) =>
+  [...Array(NUM_PLAYERS).keys()].filter((_, idx) => idx !== currentPlayer);

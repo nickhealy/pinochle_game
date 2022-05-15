@@ -49,6 +49,14 @@ const processIncomingGameEvent = (
       return createIncomingGameplayEvent({
         type: "START_GAME",
       });
+    case IncomingGameplayEvents.BID:
+      return createIncomingGameplayEvent({
+        type: "BID",
+        value: e.data.value, // to do: maybe get some better typing here
+      });
+    default:
+      console.log("incoming game event type not recognized : ", e.event);
+      return null;
   }
 };
 

@@ -15,7 +15,7 @@ export const createGameplayUpdate = (
 
 export enum IncomingGameplayEvents {
   START_GAME = "gameplay.start_game",
-  BID = "bid",
+  BID = "gameplay.bid.player_bid",
   FOLD = "bid_fold",
   TRUMP_CHOSEN = "choose_trump",
   MELD_SUBMITTED = "submit_meld",
