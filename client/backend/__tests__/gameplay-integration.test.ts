@@ -26,15 +26,14 @@ describe("integration test", () => {
     const supervisorService = interpret(ConnectionSupervisorMachine);
     supervisorService.start();
 
+    // they join game in reverse order so when they are "randomly"
+    // assigned teams (in reverse order), their ids for the tests (player0, 1, 2, 3)
+    // correspond to their ids in the game machine
+
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
-      connection_info: player0.metadata,
-      name: "nick",
-    });
-    supervisorService.send({
-      type: "PLAYER_JOIN_REQUEST",
-      connection_info: player1.metadata,
-      name: "annabelle",
+      connection_info: player3.metadata,
+      name: "chris",
     });
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
@@ -43,8 +42,13 @@ describe("integration test", () => {
     });
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
-      connection_info: player3.metadata,
-      name: "chris",
+      connection_info: player1.metadata,
+      name: "annabelle",
+    });
+    supervisorService.send({
+      type: "PLAYER_JOIN_REQUEST",
+      connection_info: player0.metadata,
+      name: "nick",
     });
 
     await waitForExpect(() => {
@@ -56,7 +60,7 @@ describe("integration test", () => {
       );
     });
 
-    player0.send(
+    player3.send(
       JSON.stringify({
         event: "lobby.start_game",
       })
@@ -65,8 +69,8 @@ describe("integration test", () => {
     // getting teams
     await waitForExpect(() => {
       const teams = [
-        [player3.id, player1.id],
-        [player2.id, player0.id],
+        [player0.id, player2.id],
+        [player1.id, player3.id],
       ];
       expect(player0.onmessage).toHaveBeenCalledWith(
         JSON.stringify({
@@ -139,45 +143,23 @@ describe("integration test", () => {
           data: {
             hand: [
               "9C",
-              "AD",
-              "AD",
+              "AC",
+              "JC",
+              "10C",
               "KD",
-              "KH",
-              "9H",
+              "JD",
+              "QH",
               "JH",
-              "10H",
               "KS",
-              "JS",
-              "9S",
-              "JS",
+              "QS",
+              "AS",
+              "10S",
             ],
           },
         })
       );
 
       expect(player1.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.player_cards",
-          data: {
-            hand: [
-              "QC",
-              "JC",
-              "AC",
-              "JD",
-              "QD",
-              "9D",
-              "10D",
-              "QH",
-              "10H",
-              "AH",
-              "KH",
-              "9S",
-            ],
-          },
-        })
-      );
-
-      expect(player2.onmessage).toHaveBeenCalledWith(
         JSON.stringify({
           type: "gameplay.player_cards",
           data: {
@@ -194,6 +176,28 @@ describe("integration test", () => {
               "QS",
               "AS",
               "10S",
+            ],
+          },
+        })
+      );
+
+      expect(player2.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "gameplay.player_cards",
+          data: {
+            hand: [
+              "QC",
+              "JC",
+              "AC",
+              "JD",
+              "QD",
+              "9D",
+              "10D",
+              "QH",
+              "10H",
+              "AH",
+              "KH",
+              "9S",
             ],
           },
         })
@@ -205,17 +209,17 @@ describe("integration test", () => {
           data: {
             hand: [
               "9C",
-              "AC",
-              "JC",
-              "10C",
+              "AD",
+              "AD",
               "KD",
-              "JD",
-              "QH",
+              "KH",
+              "9H",
               "JH",
+              "10H",
               "KS",
-              "QS",
-              "AS",
-              "10S",
+              "JS",
+              "9S",
+              "JS",
             ],
           },
         })
@@ -261,13 +265,13 @@ describe("integration test", () => {
           data: { player: 1, bid: 140 },
         })
       );
-      expect(player1.onmessage).toHaveBeenCalledWith(
+      expect(player1.onmessage).not.toHaveBeenCalledWith(
         JSON.stringify({
           type: "gameplay.bid.player_bid",
           data: { player: 1, bid: 140 },
         })
       );
-      expect(player2.onmessage).not.toHaveBeenCalledWith(
+      expect(player2.onmessage).toHaveBeenCalledWith(
         JSON.stringify({
           type: "gameplay.bid.player_bid",
           data: { player: 1, bid: 140 },
@@ -304,6 +308,37 @@ describe("integration test", () => {
         JSON.stringify({
           type: "gameplay.bid.awaiting_bid",
           data: { player: 2 },
+        })
+      );
+    });
+
+    player2.send(
+      JSON.stringify({ event: "gameplay.bid.player_bid", data: { value: 150 } })
+    );
+
+    await waitForExpect(() => {
+      expect(player0.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "gameplay.bid.player_bid",
+          data: { player: 2, bid: 150 },
+        })
+      );
+      expect(player1.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "gameplay.bid.player_bid",
+          data: { player: 2, bid: 150 },
+        })
+      );
+      expect(player2.onmessage).not.toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "gameplay.bid.player_bid",
+          data: { player: 1, bid: 150 },
+        })
+      );
+      expect(player3.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "gameplay.bid.player_bid",
+          data: { player: 2, bid: 150 },
         })
       );
     });
