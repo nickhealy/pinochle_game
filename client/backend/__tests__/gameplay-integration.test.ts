@@ -7,6 +7,11 @@ import { getTestClient } from "../networking/__tests__/mockClient";
 jest.mock("../gameplay/Deck");
 jest.mock("../networking/webrtc");
 
+const createMessageCount = () => {
+  let count = 0;
+  return () => count++;
+};
+
 describe("integration test", () => {
   beforeAll(() => {
     mockRandom([0.9, 0.7, 0.3, 0.1]);
@@ -272,6 +277,33 @@ describe("integration test", () => {
         JSON.stringify({
           type: "gameplay.bid.player_bid",
           data: { player: 1, bid: 140 },
+        })
+      );
+    });
+
+    await waitForExpect(() => {
+      expect(player0.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "gameplay.bid.awaiting_bid",
+          data: { player: 2 },
+        })
+      );
+      expect(player1.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "gameplay.bid.awaiting_bid",
+          data: { player: 2 },
+        })
+      );
+      expect(player2.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "gameplay.bid.awaiting_bid",
+          data: { player: 2 },
+        })
+      );
+      expect(player3.onmessage).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: "gameplay.bid.awaiting_bid",
+          data: { player: 2 },
         })
       );
     });
