@@ -299,5 +299,10 @@ describe("integration test", () => {
     await player3.waitForMessage("gameplay.pre_play.trump_chosen", {
       trump: "spades",
     });
+
+    await player0.waitForMessage("gameplay.pre_play.awaiting_melds");
+    await player1.waitForMessage("gameplay.pre_play.awaiting_melds");
+    await player2.waitForMessage("gameplay.pre_play.awaiting_melds");
+    await player3.waitForMessage("gameplay.pre_play.awaiting_melds");
   });
 });

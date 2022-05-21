@@ -143,6 +143,7 @@ const GameMachine = createMachine(
               },
               meld_submission: {
                 id: "meldSubmissionMachine",
+                entry: ["promptMeldSubmission"],
                 initial: "no_submit",
                 states: {
                   no_submit: {
@@ -436,6 +437,9 @@ const GameMachine = createMachine(
           allButCurrentPlayer(ctx.turn),
           { trump: evt.trump }
         )
+      ),
+      promptMeldSubmission: sendParent(() =>
+        createGameplayUpdate("gameplay.pre_play.awaiting_melds")
       ),
       submitMeld: assign({
         // To do: think about rejecting invalid melds, and about preventing
