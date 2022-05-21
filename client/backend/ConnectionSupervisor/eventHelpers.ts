@@ -59,6 +59,11 @@ const processIncomingGameEvent = (
         type: "FOLD",
         isHez: false, // we can add support for this later
       });
+    case IncomingGameplayEvents.TRUMP_CHOSEN:
+      return createIncomingGameplayEvent({
+        type: "TRUMP_CHOSEN",
+        trump: e.data.trump,
+      });
     default:
       console.log("incoming game event type not recognized : ", e.event);
       return null;

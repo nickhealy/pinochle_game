@@ -282,5 +282,22 @@ describe("integration test", () => {
     await player3.waitForMessage("gameplay.pre_play.trump_choosing", {
       player: 0,
     });
+
+    player0.send(
+      JSON.stringify({
+        event: "gameplay.pre_play.trump_chosen",
+        data: { trump: "spades" },
+      })
+    );
+
+    await player1.waitForMessage("gameplay.pre_play.trump_chosen", {
+      trump: "spades",
+    });
+    await player2.waitForMessage("gameplay.pre_play.trump_chosen", {
+      trump: "spades",
+    });
+    await player3.waitForMessage("gameplay.pre_play.trump_chosen", {
+      trump: "spades",
+    });
   });
 });

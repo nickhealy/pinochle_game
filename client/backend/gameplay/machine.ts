@@ -137,7 +137,7 @@ const GameMachine = createMachine(
                 on: {
                   TRUMP_CHOSEN: {
                     target: "meld_submission",
-                    actions: "setTrump",
+                    actions: ["setTrump", "sendTrumpChosen"],
                   },
                 },
               },
@@ -430,6 +430,13 @@ const GameMachine = createMachine(
           trump: evt.trump,
         }),
       }),
+      sendTrumpChosen: sendParent((ctx, evt) =>
+        createGameplayUpdate(
+          "gameplay.pre_play.trump_chosen",
+          allButCurrentPlayer(ctx.turn),
+          { trump: evt.trump }
+        )
+      ),
       submitMeld: assign({
         // To do: think about rejecting invalid melds, and about preventing
         // duplicate melds
