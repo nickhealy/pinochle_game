@@ -109,7 +109,9 @@ export class TestClient {
       );
     }
 
-    throw new Error(`Did not receive ${messageId} message`);
+    throw new Error(
+      `${this.metadata} Did not receive ${messageId} message with data ${strData}`
+    );
   }
 }
 

@@ -67,7 +67,9 @@ describe("TestClient", () => {
       connection.send(JSON.stringify({ type: "4", data: {} }));
       connection.send(JSON.stringify({ type: "5", data: {} }));
       client.waitForMessage("6").catch((e) => {
-        expect(e.message).toBe("Did not receive 6 message");
+        expect(e.message).toBe(
+          `${client.metadata} Did not receive 6 message with data {}`
+        );
         done();
       });
     });
@@ -83,7 +85,9 @@ describe("TestClient", () => {
         .waitForMessage("5")
         .then(() => client.waitForMessage("4"))
         .catch((e) => {
-          expect(e.message).toBe("Did not receive 4 message");
+          expect(e.message).toBe(
+            `${client.metadata} Did not receive 4 message with data {}`
+          );
           done();
         });
     });
