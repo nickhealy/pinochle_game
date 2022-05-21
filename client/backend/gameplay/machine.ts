@@ -3,7 +3,6 @@ import { sendParent, log, pure } from "xstate/lib/actions";
 import { createGameplayUpdate } from "./events";
 import { WINNING_SCORE } from "./constants";
 import Deck, { Suit } from "./Deck";
-import { processIncomingPlayerEvent } from "./events";
 import {
   allButCurrentPlayer,
   getIsLastTrick,
@@ -319,20 +318,6 @@ const GameMachine = createMachine(
         on: {
           RESUMED_HEARTBEAT: { target: "game_in_progress.history" },
         },
-      },
-    },
-    invoke: {
-      src: () => (cb, onReceive) => {
-        onReceive((e) => {
-          const processedEvent = processIncomingPlayerEvent(e);
-
-          if (!processedEvent) {
-            console.error("Gameplay machine received invalid action : ", e);
-            return;
-          }
-
-          cb(processedEvent);
-        });
       },
     },
     on: {
