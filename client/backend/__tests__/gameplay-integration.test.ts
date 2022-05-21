@@ -1,16 +1,10 @@
 import { mockRandom } from "jest-mock-random";
-import waitForExpect from "wait-for-expect";
 import { interpret } from "xstate";
 import ConnectionSupervisorMachine from "../ConnectionSupervisor/machine";
 import { getTestClient } from "../networking/__tests__/mockClient";
 
 jest.mock("../gameplay/Deck");
 jest.mock("../networking/webrtc");
-
-const createMessageCount = () => {
-  let count = 0;
-  return () => count++;
-};
 
 describe("integration test", () => {
   beforeAll(() => {
@@ -51,14 +45,7 @@ describe("integration test", () => {
       name: "nick",
     });
 
-    await waitForExpect(() => {
-      expect(player0.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "lobby.all_players_connected",
-          data: {},
-        })
-      );
-    });
+    await player0.waitForMessage("lobby.all_players_connected");
 
     player3.send(
       JSON.stringify({
@@ -67,307 +54,136 @@ describe("integration test", () => {
     );
 
     // getting teams
-    await waitForExpect(() => {
-      const teams = [
-        [player0.id, player2.id],
-        [player1.id, player3.id],
-      ];
-      expect(player0.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "lobby.player_teams",
-          data: {
-            teams,
-          },
-        })
-      );
-      expect(player1.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "lobby.player_teams",
-          data: {
-            teams,
-          },
-        })
-      );
-      expect(player2.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "lobby.player_teams",
-          data: {
-            teams,
-          },
-        })
-      );
-      expect(player3.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "lobby.player_teams",
-          data: {
-            teams,
-          },
-        })
-      );
-    });
+    const teams = [
+      [player0.id, player2.id],
+      [player1.id, player3.id],
+    ];
+    await player0.waitForMessage("lobby.player_teams", { teams });
+    await player1.waitForMessage("lobby.player_teams", { teams });
+    await player2.waitForMessage("lobby.player_teams", { teams });
+    await player3.waitForMessage("lobby.player_teams", { teams });
 
     // game start
-    await waitForExpect(() => {
-      expect(player0.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "lobby.game_start",
-          data: {},
-        })
-      );
-      expect(player1.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "lobby.game_start",
-          data: {},
-        })
-      );
-      expect(player2.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "lobby.game_start",
-          data: {},
-        })
-      );
-      expect(player3.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "lobby.game_start",
-          data: {},
-        })
-      );
-    });
+    await player0.waitForMessage("lobby.game_start");
+    await player1.waitForMessage("lobby.game_start");
+    await player2.waitForMessage("lobby.game_start");
+    await player3.waitForMessage("lobby.game_start");
 
     // send cards to each player
-    await waitForExpect(() => {
-      expect(player0.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.player_cards",
-          data: {
-            hand: [
-              "9C",
-              "AC",
-              "JC",
-              "10C",
-              "KD",
-              "JD",
-              "QH",
-              "JH",
-              "KS",
-              "QS",
-              "AS",
-              "10S",
-            ],
-          },
-        })
-      );
-
-      expect(player1.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.player_cards",
-          data: {
-            hand: [
-              "10C",
-              "KC",
-              "QC",
-              "KC",
-              "QD",
-              "10D",
-              "9D",
-              "AH",
-              "9H",
-              "QS",
-              "AS",
-              "10S",
-            ],
-          },
-        })
-      );
-
-      expect(player2.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.player_cards",
-          data: {
-            hand: [
-              "QC",
-              "JC",
-              "AC",
-              "JD",
-              "QD",
-              "9D",
-              "10D",
-              "QH",
-              "10H",
-              "AH",
-              "KH",
-              "9S",
-            ],
-          },
-        })
-      );
-
-      expect(player3.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.player_cards",
-          data: {
-            hand: [
-              "9C",
-              "AD",
-              "AD",
-              "KD",
-              "KH",
-              "9H",
-              "JH",
-              "10H",
-              "KS",
-              "JS",
-              "9S",
-              "JS",
-            ],
-          },
-        })
-      );
+    await player0.waitForMessage("gameplay.player_cards", {
+      hand: [
+        "9C",
+        "AC",
+        "JC",
+        "10C",
+        "KD",
+        "JD",
+        "QH",
+        "JH",
+        "KS",
+        "QS",
+        "AS",
+        "10S",
+      ],
     });
+    await player1.waitForMessage("gameplay.player_cards", {
+      hand: [
+        "10C",
+        "KC",
+        "QC",
+        "KC",
+        "QD",
+        "10D",
+        "9D",
+        "AH",
+        "9H",
+        "QS",
+        "AS",
+        "10S",
+      ],
+    });
+    await player2.waitForMessage("gameplay.player_cards", {
+      hand: [
+        "QC",
+        "JC",
+        "AC",
+        "JD",
+        "QD",
+        "9D",
+        "10D",
+        "QH",
+        "10H",
+        "AH",
+        "KH",
+        "9S",
+      ],
+    });
+    await player3.waitForMessage("gameplay.player_cards", {
+      hand: [
+        "9C",
+        "AD",
+        "AD",
+        "KD",
+        "KH",
+        "9H",
+        "JH",
+        "10H",
+        "KS",
+        "JS",
+        "9S",
+        "JS",
+      ],
+    });
+
+    await player0.waitForMessage("gameplay.bid.awaiting_bid", { player: 1 });
+    await player1.waitForMessage("gameplay.bid.awaiting_bid", { player: 1 });
+    await player2.waitForMessage("gameplay.bid.awaiting_bid", { player: 1 });
+    await player3.waitForMessage("gameplay.bid.awaiting_bid", { player: 1 });
 
     // player @ index 1 (scott's) turn to make a bid
-    await waitForExpect(() => {
-      expect(player0.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 1 },
-        })
-      );
-      expect(player1.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 1 },
-        })
-      );
-      expect(player2.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 1 },
-        })
-      );
-      expect(player3.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 1 },
-        })
-      );
-    });
-
     player1.send(
       JSON.stringify({ event: "gameplay.bid.player_bid", data: { value: 140 } })
     );
 
-    await waitForExpect(() => {
-      expect(player0.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_bid",
-          data: { player: 1, bid: 140 },
-        })
-      );
-      expect(player1.onmessage).not.toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_bid",
-          data: { player: 1, bid: 140 },
-        })
-      );
-      expect(player2.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_bid",
-          data: { player: 1, bid: 140 },
-        })
-      );
-      expect(player3.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_bid",
-          data: { player: 1, bid: 140 },
-        })
-      );
+    await player0.waitForMessage("gameplay.bid.player_bid", {
+      player: 1,
+      bid: 140,
+    });
+    await player2.waitForMessage("gameplay.bid.player_bid", {
+      player: 1,
+      bid: 140,
+    });
+    await player3.waitForMessage("gameplay.bid.player_bid", {
+      player: 1,
+      bid: 140,
     });
 
-    await waitForExpect(() => {
-      expect(player0.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 2 },
-        })
-      );
-      expect(player1.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 2 },
-        })
-      );
-      expect(player2.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 2 },
-        })
-      );
-      expect(player3.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 2 },
-        })
-      );
-    });
+    await player0.waitForMessage("gameplay.bid.awaiting_bid", { player: 2 });
+    await player1.waitForMessage("gameplay.bid.awaiting_bid", { player: 2 });
+    await player2.waitForMessage("gameplay.bid.awaiting_bid", { player: 2 });
+    await player3.waitForMessage("gameplay.bid.awaiting_bid", { player: 2 });
 
     player2.send(
       JSON.stringify({ event: "gameplay.bid.player_bid", data: { value: 150 } })
     );
 
-    await waitForExpect(() => {
-      expect(player0.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_bid",
-          data: { player: 2, bid: 150 },
-        })
-      );
-      expect(player1.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_bid",
-          data: { player: 2, bid: 150 },
-        })
-      );
-      expect(player2.onmessage).not.toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_bid",
-          data: { player: 1, bid: 150 },
-        })
-      );
-      expect(player3.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_bid",
-          data: { player: 2, bid: 150 },
-        })
-      );
+    await player0.waitForMessage("gameplay.bid.player_bid", {
+      player: 2,
+      bid: 150,
+    });
+    await player1.waitForMessage("gameplay.bid.player_bid", {
+      player: 2,
+      bid: 150,
+    });
+    await player3.waitForMessage("gameplay.bid.player_bid", {
+      player: 2,
+      bid: 150,
     });
 
-    await waitForExpect(() => {
-      expect(player0.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 3 },
-        })
-      );
-      expect(player1.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 3 },
-        })
-      );
-      expect(player2.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 3 },
-        })
-      );
-      expect(player3.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 3 },
-        })
-      );
-    });
+    await player0.waitForMessage("gameplay.bid.awaiting_bid", { player: 3 });
+    await player1.waitForMessage("gameplay.bid.awaiting_bid", { player: 3 });
+    await player2.waitForMessage("gameplay.bid.awaiting_bid", { player: 3 });
+    await player3.waitForMessage("gameplay.bid.awaiting_bid", { player: 3 });
 
     player3.send(
       JSON.stringify({
@@ -375,117 +191,42 @@ describe("integration test", () => {
       })
     );
 
-    await waitForExpect(() => {
-      expect(player0.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_fold",
-          data: { player: 3 },
-        })
-      );
-      expect(player1.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_fold",
-          data: { player: 3 },
-        })
-      );
-      expect(player2.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_fold",
-          data: { player: 3 },
-        })
-      );
-      expect(player3.onmessage).not.toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_fold",
-          data: { player: 3 },
-        })
-      );
+    await player0.waitForMessage("gameplay.bid.player_fold", {
+      player: 3,
+    });
+    await player1.waitForMessage("gameplay.bid.player_fold", {
+      player: 3,
+    });
+    await player2.waitForMessage("gameplay.bid.player_fold", {
+      player: 3,
     });
 
-    await waitForExpect(() => {
-      expect(player0.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 0 },
-        })
-      );
-      expect(player1.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 0 },
-        })
-      );
-      expect(player2.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 0 },
-        })
-      );
-      expect(player3.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 0 },
-        })
-      );
-    });
+    await player0.waitForMessage("gameplay.bid.awaiting_bid", { player: 0 });
+    await player1.waitForMessage("gameplay.bid.awaiting_bid", { player: 0 });
+    await player2.waitForMessage("gameplay.bid.awaiting_bid", { player: 0 });
+    await player3.waitForMessage("gameplay.bid.awaiting_bid", { player: 0 });
 
     player0.send(
       JSON.stringify({ event: "gameplay.bid.player_bid", data: { value: 160 } })
     );
 
-    await waitForExpect(() => {
-      expect(player0.onmessage).not.toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_bid",
-          data: { player: 0, bid: 160 },
-        })
-      );
-      expect(player1.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_bid",
-          data: { player: 0, bid: 160 },
-        })
-      );
-      expect(player2.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_bid",
-          data: { player: 0, bid: 160 },
-        })
-      );
-      expect(player3.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_bid",
-          data: { player: 0, bid: 160 },
-        })
-      );
+    await player1.waitForMessage("gameplay.bid.player_bid", {
+      player: 0,
+      bid: 160,
+    });
+    await player2.waitForMessage("gameplay.bid.player_bid", {
+      player: 0,
+      bid: 160,
+    });
+    await player3.waitForMessage("gameplay.bid.player_bid", {
+      player: 0,
+      bid: 160,
     });
 
-    await waitForExpect(() => {
-      expect(player0.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 1 },
-        })
-      );
-      expect(player1.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 1 },
-        })
-      );
-      expect(player2.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 1 },
-        })
-      );
-      expect(player3.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 1 },
-        })
-      );
-    });
+    await player0.waitForMessage("gameplay.bid.awaiting_bid", { player: 1 });
+    await player1.waitForMessage("gameplay.bid.awaiting_bid", { player: 1 });
+    await player2.waitForMessage("gameplay.bid.awaiting_bid", { player: 1 });
+    await player3.waitForMessage("gameplay.bid.awaiting_bid", { player: 1 });
 
     player1.send(
       JSON.stringify({
@@ -493,59 +234,20 @@ describe("integration test", () => {
       })
     );
 
-    await waitForExpect(() => {
-      expect(player0.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_fold",
-          data: { player: 1 },
-        })
-      );
-      expect(player1.onmessage).not.toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_fold",
-          data: { player: 1 },
-        })
-      );
-      expect(player2.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_fold",
-          data: { player: 1 },
-        })
-      );
-      expect(player3.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_fold",
-          data: { player: 1 },
-        })
-      );
+    await player0.waitForMessage("gameplay.bid.player_fold", {
+      player: 1,
+    });
+    await player2.waitForMessage("gameplay.bid.player_fold", {
+      player: 1,
+    });
+    await player3.waitForMessage("gameplay.bid.player_fold", {
+      player: 1,
     });
 
-    await waitForExpect(() => {
-      expect(player0.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 2 },
-        })
-      );
-      expect(player1.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 2 },
-        })
-      );
-      expect(player2.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 2 },
-        })
-      );
-      expect(player3.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.awaiting_bid",
-          data: { player: 2 },
-        })
-      );
-    });
+    await player0.waitForMessage("gameplay.bid.awaiting_bid", { player: 2 });
+    await player1.waitForMessage("gameplay.bid.awaiting_bid", { player: 2 });
+    await player2.waitForMessage("gameplay.bid.awaiting_bid", { player: 2 });
+    await player3.waitForMessage("gameplay.bid.awaiting_bid", { player: 2 });
 
     player2.send(
       JSON.stringify({
@@ -553,85 +255,32 @@ describe("integration test", () => {
       })
     );
 
-    await waitForExpect(() => {
-      expect(player0.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_fold",
-          data: { player: 2 },
-        })
-      );
-      expect(player1.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_fold",
-          data: { player: 2 },
-        })
-      );
-      expect(player2.onmessage).not.toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_fold",
-          data: { player: 2 },
-        })
-      );
-      expect(player3.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.player_fold",
-          data: { player: 2 },
-        })
-      );
+    await player0.waitForMessage("gameplay.bid.player_fold", {
+      player: 2,
+    });
+    await player1.waitForMessage("gameplay.bid.player_fold", {
+      player: 2,
+    });
+    await player3.waitForMessage("gameplay.bid.player_fold", {
+      player: 2,
     });
 
-    await waitForExpect(() => {
-      expect(player0.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.bid_winner",
-          data: { player: 0 },
-        })
-      );
-      expect(player1.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.bid_winner",
-          data: { player: 0 },
-        })
-      );
-      expect(player2.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.bid_winner",
-          data: { player: 0 },
-        })
-      );
-      expect(player3.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.bid.bid_winner",
-          data: { player: 0 },
-        })
-      );
-    });
+    await player0.waitForMessage("gameplay.bid.bid_winner", { player: 0 });
+    await player1.waitForMessage("gameplay.bid.bid_winner", { player: 0 });
+    await player2.waitForMessage("gameplay.bid.bid_winner", { player: 0 });
+    await player3.waitForMessage("gameplay.bid.bid_winner", { player: 0 });
 
-    await waitForExpect(() => {
-      expect(player0.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.pre_play.trump_choosing",
-          data: { player: 0 },
-        })
-      );
-      expect(player1.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.pre_play.trump_choosing",
-          data: { player: 0 },
-        })
-      );
-      expect(player2.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.pre_play.trump_choosing",
-          data: { player: 0 },
-        })
-      );
-      expect(player3.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "gameplay.pre_play.trump_choosing",
-          data: { player: 0 },
-        })
-      );
+    await player0.waitForMessage("gameplay.pre_play.trump_choosing", {
+      player: 0,
+    });
+    await player1.waitForMessage("gameplay.pre_play.trump_choosing", {
+      player: 0,
+    });
+    await player2.waitForMessage("gameplay.pre_play.trump_choosing", {
+      player: 0,
+    });
+    await player3.waitForMessage("gameplay.pre_play.trump_choosing", {
+      player: 0,
     });
   });
 });
