@@ -103,7 +103,9 @@ export class TestClient {
 
     if (wrongMessagesData.length) {
       throw new Error(
-        `Received ${messageId} message, but with wrong data. Expected: ${strData} Received: ${wrongMessagesData.join(
+        `${
+          this.metadata
+        } Received ${messageId} message, but with wrong data. Expected: ${strData} Received: ${wrongMessagesData.join(
           "\n"
         )}`
       );

@@ -101,7 +101,7 @@ describe("TestClient", () => {
       connection.send(JSON.stringify({ type: "5", data: { test: true } }));
       client.waitForMessage("5", { test: false }).catch((e) => {
         expect(e.message).toBe(
-          'Received 5 message, but with wrong data. Expected: {"test":false} Received: {"test":true}'
+          `${client.metadata} Received 5 message, but with wrong data. Expected: {"test":false} Received: {"test":true}`
         );
         done();
       });
