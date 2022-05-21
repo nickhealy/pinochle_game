@@ -1,5 +1,4 @@
 import { interpret } from "xstate";
-import waitForExpect from "wait-for-expect";
 import { getTestClient } from "../../networking/__tests__/mockClient";
 import ConnectionSupervisorMachine from "../machine";
 
@@ -7,247 +6,131 @@ jest.mock("../../networking/webrtc");
 
 describe("ConnectionSupervisorMachine", () => {
   it("can handle players joining the room", async () => {
+    const [player0] = getTestClient();
     const [player1] = getTestClient();
     const [player2] = getTestClient();
     const [player3] = getTestClient();
-    const [player4] = getTestClient();
 
     const supervisorService = interpret(ConnectionSupervisorMachine);
     supervisorService.start();
 
+    // P0 joins
+    supervisorService.send({
+      type: "PLAYER_JOIN_REQUEST",
+      connection_info: player0.metadata,
+      name: "nick",
+    });
+    await player0.waitForMessage("lobby.room_description", {
+      players: [{ name: "nick", id: player0.id }],
+    });
+
+    // P1 joins
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
       connection_info: player1.metadata,
-      name: "nick",
+      name: "annabelle",
     });
+    await player0.waitForMessage("lobby.player_join", {
+      player_info: { name: "annabelle", id: player1.id },
+    });
+    await player1.waitForMessage("lobby.room_description", {
+      players: [
+        { name: "nick", id: player0.id },
+        { name: "annabelle", id: player1.id },
+      ],
+    });
+
+    // P2 joins
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
       connection_info: player2.metadata,
-      name: "annabelle",
+      name: "scott",
     });
+    await player0.waitForMessage("lobby.player_join", {
+      player_info: { name: "scott", id: player2.id },
+    });
+    await player1.waitForMessage("lobby.player_join", {
+      player_info: { name: "scott", id: player2.id },
+    });
+    await player2.waitForMessage("lobby.room_description", {
+      players: [
+        { name: "nick", id: player0.id },
+        { name: "annabelle", id: player1.id },
+        { name: "scott", id: player2.id },
+      ],
+    });
+
+    // P3 joins
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
       connection_info: player3.metadata,
-      name: "scott",
-    });
-    supervisorService.send({
-      type: "PLAYER_JOIN_REQUEST",
-      connection_info: player4.metadata,
       name: "chris",
     });
-
-    await waitForExpect(() => {
-      // P1
-      expect(player1.onmessage).toBeCalledTimes(5);
-      expect(player1.onmessage).toHaveBeenNthCalledWith(
-        1,
-        JSON.stringify({
-          type: "lobby.room_description",
-          data: {
-            players: [{ name: "nick", id: player1.id }],
-          },
-        })
-      );
-      expect(player1.onmessage).toHaveBeenNthCalledWith(
-        2,
-        JSON.stringify({
-          type: "lobby.player_join",
-          data: {
-            player_info: { name: "annabelle", id: player2.id },
-          },
-        })
-      );
-      expect(player1.onmessage).toHaveBeenNthCalledWith(
-        3,
-        JSON.stringify({
-          type: "lobby.player_join",
-          data: {
-            player_info: { name: "scott", id: player3.id },
-          },
-        })
-      );
-      expect(player1.onmessage).toHaveBeenNthCalledWith(
-        4,
-        JSON.stringify({
-          type: "lobby.player_join",
-          data: {
-            player_info: { name: "chris", id: player4.id },
-          },
-        })
-      );
-      expect(player1.onmessage).toHaveBeenNthCalledWith(
-        5,
-        JSON.stringify({
-          type: "lobby.all_players_connected",
-          data: {},
-        })
-      );
-      // P2
-      expect(player2.onmessage).toBeCalledTimes(4);
-      expect(player2.onmessage).toHaveBeenNthCalledWith(
-        1,
-        JSON.stringify({
-          type: "lobby.room_description",
-          data: {
-            players: [
-              { name: "nick", id: player1.id },
-              { name: "annabelle", id: player2.id },
-            ],
-          },
-        })
-      );
-      expect(player2.onmessage).toHaveBeenNthCalledWith(
-        2,
-        JSON.stringify({
-          type: "lobby.player_join",
-          data: {
-            player_info: { name: "scott", id: player3.id },
-          },
-        })
-      );
-      expect(player2.onmessage).toHaveBeenNthCalledWith(
-        3,
-        JSON.stringify({
-          type: "lobby.player_join",
-          data: {
-            player_info: { name: "chris", id: player4.id },
-          },
-        })
-      );
-      expect(player2.onmessage).toHaveBeenNthCalledWith(
-        4,
-        JSON.stringify({
-          type: "lobby.all_players_connected",
-          data: {},
-        })
-      );
-      // P3
-      expect(player3.onmessage).toBeCalledTimes(3);
-      expect(player3.onmessage).toHaveBeenNthCalledWith(
-        1,
-        JSON.stringify({
-          type: "lobby.room_description",
-          data: {
-            players: [
-              { name: "nick", id: player1.id },
-              { name: "annabelle", id: player2.id },
-              { name: "scott", id: player3.id },
-            ],
-          },
-        })
-      );
-      expect(player3.onmessage).toHaveBeenNthCalledWith(
-        2,
-        JSON.stringify({
-          type: "lobby.player_join",
-          data: {
-            player_info: { name: "chris", id: player4.id },
-          },
-        })
-      );
-      expect(player3.onmessage).toHaveBeenNthCalledWith(
-        3,
-        JSON.stringify({
-          type: "lobby.all_players_connected",
-          data: {},
-        })
-      );
-      // P4
-      expect(player4.onmessage).toBeCalledTimes(2);
-      expect(player4.onmessage).toHaveBeenNthCalledWith(
-        1,
-        JSON.stringify({
-          type: "lobby.room_description",
-          data: {
-            players: [
-              { name: "nick", id: player1.id },
-              { name: "annabelle", id: player2.id },
-              { name: "scott", id: player3.id },
-              { name: "chris", id: player4.id },
-            ],
-          },
-        })
-      );
-      expect(player4.onmessage).toHaveBeenNthCalledWith(
-        2,
-        JSON.stringify({
-          type: "lobby.all_players_connected",
-          data: {},
-        })
-      );
+    await player0.waitForMessage("lobby.player_join", {
+      player_info: { name: "chris", id: player3.id },
     });
+    await player1.waitForMessage("lobby.player_join", {
+      player_info: { name: "chris", id: player3.id },
+    });
+    await player2.waitForMessage("lobby.player_join", {
+      player_info: { name: "chris", id: player3.id },
+    });
+    await player3.waitForMessage("lobby.room_description", {
+      players: [
+        { name: "nick", id: player0.id },
+        { name: "annabelle", id: player1.id },
+        { name: "scott", id: player2.id },
+        { name: "chris", id: player3.id },
+      ],
+    });
+
+    await player0.waitForMessage("lobby.all_players_connected");
+    await player1.waitForMessage("lobby.all_players_connected");
+    await player2.waitForMessage("lobby.all_players_connected");
+    await player3.waitForMessage("lobby.all_players_connected");
   });
 
   it("can handle game start", async () => {
+    const [player0] = getTestClient();
     const [player1] = getTestClient();
     const [player2] = getTestClient();
     const [player3] = getTestClient();
-    const [player4] = getTestClient();
 
     const supervisorService = interpret(ConnectionSupervisorMachine);
     supervisorService.start();
 
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
-      connection_info: player1.metadata,
+      connection_info: player0.metadata,
       name: "nick",
     });
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
-      connection_info: player2.metadata,
+      connection_info: player1.metadata,
       name: "annabelle",
     });
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
-      connection_info: player3.metadata,
+      connection_info: player2.metadata,
       name: "scott",
     });
     supervisorService.send({
       type: "PLAYER_JOIN_REQUEST",
-      connection_info: player4.metadata,
+      connection_info: player3.metadata,
       name: "chris",
     });
 
-    await waitForExpect(() => {
-      expect(player1.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "lobby.all_players_connected",
-          data: {},
-        })
-      );
-    });
+    await player0.waitForMessage("lobby.all_players_connected");
 
-    player1.send(
+    player0.send(
       JSON.stringify({
         event: "lobby.start_game",
       })
     );
 
-    await waitForExpect(() => {
-      expect(player1.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "lobby.game_start",
-          data: {},
-        })
-      );
-      expect(player2.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "lobby.game_start",
-          data: {},
-        })
-      );
-      expect(player3.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "lobby.game_start",
-          data: {},
-        })
-      );
-      expect(player4.onmessage).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: "lobby.game_start",
-          data: {},
-        })
-      );
-    });
+    await player0.waitForMessage("lobby.game_start");
+    await player1.waitForMessage("lobby.game_start");
+    await player2.waitForMessage("lobby.game_start");
+    await player3.waitForMessage("lobby.game_start");
   });
 });
