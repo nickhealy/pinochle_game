@@ -58,7 +58,7 @@ export type PrePlayEvents =
       meld: Meld;
     }
   | {
-      type: "FINALIZE_MELDS";
+      type: "COMMIT_MELDS";
       player: number;
     };
 

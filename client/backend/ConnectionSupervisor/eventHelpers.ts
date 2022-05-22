@@ -70,6 +70,12 @@ const processIncomingGameEvent = (
         meld: e.data.meld,
         player: e.data.player,
       });
+    case IncomingGameplayEvents.COMMIT_MELDS: {
+      return createIncomingGameplayEvent({
+        type: "COMMIT_MELDS",
+        player: e.data.player,
+      });
+    }
     default:
       console.log("incoming game event type not recognized : ", e.event);
       return null;

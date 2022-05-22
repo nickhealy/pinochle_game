@@ -148,29 +148,33 @@ const GameMachine = createMachine(
                 states: {
                   no_submit: {
                     on: {
-                      FINALIZE_MELDS: {
+                      COMMIT_MELDS: {
                         target: "one_submit",
+                        actions: "sendCommitMelds",
                       },
                     },
                   },
                   one_submit: {
                     on: {
-                      FINALIZE_MELDS: {
+                      COMMIT_MELDS: {
                         target: "two_submit",
+                        actions: "sendCommitMelds",
                       },
                     },
                   },
                   two_submit: {
                     on: {
-                      FINALIZE_MELDS: {
+                      COMMIT_MELDS: {
                         target: "three_submit",
+                        actions: "sendCommitMelds",
                       },
                     },
                   },
                   three_submit: {
                     on: {
-                      FINALIZE_MELDS: {
+                      COMMIT_MELDS: {
                         target: "#playMachine",
+                        actions: "sendCommitMelds",
                       },
                     },
                   },
@@ -420,6 +424,13 @@ const GameMachine = createMachine(
           "gameplay.pre_play.player_meld_added",
           allButPlayer(evt.player),
           { meld: evt.meld, player: evt.player, points: ctx.round.points }
+        )
+      ),
+      sendCommitMelds: sendParent((ctx, evt) =>
+        createGameplayUpdate(
+          "gameplay.pre_play.player_melds_committed",
+          allButPlayer(evt.player),
+          { player: evt.player }
         )
       ),
       playCard: assign({

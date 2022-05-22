@@ -307,6 +307,7 @@ describe("integration test", () => {
 
     // meld submission
 
+    // player 0 thinks he only has a royal marriage, he forgets the pinochle he has elsewhere in his hand
     player0.send(
       JSON.stringify({
         event: "gameplay.pre_play.player_add_meld",
@@ -355,6 +356,7 @@ describe("integration test", () => {
       ],
     });
 
+    // player1 only has a marriage, but they will take a moment to double check their hand before confirming
     player1.send(
       JSON.stringify({
         event: "gameplay.pre_play.player_add_meld",
@@ -402,6 +404,7 @@ describe("integration test", () => {
       ],
     });
 
+    // player 2 only has 9 trump and is certain of it, so he submits shortly after adding his melds
     player2.send(
       JSON.stringify({
         event: "gameplay.pre_play.player_add_meld",
@@ -409,16 +412,26 @@ describe("integration test", () => {
           player: 2,
           meld: {
             type: "trump-nine",
-            cards: ["9C"],
+            cards: ["9S"],
           },
         },
       })
     );
 
+    player2.send(
+      JSON.stringify({
+        event: "gameplay.pre_play.player_commit_melds",
+        data: {
+          player: 2,
+        },
+      })
+    );
+
+    // players receive messages of player2's melds
     await player0.waitForMessage("gameplay.pre_play.player_meld_added", {
       meld: {
         type: "trump-nine",
-        cards: ["9C"],
+        cards: ["9S"],
       },
       player: 2,
       points: [
@@ -429,7 +442,7 @@ describe("integration test", () => {
     await player1.waitForMessage("gameplay.pre_play.player_meld_added", {
       meld: {
         type: "trump-nine",
-        cards: ["9C"],
+        cards: ["9S"],
       },
       player: 2,
       points: [
@@ -440,13 +453,24 @@ describe("integration test", () => {
     await player3.waitForMessage("gameplay.pre_play.player_meld_added", {
       meld: {
         type: "trump-nine",
-        cards: ["9C"],
+        cards: ["9S"],
       },
       player: 2,
       points: [
         [50, 0],
         [20, 0],
       ],
+    });
+
+    //...and then they receive messages that he committed them
+    await player0.waitForMessage("gameplay.pre_play.player_melds_committed", {
+      player: 2,
+    });
+    await player1.waitForMessage("gameplay.pre_play.player_melds_committed", {
+      player: 2,
+    });
+    await player3.waitForMessage("gameplay.pre_play.player_melds_committed", {
+      player: 2,
     });
   });
 });
