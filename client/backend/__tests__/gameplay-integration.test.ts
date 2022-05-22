@@ -312,23 +312,20 @@ describe("integration test", () => {
         event: "gameplay.pre_play.player_add_meld",
         data: {
           player: 0,
-          meld: [
-            {
-              type: "royal-marriage",
-              cards: ["KS", "QS"],
-            },
-          ],
+          meld: {
+            type: "royal-marriage",
+            cards: ["KS", "QS"],
+          },
         },
       })
     );
 
     await player1.waitForMessage("gameplay.pre_play.player_meld_submitted", {
-      meld: [
-        {
-          type: "royal-marriage",
-          cards: ["KS", "QS"],
-        },
-      ],
+      meld: {
+        type: "royal-marriage",
+        cards: ["KS", "QS"],
+      },
+
       player: 0,
       points: [
         [40, 0],
@@ -336,12 +333,10 @@ describe("integration test", () => {
       ],
     });
     await player2.waitForMessage("gameplay.pre_play.player_meld_submitted", {
-      meld: [
-        {
-          type: "royal-marriage",
-          cards: ["KS", "QS"],
-        },
-      ],
+      meld: {
+        type: "royal-marriage",
+        cards: ["KS", "QS"],
+      },
       player: 0,
       points: [
         [40, 0],
@@ -349,12 +344,10 @@ describe("integration test", () => {
       ],
     });
     await player3.waitForMessage("gameplay.pre_play.player_meld_submitted", {
-      meld: [
-        {
-          type: "royal-marriage",
-          cards: ["KS", "QS"],
-        },
-      ],
+      meld: {
+        type: "royal-marriage",
+        cards: ["KS", "QS"],
+      },
       player: 0,
       points: [
         [40, 0],
@@ -367,23 +360,19 @@ describe("integration test", () => {
         event: "gameplay.pre_play.player_add_meld",
         data: {
           player: 1,
-          meld: [
-            {
-              type: "marriage",
-              cards: ["KC", "QC"],
-            },
-          ],
+          meld: {
+            type: "marriage",
+            cards: ["KC", "QC"],
+          },
         },
       })
     );
 
     await player0.waitForMessage("gameplay.pre_play.player_meld_submitted", {
-      meld: [
-        {
-          type: "marriage",
-          cards: ["KC", "QC"],
-        },
-      ],
+      meld: {
+        type: "marriage",
+        cards: ["KC", "QC"],
+      },
       player: 1,
       points: [
         [40, 0],
@@ -391,12 +380,10 @@ describe("integration test", () => {
       ],
     });
     await player2.waitForMessage("gameplay.pre_play.player_meld_submitted", {
-      meld: [
-        {
-          type: "marriage",
-          cards: ["KC", "QC"],
-        },
-      ],
+      meld: {
+        type: "marriage",
+        cards: ["KC", "QC"],
+      },
       player: 1,
       points: [
         [40, 0],
@@ -404,12 +391,10 @@ describe("integration test", () => {
       ],
     });
     await player3.waitForMessage("gameplay.pre_play.player_meld_submitted", {
-      meld: [
-        {
-          type: "marriage",
-          cards: ["KC", "QC"],
-        },
-      ],
+      meld: {
+        type: "marriage",
+        cards: ["KC", "QC"],
+      },
       player: 1,
       points: [
         [40, 0],
@@ -422,23 +407,19 @@ describe("integration test", () => {
         event: "gameplay.pre_play.player_add_meld",
         data: {
           player: 2,
-          meld: [
-            {
-              type: "trump-nine",
-              cards: ["9C"],
-            },
-          ],
+          meld: {
+            type: "trump-nine",
+            cards: ["9C"],
+          },
         },
       })
     );
 
     await player0.waitForMessage("gameplay.pre_play.player_meld_submitted", {
-      meld: [
-        {
-          type: "trump-nine",
-          cards: ["9C"],
-        },
-      ],
+      meld: {
+        type: "trump-nine",
+        cards: ["9C"],
+      },
       player: 2,
       points: [
         [50, 0],
@@ -446,12 +427,10 @@ describe("integration test", () => {
       ],
     });
     await player1.waitForMessage("gameplay.pre_play.player_meld_submitted", {
-      meld: [
-        {
-          type: "trump-nine",
-          cards: ["9C"],
-        },
-      ],
+      meld: {
+        type: "trump-nine",
+        cards: ["9C"],
+      },
       player: 2,
       points: [
         [50, 0],
@@ -459,35 +438,15 @@ describe("integration test", () => {
       ],
     });
     await player3.waitForMessage("gameplay.pre_play.player_meld_submitted", {
-      meld: [
-        {
-          type: "trump-nine",
-          cards: ["9C"],
-        },
-      ],
+      meld: {
+        type: "trump-nine",
+        cards: ["9C"],
+      },
       player: 2,
       points: [
         [50, 0],
         [20, 0],
       ],
     });
-
-    // player 0 forgot they had a pinochle
-    // player0.send(
-    //   JSON.stringify({
-    //     event: "gameplay.pre_play.edit_meld",
-    //     data: {
-    //       player: 0,
-    //     },
-    //   })
-    // );
-
-    // await player3.waitForMessage("gameplay.pre_play.player_meld_edit", {
-    //   player: 0,
-    //   points: [
-    //     [10, 0],
-    //     [20, 0],
-    //   ],
-    // });
   });
 });

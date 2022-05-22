@@ -55,7 +55,7 @@ export type PrePlayEvents =
   | {
       type: "ADD_MELD";
       player: number;
-      meld: Meld[];
+      meld: Meld;
     }
   | { type: "EDIT_MELD"; player: number }
   | { type: "PLAYER_READY" }

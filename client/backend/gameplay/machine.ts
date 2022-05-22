@@ -11,7 +11,7 @@ import {
   getPlayPoints,
   getWinningPlay,
 } from "./GameplayHelpers";
-import { sumPlayerMelds } from "./Meld";
+import { getMeldPoints, sumPlayerMelds } from "./Meld";
 
 import { GameplayContext, GameEvents, Play } from "./types";
 
@@ -447,7 +447,9 @@ const GameMachine = createMachine(
         // save player's meld, update points for the team
         meld: (ctx, evt) => {
           const { meld, player } = evt;
-          return ctx.meld.map((entry, idx) => (idx === player ? meld : entry));
+          return ctx.meld.map((entry, idx) =>
+            idx === player ? [...entry, meld] : entry
+          );
         },
         round: (ctx, evt) => {
           const { player, meld } = evt;
@@ -455,7 +457,7 @@ const GameMachine = createMachine(
             points: ctx.round.points.map((points, idx) => {
               return idx === getPlayerTeam(player)
                 ? [
-                    points[0] + sumPlayerMelds(meld),
+                    points[0] + getMeldPoints(meld),
                     points[1], // points[0] are meld points, points[1] are play points
                   ]
                 : points;
