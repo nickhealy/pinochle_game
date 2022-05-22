@@ -4,7 +4,7 @@ import { createGameplayUpdate } from "./events";
 import { WINNING_SCORE } from "./constants";
 import Deck, { Suit } from "./Deck";
 import {
-  allButCurrentPlayer,
+  allButPlayer,
   getIsLastTrick,
   getNextPlayer,
   getPlayerTeam,
@@ -158,7 +158,7 @@ const GameMachine = createMachine(
                     on: {
                       SUBMIT_MELDS: {
                         target: "two_submit",
-                        actions: "submitMeld",
+                        actions: ["submitMeld", "sendSubmitMeld"],
                       },
                       EDIT_MELD: {
                         target: "no_submit",
@@ -377,7 +377,7 @@ const GameMachine = createMachine(
       sendPlayerBid: sendParent((ctx, evt) =>
         createGameplayUpdate(
           "gameplay.bid.player_bid",
-          allButCurrentPlayer(ctx.turn),
+          allButPlayer(ctx.turn),
           {
             player: ctx.turn,
             bid: evt.value,
@@ -396,7 +396,7 @@ const GameMachine = createMachine(
       sendPlayerFold: sendParent((ctx, evt) =>
         createGameplayUpdate(
           "gameplay.bid.player_fold",
-          allButCurrentPlayer(ctx.turn),
+          allButPlayer(ctx.turn),
           {
             player: ctx.turn,
           }
@@ -434,7 +434,7 @@ const GameMachine = createMachine(
       sendTrumpChosen: sendParent((ctx, evt) =>
         createGameplayUpdate(
           "gameplay.pre_play.trump_chosen",
-          allButCurrentPlayer(ctx.turn),
+          allButPlayer(ctx.turn),
           { trump: evt.trump }
         )
       ),
@@ -468,7 +468,7 @@ const GameMachine = createMachine(
       sendSubmitMeld: sendParent((ctx, evt) =>
         createGameplayUpdate(
           "gameplay.pre_play.player_meld_submitted",
-          allButCurrentPlayer(ctx.turn),
+          allButPlayer(evt.player),
           { melds: evt.melds, player: evt.player, points: ctx.round.points }
         )
       ),

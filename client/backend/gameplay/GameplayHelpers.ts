@@ -33,5 +33,5 @@ export const getIsLastTrick = (playerHands: CardKeys[][]) =>
 export const getNextPlayer = (currPlayer: number) =>
   (currPlayer + 1) % NUM_PLAYERS;
 
-export const allButCurrentPlayer = (currentPlayer: number) =>
-  [...Array(NUM_PLAYERS).keys()].filter((_, idx) => idx !== currentPlayer);
+export const allButPlayer = (player: number) =>
+  [...Array(NUM_PLAYERS).keys()].filter((_, idx) => idx !== player);
