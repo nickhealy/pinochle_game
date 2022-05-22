@@ -64,10 +64,15 @@ const processIncomingGameEvent = (
         type: "TRUMP_CHOSEN",
         trump: e.data.trump,
       });
-    case IncomingGameplayEvents.MELD_SUBMITTED:
+    case IncomingGameplayEvents.ADD_MELD:
       return createIncomingGameplayEvent({
-        type: "SUBMIT_MELDS",
-        melds: e.data.melds,
+        type: "ADD_MELD",
+        meld: e.data.meld,
+        player: e.data.player,
+      });
+    case IncomingGameplayEvents.EDIT_MELD:
+      return createIncomingGameplayEvent({
+        type: "EDIT_MELD",
         player: e.data.player,
       });
     default:

@@ -309,10 +309,10 @@ describe("integration test", () => {
 
     player0.send(
       JSON.stringify({
-        event: "gameplay.pre_play.submit_meld",
+        event: "gameplay.pre_play.player_add_meld",
         data: {
           player: 0,
-          melds: [
+          meld: [
             {
               type: "royal-marriage",
               cards: ["KS", "QS"],
@@ -323,7 +323,7 @@ describe("integration test", () => {
     );
 
     await player1.waitForMessage("gameplay.pre_play.player_meld_submitted", {
-      melds: [
+      meld: [
         {
           type: "royal-marriage",
           cards: ["KS", "QS"],
@@ -336,7 +336,7 @@ describe("integration test", () => {
       ],
     });
     await player2.waitForMessage("gameplay.pre_play.player_meld_submitted", {
-      melds: [
+      meld: [
         {
           type: "royal-marriage",
           cards: ["KS", "QS"],
@@ -349,7 +349,7 @@ describe("integration test", () => {
       ],
     });
     await player3.waitForMessage("gameplay.pre_play.player_meld_submitted", {
-      melds: [
+      meld: [
         {
           type: "royal-marriage",
           cards: ["KS", "QS"],
@@ -361,5 +361,133 @@ describe("integration test", () => {
         [0, 0],
       ],
     });
+
+    player1.send(
+      JSON.stringify({
+        event: "gameplay.pre_play.player_add_meld",
+        data: {
+          player: 1,
+          meld: [
+            {
+              type: "marriage",
+              cards: ["KC", "QC"],
+            },
+          ],
+        },
+      })
+    );
+
+    await player0.waitForMessage("gameplay.pre_play.player_meld_submitted", {
+      meld: [
+        {
+          type: "marriage",
+          cards: ["KC", "QC"],
+        },
+      ],
+      player: 1,
+      points: [
+        [40, 0],
+        [20, 0],
+      ],
+    });
+    await player2.waitForMessage("gameplay.pre_play.player_meld_submitted", {
+      meld: [
+        {
+          type: "marriage",
+          cards: ["KC", "QC"],
+        },
+      ],
+      player: 1,
+      points: [
+        [40, 0],
+        [20, 0],
+      ],
+    });
+    await player3.waitForMessage("gameplay.pre_play.player_meld_submitted", {
+      meld: [
+        {
+          type: "marriage",
+          cards: ["KC", "QC"],
+        },
+      ],
+      player: 1,
+      points: [
+        [40, 0],
+        [20, 0],
+      ],
+    });
+
+    player2.send(
+      JSON.stringify({
+        event: "gameplay.pre_play.player_add_meld",
+        data: {
+          player: 2,
+          meld: [
+            {
+              type: "trump-nine",
+              cards: ["9C"],
+            },
+          ],
+        },
+      })
+    );
+
+    await player0.waitForMessage("gameplay.pre_play.player_meld_submitted", {
+      meld: [
+        {
+          type: "trump-nine",
+          cards: ["9C"],
+        },
+      ],
+      player: 2,
+      points: [
+        [50, 0],
+        [20, 0],
+      ],
+    });
+    await player1.waitForMessage("gameplay.pre_play.player_meld_submitted", {
+      meld: [
+        {
+          type: "trump-nine",
+          cards: ["9C"],
+        },
+      ],
+      player: 2,
+      points: [
+        [50, 0],
+        [20, 0],
+      ],
+    });
+    await player3.waitForMessage("gameplay.pre_play.player_meld_submitted", {
+      meld: [
+        {
+          type: "trump-nine",
+          cards: ["9C"],
+        },
+      ],
+      player: 2,
+      points: [
+        [50, 0],
+        [20, 0],
+      ],
+    });
+
+    // player 0 forgot they had a pinochle
+    // player0.send(
+    //   JSON.stringify({
+    //     event: "gameplay.pre_play.edit_meld",
+    //     data: {
+    //       player: 0,
+    //     },
+    //   })
+    // );
+
+    // await player3.waitForMessage("gameplay.pre_play.player_meld_edit", {
+    //   player: 0,
+    //   points: [
+    //     [10, 0],
+    //     [20, 0],
+    //   ],
+    // });
   });
 });

@@ -33,7 +33,7 @@ const GameMachine = createMachine(
         bids: [0, 0, 0, 0],
         bidWinner: 0,
       },
-      melds: [[], [], [], []],
+      meld: [[], [], [], []],
       play: {
         currentPlays: [],
         pastPlays: [],
@@ -148,45 +148,45 @@ const GameMachine = createMachine(
                 states: {
                   no_submit: {
                     on: {
-                      SUBMIT_MELDS: {
+                      ADD_MELD: {
                         target: "one_submit",
-                        actions: ["submitMeld", "sendSubmitMeld"],
+                        actions: ["addMeld", "sendAddMeld"],
                       },
                     },
                   },
                   one_submit: {
                     on: {
-                      SUBMIT_MELDS: {
+                      ADD_MELD: {
                         target: "two_submit",
-                        actions: ["submitMeld", "sendSubmitMeld"],
+                        actions: ["addMeld", "sendAddMeld"],
                       },
                       EDIT_MELD: {
                         target: "no_submit",
-                        actions: "editMeld",
+                        actions: ["editMeld", "sendEditMeld"],
                       },
                     },
                   },
                   two_submit: {
                     on: {
-                      SUBMIT_MELDS: {
+                      ADD_MELD: {
                         target: "three_submit",
-                        actions: "submitMeld",
+                        actions: ["addMeld", "sendAddMeld"],
                       },
                       EDIT_MELD: {
                         target: "one_submit",
-                        actions: "editMeld",
+                        actions: ["editMeld", "sendEditMeld"],
                       },
                     },
                   },
                   three_submit: {
                     on: {
-                      SUBMIT_MELDS: {
+                      ADD_MELD: {
                         target: "#prePlayMachine.ready_confirm",
-                        actions: "submitMeld",
+                        actions: "addMeld",
                       },
                       EDIT_MELD: {
                         target: "two_submit",
-                        actions: "editMeld",
+                        actions: ["editMeld", "sendEditMeld"],
                       },
                     },
                   },
@@ -441,23 +441,21 @@ const GameMachine = createMachine(
       promptMeldSubmission: sendParent(() =>
         createGameplayUpdate("gameplay.pre_play.awaiting_melds")
       ),
-      submitMeld: assign({
-        // To do: think about rejecting invalid melds, and about preventing
-        // duplicate melds
-        // save player's melds, update points for the team
-        melds: (ctx, evt) => {
-          const { melds, player } = evt;
-          return ctx.melds.map((entry, idx) =>
-            idx === player ? melds : entry
-          );
+      addMeld: assign({
+        // To do: think about rejecting invalid meld, and about preventing
+        // duplicate meld
+        // save player's meld, update points for the team
+        meld: (ctx, evt) => {
+          const { meld, player } = evt;
+          return ctx.meld.map((entry, idx) => (idx === player ? meld : entry));
         },
         round: (ctx, evt) => {
-          const { player, melds } = evt;
+          const { player, meld } = evt;
           return {
             points: ctx.round.points.map((points, idx) => {
               return idx === getPlayerTeam(player)
                 ? [
-                    points[0] + sumPlayerMelds(melds),
+                    points[0] + sumPlayerMelds(meld),
                     points[1], // points[0] are meld points, points[1] are play points
                   ]
                 : points;
@@ -465,21 +463,21 @@ const GameMachine = createMachine(
           };
         },
       }),
-      sendSubmitMeld: sendParent((ctx, evt) =>
+      sendAddMeld: sendParent((ctx, evt) =>
         createGameplayUpdate(
           "gameplay.pre_play.player_meld_submitted",
           allButPlayer(evt.player),
-          { melds: evt.melds, player: evt.player, points: ctx.round.points }
+          { meld: evt.meld, player: evt.player, points: ctx.round.points }
         )
       ),
       editMeld: assign({
-        melds: (ctx, evt) => {
+        meld: (ctx, evt) => {
           const { player } = evt;
-          return ctx.melds.map((entry, idx) => (idx === player ? [] : entry));
+          return ctx.meld.map((entry, idx) => (idx === player ? [] : entry));
         },
         round: (ctx, evt) => {
           const { player } = evt;
-          const playerMelds = ctx.melds[player];
+          const playerMelds = ctx.meld[player];
           return {
             points: ctx.round.points.map((points, idx) => {
               return idx === getPlayerTeam(player)
@@ -492,6 +490,7 @@ const GameMachine = createMachine(
           };
         },
       }),
+      // sendEditMeld: sendParent((ctx, evt) => createGameplayUpdate),
       playCard: assign({
         play: (ctx, evt) => {
           const { player, key } = evt;
@@ -568,7 +567,7 @@ const GameMachine = createMachine(
             ...ctx.game,
             score: ctx.game.score.map(
               (score, idx) =>
-                score + ctx.round.points[idx][0] + ctx.round.points[idx][1] // sum up the melds and play points
+                score + ctx.round.points[idx][0] + ctx.round.points[idx][1] // sum up the meld and play points
             ),
           };
         },
@@ -586,7 +585,7 @@ const GameMachine = createMachine(
           bids: [0, 0, 0, 0],
           bidWinner: 0,
         }),
-        melds: (_ctx, _) => [[], [], [], []],
+        meld: (_ctx, _) => [[], [], [], []],
         round: (_ctx, _) => ({
           points: [
             [0, 0],

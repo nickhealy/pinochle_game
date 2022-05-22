@@ -35,7 +35,7 @@ interface GameScoreContext {
 export type GameplayContext = {
   turn: TurnContext;
   bid: BidContext;
-  melds: MeldContext;
+  meld: MeldContext;
   play: PlayContext;
   round: RoundScoreContext;
   game: GameScoreContext;
@@ -53,9 +53,9 @@ export type BidEvents =
 export type PrePlayEvents =
   | { type: "TRUMP_CHOSEN"; trump: Suit }
   | {
-      type: "SUBMIT_MELDS";
+      type: "ADD_MELD";
       player: number;
-      melds: Meld[];
+      meld: Meld[];
     }
   | { type: "EDIT_MELD"; player: number }
   | { type: "PLAYER_READY" }
