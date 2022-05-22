@@ -29,6 +29,3 @@ const POINTS_BY_MELD_TYPE: Record<MeldType, number> = {
 };
 
 export const getMeldPoints = (meld: Meld) => POINTS_BY_MELD_TYPE[meld.type];
-
-export const sumPlayerMelds = (melds: Meld[]) =>
-  melds.reduce((acc, { type }) => acc + getMeldPoints(type), 0);

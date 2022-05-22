@@ -57,7 +57,6 @@ export type PrePlayEvents =
       player: number;
       meld: Meld;
     }
-  | { type: "EDIT_MELD"; player: number }
   | { type: "PLAYER_READY" }
   | { type: "PLAYER_REJECT"; player: number }
   | { type: "REJECT" };

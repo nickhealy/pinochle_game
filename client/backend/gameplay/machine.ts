@@ -11,7 +11,7 @@ import {
   getPlayPoints,
   getWinningPlay,
 } from "./GameplayHelpers";
-import { getMeldPoints, sumPlayerMelds } from "./Meld";
+import { getMeldPoints } from "./Meld";
 
 import { GameplayContext, GameEvents, Play } from "./types";
 
@@ -160,10 +160,6 @@ const GameMachine = createMachine(
                         target: "two_submit",
                         actions: ["addMeld", "sendAddMeld"],
                       },
-                      EDIT_MELD: {
-                        target: "no_submit",
-                        actions: ["editMeld", "sendEditMeld"],
-                      },
                     },
                   },
                   two_submit: {
@@ -172,10 +168,6 @@ const GameMachine = createMachine(
                         target: "three_submit",
                         actions: ["addMeld", "sendAddMeld"],
                       },
-                      EDIT_MELD: {
-                        target: "one_submit",
-                        actions: ["editMeld", "sendEditMeld"],
-                      },
                     },
                   },
                   three_submit: {
@@ -183,10 +175,6 @@ const GameMachine = createMachine(
                       ADD_MELD: {
                         target: "#prePlayMachine.ready_confirm",
                         actions: "addMeld",
-                      },
-                      EDIT_MELD: {
-                        target: "two_submit",
-                        actions: ["editMeld", "sendEditMeld"],
                       },
                     },
                   },
@@ -227,7 +215,6 @@ const GameMachine = createMachine(
                 on: {
                   PLAYER_REJECT: {
                     target: "#meldSubmissionMachine.three_submit",
-                    actions: "editMeld",
                   },
                 },
               },
@@ -472,27 +459,6 @@ const GameMachine = createMachine(
           { meld: evt.meld, player: evt.player, points: ctx.round.points }
         )
       ),
-      editMeld: assign({
-        meld: (ctx, evt) => {
-          const { player } = evt;
-          return ctx.meld.map((entry, idx) => (idx === player ? [] : entry));
-        },
-        round: (ctx, evt) => {
-          const { player } = evt;
-          const playerMelds = ctx.meld[player];
-          return {
-            points: ctx.round.points.map((points, idx) => {
-              return idx === getPlayerTeam(player)
-                ? [
-                    points[0] - sumPlayerMelds(playerMelds),
-                    points[1], // points[0] are meld points, points[1] are play points
-                  ]
-                : points;
-            }),
-          };
-        },
-      }),
-      // sendEditMeld: sendParent((ctx, evt) => createGameplayUpdate),
       playCard: assign({
         play: (ctx, evt) => {
           const { player, key } = evt;

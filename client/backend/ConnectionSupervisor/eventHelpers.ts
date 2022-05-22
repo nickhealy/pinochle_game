@@ -70,11 +70,6 @@ const processIncomingGameEvent = (
         meld: e.data.meld,
         player: e.data.player,
       });
-    case IncomingGameplayEvents.EDIT_MELD:
-      return createIncomingGameplayEvent({
-        type: "EDIT_MELD",
-        player: e.data.player,
-      });
     default:
       console.log("incoming game event type not recognized : ", e.event);
       return null;
