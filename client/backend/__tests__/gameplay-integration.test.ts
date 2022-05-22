@@ -304,5 +304,62 @@ describe("integration test", () => {
     await player1.waitForMessage("gameplay.pre_play.awaiting_melds");
     await player2.waitForMessage("gameplay.pre_play.awaiting_melds");
     await player3.waitForMessage("gameplay.pre_play.awaiting_melds");
+
+    // meld submission
+
+    player0.send(
+      JSON.stringify({
+        event: "gameplay.pre_play.submit_meld",
+        data: {
+          player: 0,
+          melds: [
+            {
+              type: "royal-marriage",
+              cards: ["KS", "QS"],
+            },
+          ],
+        },
+      })
+    );
+
+    await player1.waitForMessage("gameplay.pre_play.player_meld_submitted", {
+      melds: [
+        {
+          type: "royal-marriage",
+          cards: ["KS", "QS"],
+        },
+      ],
+      player: 0,
+      points: [
+        [40, 0],
+        [0, 0],
+      ],
+    });
+    await player2.waitForMessage("gameplay.pre_play.player_meld_submitted", {
+      melds: [
+        {
+          type: "royal-marriage",
+          cards: ["KS", "QS"],
+        },
+      ],
+      player: 0,
+      points: [
+        [40, 0],
+        [0, 0],
+      ],
+    });
+    await player3.waitForMessage("gameplay.pre_play.player_meld_submitted", {
+      melds: [
+        {
+          type: "royal-marriage",
+          cards: ["KS", "QS"],
+        },
+      ],
+      player: 0,
+      points: [
+        [40, 0],
+        [0, 0],
+      ],
+    });
   });
 });

@@ -64,6 +64,12 @@ const processIncomingGameEvent = (
         type: "TRUMP_CHOSEN",
         trump: e.data.trump,
       });
+    case IncomingGameplayEvents.MELD_SUBMITTED:
+      return createIncomingGameplayEvent({
+        type: "SUBMIT_MELDS",
+        melds: e.data.melds,
+        player: e.data.player,
+      });
     default:
       console.log("incoming game event type not recognized : ", e.event);
       return null;

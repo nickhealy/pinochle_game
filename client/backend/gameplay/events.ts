@@ -16,7 +16,7 @@ export enum IncomingGameplayEvents {
   BID = "gameplay.bid.player_bid",
   FOLD = "gameplay.bid.player_fold",
   TRUMP_CHOSEN = "gameplay.pre_play.trump_chosen",
-  MELD_SUBMITTED = "submit_meld",
+  MELD_SUBMITTED = "gameplay.pre_play.submit_meld",
   EDIT_MELD = "edit_meld",
   READY = "ready_start",
   REJECT = "rejec_startt",

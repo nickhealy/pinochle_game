@@ -150,7 +150,7 @@ const GameMachine = createMachine(
                     on: {
                       SUBMIT_MELDS: {
                         target: "one_submit",
-                        actions: "submitMeld",
+                        actions: ["submitMeld", "sendSubmitMeld"],
                       },
                     },
                   },
@@ -465,6 +465,13 @@ const GameMachine = createMachine(
           };
         },
       }),
+      sendSubmitMeld: sendParent((ctx, evt) =>
+        createGameplayUpdate(
+          "gameplay.pre_play.player_meld_submitted",
+          allButCurrentPlayer(ctx.turn),
+          { melds: evt.melds, player: evt.player, points: ctx.round.points }
+        )
+      ),
       editMeld: assign({
         melds: (ctx, evt) => {
           const { player } = evt;
