@@ -472,5 +472,140 @@ describe("integration test", () => {
     await player3.waitForMessage("gameplay.pre_play.player_melds_committed", {
       player: 2,
     });
+
+    // player0 now remembers he has a pinochle
+    player0.send(
+      JSON.stringify({
+        event: "gameplay.pre_play.player_add_meld",
+        data: {
+          player: 0,
+          meld: {
+            type: "pinochle",
+            cards: ["QS", "JD"],
+          },
+        },
+      })
+    );
+
+    await player1.waitForMessage("gameplay.pre_play.player_meld_added", {
+      meld: {
+        type: "pinochle",
+        cards: ["QS", "JD"],
+      },
+      player: 0,
+      points: [
+        [90, 0],
+        [20, 0],
+      ],
+    });
+    await player2.waitForMessage("gameplay.pre_play.player_meld_added", {
+      meld: {
+        type: "pinochle",
+        cards: ["QS", "JD"],
+      },
+      player: 0,
+      points: [
+        [90, 0],
+        [20, 0],
+      ],
+    });
+    await player3.waitForMessage("gameplay.pre_play.player_meld_added", {
+      meld: {
+        type: "pinochle",
+        cards: ["QS", "JD"],
+      },
+      player: 0,
+      points: [
+        [90, 0],
+        [20, 0],
+      ],
+    });
+
+    // ... and signals he is finished
+    player0.send(
+      JSON.stringify({
+        event: "gameplay.pre_play.player_commit_melds",
+        data: {
+          player: 0,
+        },
+      })
+    );
+
+    await player1.waitForMessage("gameplay.pre_play.player_melds_committed", {
+      player: 0,
+    });
+    await player2.waitForMessage("gameplay.pre_play.player_melds_committed", {
+      player: 0,
+    });
+    await player3.waitForMessage("gameplay.pre_play.player_melds_committed", {
+      player: 0,
+    });
+
+    // player3 submits his 9 trump
+    player3.send(
+      JSON.stringify({
+        event: "gameplay.pre_play.player_add_meld",
+        data: {
+          player: 3,
+          meld: {
+            type: "trump-nine",
+            cards: ["9S"],
+          },
+        },
+      })
+    );
+
+    await player0.waitForMessage("gameplay.pre_play.player_meld_added", {
+      meld: {
+        type: "trump-nine",
+        cards: ["9S"],
+      },
+      player: 3,
+      points: [
+        [90, 0],
+        [30, 0],
+      ],
+    });
+    await player1.waitForMessage("gameplay.pre_play.player_meld_added", {
+      meld: {
+        type: "trump-nine",
+        cards: ["9S"],
+      },
+      player: 3,
+      points: [
+        [90, 0],
+        [30, 0],
+      ],
+    });
+    await player2.waitForMessage("gameplay.pre_play.player_meld_added", {
+      meld: {
+        type: "trump-nine",
+        cards: ["9S"],
+      },
+      player: 3,
+      points: [
+        [90, 0],
+        [30, 0],
+      ],
+    });
+
+    player3.send(
+      JSON.stringify({
+        event: "gameplay.pre_play.player_commit_melds",
+        data: {
+          player: 3,
+        },
+      })
+    );
+
+    await player0.waitForMessage("gameplay.pre_play.player_melds_committed", {
+      player: 3,
+    });
+    await player1.waitForMessage("gameplay.pre_play.player_melds_committed", {
+      player: 3,
+    });
+    await player2.waitForMessage("gameplay.pre_play.player_melds_committed", {
+      player: 3,
+    });
   });
 });
