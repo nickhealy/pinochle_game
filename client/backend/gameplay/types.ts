@@ -57,9 +57,10 @@ export type PrePlayEvents =
       player: number;
       meld: Meld;
     }
-  | { type: "PLAYER_READY" }
-  | { type: "PLAYER_REJECT"; player: number }
-  | { type: "REJECT" };
+  | {
+      type: "FINALIZE_MELDS";
+      player: number;
+    };
 
 export type GameControlEvents = { type: "START_GAME" } | { type: "NEW_GAME" };
 

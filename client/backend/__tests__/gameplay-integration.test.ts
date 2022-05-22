@@ -320,7 +320,7 @@ describe("integration test", () => {
       })
     );
 
-    await player1.waitForMessage("gameplay.pre_play.player_meld_submitted", {
+    await player1.waitForMessage("gameplay.pre_play.player_meld_added", {
       meld: {
         type: "royal-marriage",
         cards: ["KS", "QS"],
@@ -332,7 +332,7 @@ describe("integration test", () => {
         [0, 0],
       ],
     });
-    await player2.waitForMessage("gameplay.pre_play.player_meld_submitted", {
+    await player2.waitForMessage("gameplay.pre_play.player_meld_added", {
       meld: {
         type: "royal-marriage",
         cards: ["KS", "QS"],
@@ -343,7 +343,7 @@ describe("integration test", () => {
         [0, 0],
       ],
     });
-    await player3.waitForMessage("gameplay.pre_play.player_meld_submitted", {
+    await player3.waitForMessage("gameplay.pre_play.player_meld_added", {
       meld: {
         type: "royal-marriage",
         cards: ["KS", "QS"],
@@ -368,7 +368,7 @@ describe("integration test", () => {
       })
     );
 
-    await player0.waitForMessage("gameplay.pre_play.player_meld_submitted", {
+    await player0.waitForMessage("gameplay.pre_play.player_meld_added", {
       meld: {
         type: "marriage",
         cards: ["KC", "QC"],
@@ -379,7 +379,7 @@ describe("integration test", () => {
         [20, 0],
       ],
     });
-    await player2.waitForMessage("gameplay.pre_play.player_meld_submitted", {
+    await player2.waitForMessage("gameplay.pre_play.player_meld_added", {
       meld: {
         type: "marriage",
         cards: ["KC", "QC"],
@@ -390,7 +390,7 @@ describe("integration test", () => {
         [20, 0],
       ],
     });
-    await player3.waitForMessage("gameplay.pre_play.player_meld_submitted", {
+    await player3.waitForMessage("gameplay.pre_play.player_meld_added", {
       meld: {
         type: "marriage",
         cards: ["KC", "QC"],
@@ -415,7 +415,7 @@ describe("integration test", () => {
       })
     );
 
-    await player0.waitForMessage("gameplay.pre_play.player_meld_submitted", {
+    await player0.waitForMessage("gameplay.pre_play.player_meld_added", {
       meld: {
         type: "trump-nine",
         cards: ["9C"],
@@ -426,7 +426,7 @@ describe("integration test", () => {
         [20, 0],
       ],
     });
-    await player1.waitForMessage("gameplay.pre_play.player_meld_submitted", {
+    await player1.waitForMessage("gameplay.pre_play.player_meld_added", {
       meld: {
         type: "trump-nine",
         cards: ["9C"],
@@ -437,7 +437,7 @@ describe("integration test", () => {
         [20, 0],
       ],
     });
-    await player3.waitForMessage("gameplay.pre_play.player_meld_submitted", {
+    await player3.waitForMessage("gameplay.pre_play.player_meld_added", {
       meld: {
         type: "trump-nine",
         cards: ["9C"],

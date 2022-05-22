@@ -148,73 +148,36 @@ const GameMachine = createMachine(
                 states: {
                   no_submit: {
                     on: {
-                      ADD_MELD: {
+                      FINALIZE_MELDS: {
                         target: "one_submit",
-                        actions: ["addMeld", "sendAddMeld"],
                       },
                     },
                   },
                   one_submit: {
                     on: {
-                      ADD_MELD: {
+                      FINALIZE_MELDS: {
                         target: "two_submit",
-                        actions: ["addMeld", "sendAddMeld"],
                       },
                     },
                   },
                   two_submit: {
                     on: {
-                      ADD_MELD: {
+                      FINALIZE_MELDS: {
                         target: "three_submit",
-                        actions: ["addMeld", "sendAddMeld"],
                       },
                     },
                   },
                   three_submit: {
                     on: {
-                      ADD_MELD: {
-                        target: "#prePlayMachine.ready_confirm",
-                        actions: "addMeld",
-                      },
-                    },
-                  },
-                },
-              },
-              ready_confirm: {
-                initial: "zero_confirm",
-                states: {
-                  zero_confirm: {
-                    on: {
-                      PLAYER_READY: {
-                        target: "one_confirm",
-                      },
-                    },
-                  },
-                  one_confirm: {
-                    on: {
-                      PLAYER_READY: {
-                        target: "two_confirm",
-                      },
-                    },
-                  },
-                  two_confirm: {
-                    on: {
-                      PLAYER_READY: {
-                        target: "three_confirm",
-                      },
-                    },
-                  },
-                  three_confirm: {
-                    on: {
-                      PLAYER_READY: {
+                      FINALIZE_MELDS: {
                         target: "#playMachine",
                       },
                     },
                   },
                 },
                 on: {
-                  PLAYER_REJECT: {
-                    target: "#meldSubmissionMachine.three_submit",
+                  ADD_MELD: {
+                    actions: ["addMeld", "sendAddMeld"],
                   },
                 },
               },
@@ -454,7 +417,7 @@ const GameMachine = createMachine(
       }),
       sendAddMeld: sendParent((ctx, evt) =>
         createGameplayUpdate(
-          "gameplay.pre_play.player_meld_submitted",
+          "gameplay.pre_play.player_meld_added",
           allButPlayer(evt.player),
           { meld: evt.meld, player: evt.player, points: ctx.round.points }
         )
