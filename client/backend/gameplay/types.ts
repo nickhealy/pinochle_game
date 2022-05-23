@@ -15,6 +15,7 @@ export interface Play {
 }
 
 interface PlayContext {
+  winning_player: number | null;
   currentPlays: Play[];
   pastPlays: Play[][];
   playerHands: CardKeys[][];

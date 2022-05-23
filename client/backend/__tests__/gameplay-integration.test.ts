@@ -632,5 +632,145 @@ describe("integration test", () => {
     await player1.waitForMessage("gameplay.play.play_start");
     await player2.waitForMessage("gameplay.play.play_start");
     await player3.waitForMessage("gameplay.play.play_start");
+
+    // the play
+
+    // round one
+
+    // player 0 won the bid, so they should play first
+    await player0.waitForMessage("gameplay.play.player_turn", { player: 0 });
+    await player1.waitForMessage("gameplay.play.player_turn", { player: 0 });
+    await player2.waitForMessage("gameplay.play.player_turn", { player: 0 });
+    await player3.waitForMessage("gameplay.play.player_turn", { player: 0 });
+
+    player0.send(
+      JSON.stringify({
+        event: "gameplay.play.player_play_card",
+        data: { card: "AC", player: 0 },
+      })
+    );
+
+    await player1.waitForMessage("gameplay.play.player_play_card", {
+      player: 0,
+      card: "AC",
+    });
+    await player2.waitForMessage("gameplay.play.player_play_card", {
+      player: 0,
+      card: "AC",
+    });
+    await player3.waitForMessage("gameplay.play.player_play_card", {
+      player: 0,
+      card: "AC",
+    });
+
+    await player0.waitForMessage("gameplay.play.player_turn", { player: 1 });
+    await player1.waitForMessage("gameplay.play.player_turn", { player: 1 });
+    await player2.waitForMessage("gameplay.play.player_turn", { player: 1 });
+    await player3.waitForMessage("gameplay.play.player_turn", { player: 1 });
+
+    player1.send(
+      JSON.stringify({
+        event: "gameplay.play.player_play_card",
+        data: { card: "QC", player: 1 },
+      })
+    );
+
+    await player0.waitForMessage("gameplay.play.player_play_card", {
+      player: 1,
+      card: "QC",
+    });
+    await player2.waitForMessage("gameplay.play.player_play_card", {
+      player: 1,
+      card: "QC",
+    });
+    await player3.waitForMessage("gameplay.play.player_play_card", {
+      player: 1,
+      card: "QC",
+    });
+
+    await player0.waitForMessage("gameplay.play.player_turn", { player: 2 });
+    await player1.waitForMessage("gameplay.play.player_turn", { player: 2 });
+    await player2.waitForMessage("gameplay.play.player_turn", { player: 2 });
+    await player3.waitForMessage("gameplay.play.player_turn", { player: 2 });
+
+    player2.send(
+      JSON.stringify({
+        event: "gameplay.play.player_play_card",
+        data: { card: "QC", player: 2 },
+      })
+    );
+
+    await player0.waitForMessage("gameplay.play.player_play_card", {
+      player: 2,
+      card: "QC",
+    });
+    await player1.waitForMessage("gameplay.play.player_play_card", {
+      player: 2,
+      card: "QC",
+    });
+    await player3.waitForMessage("gameplay.play.player_play_card", {
+      player: 2,
+      card: "QC",
+    });
+
+    await player0.waitForMessage("gameplay.play.player_turn", { player: 3 });
+    await player1.waitForMessage("gameplay.play.player_turn", { player: 3 });
+    await player2.waitForMessage("gameplay.play.player_turn", { player: 3 });
+    await player3.waitForMessage("gameplay.play.player_turn", { player: 3 });
+
+    player3.send(
+      JSON.stringify({
+        event: "gameplay.play.player_play_card",
+        data: { card: "9C", player: 3 },
+      })
+    );
+
+    await player0.waitForMessage("gameplay.play.player_play_card", {
+      player: 3,
+      card: "9C",
+    });
+    await player1.waitForMessage("gameplay.play.player_play_card", {
+      player: 3,
+      card: "9C",
+    });
+    await player2.waitForMessage("gameplay.play.player_play_card", {
+      player: 3,
+      card: "9C",
+    });
+
+    await player0.waitForMessage("gameplay.play.trick_end", {
+      winning_player: 0,
+      points: [
+        [90, 20],
+        [30, 0],
+      ],
+    });
+    await player1.waitForMessage("gameplay.play.trick_end", {
+      winning_player: 0,
+      points: [
+        [90, 20],
+        [30, 0],
+      ],
+    });
+    await player2.waitForMessage("gameplay.play.trick_end", {
+      winning_player: 0,
+      points: [
+        [90, 20],
+        [30, 0],
+      ],
+    });
+    await player3.waitForMessage("gameplay.play.trick_end", {
+      winning_player: 0,
+      points: [
+        [90, 20],
+        [30, 0],
+      ],
+    });
+
+    // player 0 won the trick, so he starts the next one
+    await player0.waitForMessage("gameplay.play.player_turn", { player: 0 });
+    await player1.waitForMessage("gameplay.play.player_turn", { player: 0 });
+    await player2.waitForMessage("gameplay.play.player_turn", { player: 0 });
+    await player3.waitForMessage("gameplay.play.player_turn", { player: 0 });
   });
 });

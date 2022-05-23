@@ -35,6 +35,7 @@ const GameMachine = createMachine(
       },
       meld: [[], [], [], []],
       play: {
+        winning_player: null,
         currentPlays: [],
         pastPlays: [],
         playerHands: [],
@@ -189,14 +190,19 @@ const GameMachine = createMachine(
           },
           play: {
             id: "playMachine",
-            entry: ["sendPlayStart"],
+            entry: ["sendPlayStart", "promptPlayTurn"],
             initial: "pos_a",
             states: {
               pos_a: {
                 on: {
                   PLAY_CARD: {
                     target: "pos_b",
-                    actions: ["playCard", "nextTurnPlay"],
+                    actions: [
+                      "playCard",
+                      "sendPlayerPlayCard",
+                      "nextTurnPlay",
+                      "promptPlayTurn",
+                    ],
                   },
                 },
               },
@@ -204,7 +210,12 @@ const GameMachine = createMachine(
                 on: {
                   PLAY_CARD: {
                     target: "pos_c",
-                    actions: ["playCard", "nextTurnPlay"],
+                    actions: [
+                      "playCard",
+                      "sendPlayerPlayCard",
+                      "nextTurnPlay",
+                      "promptPlayTurn",
+                    ],
                   },
                 },
               },
@@ -212,23 +223,34 @@ const GameMachine = createMachine(
                 on: {
                   PLAY_CARD: {
                     target: "pos_d",
-                    actions: ["playCard", "nextTurnPlay"],
+                    actions: [
+                      "playCard",
+                      "sendPlayerPlayCard",
+                      "nextTurnPlay",
+                      "promptPlayTurn",
+                    ],
                   },
                 },
               },
               pos_d: {
                 on: {
-                  PLAY_CARD: { target: "trick_end", actions: "playCard" },
+                  PLAY_CARD: {
+                    target: "trick_end",
+                    actions: ["playCard", "sendPlayerPlayCard"],
+                  },
                 },
               },
               trick_end: {
-                entry: ["tallyTrickPoints"],
+                entry: ["saveTrickWinner", "tallyTrickPoints", "sendTrickEnd"],
                 always: [
                   {
                     target: "#gameMachine.round_end_pseudo_state",
                     cond: "isPlayOver",
                   },
-                  { target: "pos_a", actions: "newTrick" },
+                  {
+                    target: "pos_a",
+                    actions: ["newTrick", "promptPlayTurn"],
+                  },
                 ],
               },
             },
@@ -437,6 +459,11 @@ const GameMachine = createMachine(
       sendPlayStart: sendParent((ctx, evt) =>
         createGameplayUpdate("gameplay.play.play_start", null)
       ),
+      promptPlayTurn: sendParent((ctx, evt) =>
+        createGameplayUpdate("gameplay.play.player_turn", null, {
+          player: ctx.turn,
+        })
+      ),
       playCard: assign({
         play: (ctx, evt) => {
           const { player, key } = evt;
@@ -452,30 +479,56 @@ const GameMachine = createMachine(
           };
         },
       }),
+      sendPlayerPlayCard: sendParent((ctx, evt) =>
+        createGameplayUpdate(
+          "gameplay.play.player_play_card",
+          allButPlayer(evt.player),
+          { player: evt.player, card: evt.key }
+        )
+      ),
       nextTurnPlay: assign({
         turn: (ctx, _) => getNextPlayer(ctx.turn),
       }),
-      tallyTrickPoints: assign({
-        round: (ctx, _) => {
+      saveTrickWinner: assign({
+        play: (ctx, _) => {
           const { currentPlays, trump } = ctx.play;
           const { player: winningPlayer } = getWinningPlay(
             currentPlays,
             // basically asserting that trump will be defined by this point
             trump as Suit
           );
-          const isLastTrick = getIsLastTrick(ctx.play.playerHands);
+          return {
+            ...ctx.play,
+            winning_player: winningPlayer,
+          };
+        },
+      }),
+      tallyTrickPoints: assign({
+        round: (ctx, _) => {
+          const {
+            playerHands,
+            currentPlays,
+            winning_player: winningPlayer,
+          } = ctx.play;
+          const isLastTrick = getIsLastTrick(playerHands);
           return {
             points: ctx.round.points.map((teamPoints, idx) =>
+              // @ts-expect-error safe to assume winningPlayer will be not null here
               idx === getPlayerTeam(winningPlayer)
                 ? [
                     teamPoints[0],
-                    teamPoints[1] +
-                      getPlayPoints(ctx.play.currentPlays, isLastTrick),
+                    teamPoints[1] + getPlayPoints(currentPlays, isLastTrick),
                   ]
                 : teamPoints
             ),
           };
         },
+      }),
+      sendTrickEnd: sendParent((ctx, evt) => {
+        return createGameplayUpdate("gameplay.play.trick_end", null, {
+          winning_player: ctx.play.winning_player,
+          points: ctx.round.points,
+        });
       }),
       newTrick: assign({
         // trick winner starts next round of play
@@ -491,6 +544,7 @@ const GameMachine = createMachine(
         // reset the board
         play: (ctx, _) => ({
           ...ctx.play,
+          winning_player: null,
           currentPlays: [],
           pastPlays: [...ctx.play.pastPlays, ctx.play.currentPlays],
         }),
@@ -521,6 +575,7 @@ const GameMachine = createMachine(
       resetRound: assign({
         play: (_ctx, _) => ({
           // for some reason the params need to be in the function here
+          winning_player: null,
           currentPlays: [],
           pastPlays: [],
           playerHands: [],
