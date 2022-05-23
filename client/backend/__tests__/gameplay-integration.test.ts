@@ -1695,6 +1695,137 @@ describe("integration test", () => {
           [30, 105],
         ],
       });
+
+      // // round 9
+      // player3 won the trick, so he starts the next one
+      await player0.waitForMessage("gameplay.play.player_turn", { player: 3 });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: 3 });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: 3 });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: 3 });
+
+      player3.send(
+        JSON.stringify({
+          event: "gameplay.play.player_play_card",
+          data: { card: "JH", player: 3 },
+        })
+      );
+
+      await player0.waitForMessage("gameplay.play.player_play_card", {
+        player: 3,
+        card: "JH",
+      });
+      await player1.waitForMessage("gameplay.play.player_play_card", {
+        player: 3,
+        card: "JH",
+      });
+      await player2.waitForMessage("gameplay.play.player_play_card", {
+        player: 3,
+        card: "JH",
+      });
+
+      await player0.waitForMessage("gameplay.play.player_turn", { player: 0 });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: 0 });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: 0 });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: 0 });
+
+      player0.send(
+        JSON.stringify({
+          event: "gameplay.play.player_play_card",
+          data: { card: "AS", player: 0 },
+        })
+      );
+
+      await player1.waitForMessage("gameplay.play.player_play_card", {
+        player: 0,
+        card: "AS",
+      });
+      await player2.waitForMessage("gameplay.play.player_play_card", {
+        player: 0,
+        card: "AS",
+      });
+      await player3.waitForMessage("gameplay.play.player_play_card", {
+        player: 0,
+        card: "AS",
+      });
+
+      await player0.waitForMessage("gameplay.play.player_turn", { player: 1 });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: 1 });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: 1 });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: 1 });
+
+      player1.send(
+        JSON.stringify({
+          event: "gameplay.play.player_play_card",
+          data: { card: "QS", player: 1 },
+        })
+      );
+
+      await player0.waitForMessage("gameplay.play.player_play_card", {
+        player: 1,
+        card: "QS",
+      });
+      await player2.waitForMessage("gameplay.play.player_play_card", {
+        player: 1,
+        card: "QS",
+      });
+      await player3.waitForMessage("gameplay.play.player_play_card", {
+        player: 1,
+        card: "QS",
+      });
+
+      await player0.waitForMessage("gameplay.play.player_turn", { player: 2 });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: 2 });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: 2 });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: 2 });
+
+      player2.send(
+        JSON.stringify({
+          event: "gameplay.play.player_play_card",
+          data: { card: "AH", player: 2 },
+        })
+      );
+
+      await player0.waitForMessage("gameplay.play.player_play_card", {
+        player: 2,
+        card: "AH",
+      });
+      await player1.waitForMessage("gameplay.play.player_play_card", {
+        player: 2,
+        card: "AH",
+      });
+      await player3.waitForMessage("gameplay.play.player_play_card", {
+        player: 2,
+        card: "AH",
+      });
+
+      await player0.waitForMessage("gameplay.play.trick_end", {
+        winning_player: 0,
+        points: [
+          [90, 80],
+          [30, 105],
+        ],
+      });
+      await player1.waitForMessage("gameplay.play.trick_end", {
+        winning_player: 0,
+        points: [
+          [90, 80],
+          [30, 105],
+        ],
+      });
+      await player2.waitForMessage("gameplay.play.trick_end", {
+        winning_player: 0,
+        points: [
+          [90, 80],
+          [30, 105],
+        ],
+      });
+      await player3.waitForMessage("gameplay.play.trick_end", {
+        winning_player: 0,
+        points: [
+          [90, 80],
+          [30, 105],
+        ],
+      });
     },
     60 * 1000
   );
