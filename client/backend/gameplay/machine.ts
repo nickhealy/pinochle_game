@@ -189,6 +189,7 @@ const GameMachine = createMachine(
           },
           play: {
             id: "playMachine",
+            entry: ["sendPlayStart"],
             initial: "pos_a",
             states: {
               pos_a: {
@@ -432,6 +433,9 @@ const GameMachine = createMachine(
           allButPlayer(evt.player),
           { player: evt.player }
         )
+      ),
+      sendPlayStart: sendParent((ctx, evt) =>
+        createGameplayUpdate("gameplay.play.play_start", null)
       ),
       playCard: assign({
         play: (ctx, evt) => {

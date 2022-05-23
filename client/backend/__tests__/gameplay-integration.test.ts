@@ -531,6 +531,16 @@ describe("integration test", () => {
       })
     );
 
+    // player1 commits melds at same time
+    player0.send(
+      JSON.stringify({
+        event: "gameplay.pre_play.player_commit_melds",
+        data: {
+          player: 1,
+        },
+      })
+    );
+
     await player1.waitForMessage("gameplay.pre_play.player_melds_committed", {
       player: 0,
     });
@@ -539,6 +549,16 @@ describe("integration test", () => {
     });
     await player3.waitForMessage("gameplay.pre_play.player_melds_committed", {
       player: 0,
+    });
+
+    await player0.waitForMessage("gameplay.pre_play.player_melds_committed", {
+      player: 1,
+    });
+    await player2.waitForMessage("gameplay.pre_play.player_melds_committed", {
+      player: 1,
+    });
+    await player3.waitForMessage("gameplay.pre_play.player_melds_committed", {
+      player: 1,
     });
 
     // player3 submits his 9 trump
@@ -607,5 +627,10 @@ describe("integration test", () => {
     await player2.waitForMessage("gameplay.pre_play.player_melds_committed", {
       player: 3,
     });
+
+    await player0.waitForMessage("gameplay.play.play_start");
+    await player1.waitForMessage("gameplay.play.play_start");
+    await player2.waitForMessage("gameplay.play.play_start");
+    await player3.waitForMessage("gameplay.play.play_start");
   });
 });
