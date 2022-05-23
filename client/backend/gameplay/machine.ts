@@ -256,6 +256,7 @@ const GameMachine = createMachine(
             },
           },
           round_end_pseudo_state: {
+            entry: "sendRoundEnd",
             always: [
               {
                 target: "round_end",
@@ -530,6 +531,9 @@ const GameMachine = createMachine(
           points: ctx.round.points,
         });
       }),
+      sendRoundEnd: sendParent((ctx, evt) =>
+        createGameplayUpdate("gameplay.post_play.round_end")
+      ),
       newTrick: assign({
         // trick winner starts next round of play
         turn: (ctx, _) => {
