@@ -1159,5 +1159,135 @@ describe("integration test", () => {
         [30, 65],
       ],
     });
+
+    // player 3 won the trick, so he starts the next one
+    await player0.waitForMessage("gameplay.play.player_turn", { player: 3 });
+    await player1.waitForMessage("gameplay.play.player_turn", { player: 3 });
+    await player2.waitForMessage("gameplay.play.player_turn", { player: 3 });
+    await player3.waitForMessage("gameplay.play.player_turn", { player: 3 });
+
+    player3.send(
+      JSON.stringify({
+        event: "gameplay.play.player_play_card",
+        data: { card: "AD", player: 3 },
+      })
+    );
+
+    await player0.waitForMessage("gameplay.play.player_play_card", {
+      player: 3,
+      card: "AD",
+    });
+    await player1.waitForMessage("gameplay.play.player_play_card", {
+      player: 3,
+      card: "AD",
+    });
+    await player2.waitForMessage("gameplay.play.player_play_card", {
+      player: 3,
+      card: "AD",
+    });
+
+    await player0.waitForMessage("gameplay.play.player_turn", { player: 0 });
+    await player1.waitForMessage("gameplay.play.player_turn", { player: 0 });
+    await player2.waitForMessage("gameplay.play.player_turn", { player: 0 });
+    await player3.waitForMessage("gameplay.play.player_turn", { player: 0 });
+
+    player0.send(
+      JSON.stringify({
+        event: "gameplay.play.player_play_card",
+        data: { card: "KD", player: 0 },
+      })
+    );
+
+    await player1.waitForMessage("gameplay.play.player_play_card", {
+      player: 0,
+      card: "KD",
+    });
+    await player2.waitForMessage("gameplay.play.player_play_card", {
+      player: 0,
+      card: "KD",
+    });
+    await player3.waitForMessage("gameplay.play.player_play_card", {
+      player: 0,
+      card: "KD",
+    });
+
+    await player0.waitForMessage("gameplay.play.player_turn", { player: 1 });
+    await player1.waitForMessage("gameplay.play.player_turn", { player: 1 });
+    await player2.waitForMessage("gameplay.play.player_turn", { player: 1 });
+    await player3.waitForMessage("gameplay.play.player_turn", { player: 1 });
+
+    player1.send(
+      JSON.stringify({
+        event: "gameplay.play.player_play_card",
+        data: { card: "10D", player: 1 },
+      })
+    );
+
+    await player0.waitForMessage("gameplay.play.player_play_card", {
+      player: 1,
+      card: "10D",
+    });
+    await player2.waitForMessage("gameplay.play.player_play_card", {
+      player: 1,
+      card: "10D",
+    });
+    await player3.waitForMessage("gameplay.play.player_play_card", {
+      player: 1,
+      card: "10D",
+    });
+
+    await player0.waitForMessage("gameplay.play.player_turn", { player: 2 });
+    await player1.waitForMessage("gameplay.play.player_turn", { player: 2 });
+    await player2.waitForMessage("gameplay.play.player_turn", { player: 2 });
+    await player3.waitForMessage("gameplay.play.player_turn", { player: 2 });
+
+    player2.send(
+      JSON.stringify({
+        event: "gameplay.play.player_play_card",
+        data: { card: "JD", player: 2 },
+      })
+    );
+
+    await player0.waitForMessage("gameplay.play.player_play_card", {
+      player: 2,
+      card: "JD",
+    });
+    await player1.waitForMessage("gameplay.play.player_play_card", {
+      player: 2,
+      card: "JD",
+    });
+    await player3.waitForMessage("gameplay.play.player_play_card", {
+      player: 2,
+      card: "JD",
+    });
+
+    await player0.waitForMessage("gameplay.play.trick_end", {
+      winning_player: 3,
+      points: [
+        [90, 20],
+        [30, 90],
+      ],
+    });
+    await player1.waitForMessage("gameplay.play.trick_end", {
+      winning_player: 3,
+      points: [
+        [90, 20],
+        [30, 90],
+      ],
+    });
+    await player2.waitForMessage("gameplay.play.trick_end", {
+      winning_player: 3,
+      points: [
+        [90, 20],
+        [30, 90],
+      ],
+    });
+    await player3.waitForMessage("gameplay.play.trick_end", {
+      winning_player: 3,
+      points: [
+        [90, 20],
+        [30, 90],
+      ],
+    });
   });
 });
