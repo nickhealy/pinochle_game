@@ -59,7 +59,12 @@ const GameMachine = createMachine(
         on: {
           START_GAME: {
             target: "game_in_progress",
-            actions: ["sendGameStart", "dealCards", "sendCards"],
+            actions: [
+              "sendGameStart",
+              "sendRoundStart",
+              "dealCards",
+              "sendCards",
+            ],
           },
         },
       },
@@ -299,7 +304,9 @@ const GameMachine = createMachine(
                   "sendRoundStats",
                   "resetRound",
                   "changeDealer",
+                  "sendRoundStart",
                   "dealCards",
+                  "sendCards", // to do : think about combining a round starting state that can be used at beginning and game and in between rounds
                 ],
               },
             ],
@@ -341,6 +348,11 @@ const GameMachine = createMachine(
         }),
       }),
       sendGameStart: sendParent(createGameplayUpdate("lobby.game_start")),
+      sendRoundStart: sendParent((ctx) =>
+        createGameplayUpdate("gameplay.pre_play.round_start", null, {
+          dealer: ctx.game.dealer,
+        })
+      ),
       sendCards: pure((ctx) =>
         ctx.play.playerHands.map((hand, idx) =>
           sendParent(

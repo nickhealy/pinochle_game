@@ -71,6 +71,20 @@ describe("integration test", () => {
       await player2.waitForMessage("lobby.game_start");
       await player3.waitForMessage("lobby.game_start");
 
+      // round start
+      await player0.waitForMessage("gameplay.pre_play.round_start", {
+        dealer: 0,
+      });
+      await player1.waitForMessage("gameplay.pre_play.round_start", {
+        dealer: 0,
+      });
+      await player2.waitForMessage("gameplay.pre_play.round_start", {
+        dealer: 0,
+      });
+      await player3.waitForMessage("gameplay.pre_play.round_start", {
+        dealer: 0,
+      });
+
       // send cards to each player
       await player0.waitForMessage("gameplay.player_cards", {
         hand: [
@@ -2268,7 +2282,7 @@ describe("integration test", () => {
         is_last_trick: true,
       });
 
-      // and the round is over! (team 0 didn't make their bid, i guess...)
+      // and the round is over!
       await player0.waitForMessage("gameplay.post_play.round_end", {
         score: [170, 200],
         has_made_bid: true,
@@ -2290,7 +2304,19 @@ describe("integration test", () => {
         game_over: false,
       });
 
-      // post game
+      // new round begins
+      await player0.waitForMessage("gameplay.pre_play.round_start", {
+        dealer: 1,
+      });
+      await player1.waitForMessage("gameplay.pre_play.round_start", {
+        dealer: 1,
+      });
+      await player2.waitForMessage("gameplay.pre_play.round_start", {
+        dealer: 1,
+      });
+      await player3.waitForMessage("gameplay.pre_play.round_start", {
+        dealer: 1,
+      });
     },
     60 * 1000
   );
