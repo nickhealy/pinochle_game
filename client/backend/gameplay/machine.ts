@@ -58,21 +58,22 @@ const GameMachine = createMachine(
       pre_game: {
         on: {
           START_GAME: {
-            target: "game_in_progress",
-            actions: [
-              "sendGameStart",
-              "sendRoundStart",
-              "dealCards",
-              "sendCards",
-            ],
+            target: "round_in_progress",
+            actions: "sendGameStart",
           },
         },
       },
-      game_in_progress: {
-        id: "gameMachine",
-        initial: "bid",
+      round_in_progress: {
+        id: "roundMachine",
+        initial: "round_start_epsilon",
         type: "compound",
         states: {
+          round_start_epsilon: {
+            always: {
+              target: "bid",
+              actions: ["sendRoundStart", "dealCards", "sendCards"],
+            },
+          },
           bid: {
             id: "bidMachine",
             initial: "awaiting_bid",
@@ -268,7 +269,7 @@ const GameMachine = createMachine(
                 entry: ["saveTrickWinner", "tallyTrickPoints", "sendTrickEnd"],
                 always: [
                   {
-                    target: "#gameMachine.round_end_pseudo_state",
+                    target: "#roundMachine.round_end_pseudo_state",
                     cond: "isPlayOver",
                   },
                   {
@@ -299,15 +300,8 @@ const GameMachine = createMachine(
                 cond: "isGamePlayOver",
               },
               {
-                target: "#gameMachine.bid",
-                actions: [
-                  "sendRoundStats",
-                  "resetRound",
-                  "changeDealer",
-                  "sendRoundStart",
-                  "dealCards",
-                  "sendCards", // to do : think about combining a round starting state that can be used at beginning and game and in between rounds
-                ],
+                target: "#roundMachine",
+                actions: ["sendRoundStats", "resetRound", "changeDealer"],
               },
             ],
           },
@@ -325,7 +319,7 @@ const GameMachine = createMachine(
       },
       failed_heartbeat: {
         on: {
-          RESUMED_HEARTBEAT: { target: "game_in_progress.history" },
+          RESUMED_HEARTBEAT: { target: "round_in_progress.history" },
         },
       },
     },
