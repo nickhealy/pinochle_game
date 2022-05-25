@@ -755,6 +755,7 @@ describe("integration test", () => {
           [90, 20],
           [30, 0],
         ],
+        is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
         winning_player: 0,
@@ -762,6 +763,7 @@ describe("integration test", () => {
           [90, 20],
           [30, 0],
         ],
+        is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
         winning_player: 0,
@@ -769,6 +771,7 @@ describe("integration test", () => {
           [90, 20],
           [30, 0],
         ],
+        is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
         winning_player: 0,
@@ -776,6 +779,7 @@ describe("integration test", () => {
           [90, 20],
           [30, 0],
         ],
+        is_last_trick: false,
       });
 
       // round 2
@@ -887,6 +891,7 @@ describe("integration test", () => {
           [90, 20],
           [30, 30],
         ],
+        is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
         winning_player: 1,
@@ -894,6 +899,7 @@ describe("integration test", () => {
           [90, 20],
           [30, 30],
         ],
+        is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
         winning_player: 1,
@@ -901,6 +907,7 @@ describe("integration test", () => {
           [90, 20],
           [30, 30],
         ],
+        is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
         winning_player: 1,
@@ -908,6 +915,7 @@ describe("integration test", () => {
           [90, 20],
           [30, 30],
         ],
+        is_last_trick: false,
       });
 
       // round 3
@@ -1018,6 +1026,7 @@ describe("integration test", () => {
           [90, 20],
           [30, 50],
         ],
+        is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
         winning_player: 1,
@@ -1025,6 +1034,7 @@ describe("integration test", () => {
           [90, 20],
           [30, 50],
         ],
+        is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
         winning_player: 1,
@@ -1032,6 +1042,7 @@ describe("integration test", () => {
           [90, 20],
           [30, 50],
         ],
+        is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
         winning_player: 1,
@@ -1039,6 +1050,7 @@ describe("integration test", () => {
           [90, 20],
           [30, 50],
         ],
+        is_last_trick: false,
       });
 
       // round 4
@@ -1149,6 +1161,7 @@ describe("integration test", () => {
           [90, 20],
           [30, 65],
         ],
+        is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
         winning_player: 3,
@@ -1156,6 +1169,7 @@ describe("integration test", () => {
           [90, 20],
           [30, 65],
         ],
+        is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
         winning_player: 3,
@@ -1163,6 +1177,7 @@ describe("integration test", () => {
           [90, 20],
           [30, 65],
         ],
+        is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
         winning_player: 3,
@@ -1170,6 +1185,7 @@ describe("integration test", () => {
           [90, 20],
           [30, 65],
         ],
+        is_last_trick: false,
       });
 
       // round 5
@@ -1280,6 +1296,7 @@ describe("integration test", () => {
           [90, 20],
           [30, 90],
         ],
+        is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
         winning_player: 3,
@@ -1287,6 +1304,7 @@ describe("integration test", () => {
           [90, 20],
           [30, 90],
         ],
+        is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
         winning_player: 3,
@@ -1294,6 +1312,7 @@ describe("integration test", () => {
           [90, 20],
           [30, 90],
         ],
+        is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
         winning_player: 3,
@@ -1301,6 +1320,7 @@ describe("integration test", () => {
           [90, 20],
           [30, 90],
         ],
+        is_last_trick: false,
       });
 
       // round 6
@@ -1411,6 +1431,7 @@ describe("integration test", () => {
           [90, 35],
           [30, 90],
         ],
+        is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
         winning_player: 2,
@@ -1418,6 +1439,7 @@ describe("integration test", () => {
           [90, 35],
           [30, 90],
         ],
+        is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
         winning_player: 2,
@@ -1425,6 +1447,7 @@ describe("integration test", () => {
           [90, 35],
           [30, 90],
         ],
+        is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
         winning_player: 2,
@@ -1432,6 +1455,7 @@ describe("integration test", () => {
           [90, 35],
           [30, 90],
         ],
+        is_last_trick: false,
       });
 
       // round 7
@@ -1542,6 +1566,7 @@ describe("integration test", () => {
           [90, 55],
           [30, 90],
         ],
+        is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
         winning_player: 0,
@@ -1549,6 +1574,7 @@ describe("integration test", () => {
           [90, 55],
           [30, 90],
         ],
+        is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
         winning_player: 0,
@@ -1556,6 +1582,7 @@ describe("integration test", () => {
           [90, 55],
           [30, 90],
         ],
+        is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
         winning_player: 0,
@@ -1563,6 +1590,7 @@ describe("integration test", () => {
           [90, 55],
           [30, 90],
         ],
+        is_last_trick: false,
       });
 
       // round 8
@@ -1673,6 +1701,7 @@ describe("integration test", () => {
           [90, 55],
           [30, 105],
         ],
+        is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
         winning_player: 3,
@@ -1680,6 +1709,7 @@ describe("integration test", () => {
           [90, 55],
           [30, 105],
         ],
+        is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
         winning_player: 3,
@@ -1687,6 +1717,7 @@ describe("integration test", () => {
           [90, 55],
           [30, 105],
         ],
+        is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
         winning_player: 3,
@@ -1694,6 +1725,7 @@ describe("integration test", () => {
           [90, 55],
           [30, 105],
         ],
+        is_last_trick: false,
       });
 
       // // round 9
@@ -1804,6 +1836,7 @@ describe("integration test", () => {
           [90, 80],
           [30, 105],
         ],
+        is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
         winning_player: 0,
@@ -1811,6 +1844,7 @@ describe("integration test", () => {
           [90, 80],
           [30, 105],
         ],
+        is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
         winning_player: 0,
@@ -1818,6 +1852,7 @@ describe("integration test", () => {
           [90, 80],
           [30, 105],
         ],
+        is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
         winning_player: 0,
@@ -1825,6 +1860,7 @@ describe("integration test", () => {
           [90, 80],
           [30, 105],
         ],
+        is_last_trick: false,
       });
 
       // round 10
@@ -1935,6 +1971,7 @@ describe("integration test", () => {
           [90, 80],
           [30, 120],
         ],
+        is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
         winning_player: 3,
@@ -1942,6 +1979,7 @@ describe("integration test", () => {
           [90, 80],
           [30, 120],
         ],
+        is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
         winning_player: 3,
@@ -1949,6 +1987,7 @@ describe("integration test", () => {
           [90, 80],
           [30, 120],
         ],
+        is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
         winning_player: 3,
@@ -1956,6 +1995,7 @@ describe("integration test", () => {
           [90, 80],
           [30, 120],
         ],
+        is_last_trick: false,
       });
 
       // round 11
@@ -2066,6 +2106,7 @@ describe("integration test", () => {
           [90, 80],
           [30, 140],
         ],
+        is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
         winning_player: 1,
@@ -2073,6 +2114,7 @@ describe("integration test", () => {
           [90, 80],
           [30, 140],
         ],
+        is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
         winning_player: 1,
@@ -2080,6 +2122,7 @@ describe("integration test", () => {
           [90, 80],
           [30, 140],
         ],
+        is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
         winning_player: 1,
@@ -2087,6 +2130,7 @@ describe("integration test", () => {
           [90, 80],
           [30, 140],
         ],
+        is_last_trick: false,
       });
 
       // // round 12
@@ -2197,6 +2241,7 @@ describe("integration test", () => {
           [90, 80],
           [30, 170],
         ],
+        is_last_trick: true,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
         winning_player: 3,
@@ -2204,6 +2249,7 @@ describe("integration test", () => {
           [90, 80],
           [30, 170],
         ],
+        is_last_trick: true,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
         winning_player: 3,
@@ -2211,6 +2257,7 @@ describe("integration test", () => {
           [90, 80],
           [30, 170],
         ],
+        is_last_trick: true,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
         winning_player: 3,
@@ -2218,6 +2265,7 @@ describe("integration test", () => {
           [90, 80],
           [30, 170],
         ],
+        is_last_trick: true,
       });
 
       // and the round is over!
