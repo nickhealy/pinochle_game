@@ -72,6 +72,9 @@ const ConnectionWorkerMachine = createMachine(
             ctx.connection_ref.onmessage = (message) => {
               // TODO: validate the fields of the incoming request, try/catch around JSON.parse
               const parsedMessage = JSON.parse(message);
+              console.log(
+                `[connection-worker] received incoming message : ${message}`
+              );
               if (!metadataExists(ctx.connection_metadata)) {
                 throw new Error("Metadata does not exists"); // should not get here
               }
