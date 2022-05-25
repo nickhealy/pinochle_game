@@ -1,4 +1,5 @@
 import { Sender } from "xstate";
+import { WINNING_SCORE } from "./constants";
 import Deck, { Card, CardKeys, Suit } from "./Deck";
 import { GameEvents, GameplayContext, Play } from "./types";
 
@@ -22,6 +23,17 @@ export const getWinningPlay = (plays: Play[], trump: Suit) => {
 
   return trumpSuitPlays.length ? trumpSuitPlays[0] : ledSuitPlays[0];
 };
+
+export const didBidderMakeBid = (ctx: GameplayContext) => {
+  // safe to assert that bidWinner  both exist here
+  const { bidWinner, bids } = ctx.bid;
+  const bidWinnerPoints = ctx.round.points[getPlayerTeam(bidWinner)];
+  // total points won are meld points plus play points
+  return bidWinnerPoints[0] + bidWinnerPoints[1] >= bids[bidWinner];
+};
+
+export const isGamePlayOver = (ctx: GameplayContext) =>
+  ctx.game.score.some((score) => score >= WINNING_SCORE);
 
 export const getPlayPoints = (hands: Play[], isLastTrick: boolean = false) =>
   hands.reduce((tally, { key }) => tally + Deck.getCardFromKey(key).points, 0) +

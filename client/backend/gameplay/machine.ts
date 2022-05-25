@@ -5,11 +5,13 @@ import { WINNING_SCORE } from "./constants";
 import Deck, { Suit } from "./Deck";
 import {
   allButPlayer,
+  didBidderMakeBid,
   getIsLastTrick,
   getNextPlayer,
   getPlayerTeam,
   getPlayPoints,
   getWinningPlay,
+  isGamePlayOver,
 } from "./GameplayHelpers";
 import { getMeldPoints } from "./Meld";
 
@@ -273,7 +275,6 @@ const GameMachine = createMachine(
             },
           },
           round_end_pseudo_state: {
-            entry: "sendRoundEnd",
             always: [
               {
                 target: "round_end",
@@ -294,7 +295,12 @@ const GameMachine = createMachine(
               },
               {
                 target: "#gameMachine.bid",
-                actions: ["resetRound", "changeDealer", "dealCards"],
+                actions: [
+                  "sendRoundStats",
+                  "resetRound",
+                  "changeDealer",
+                  "dealCards",
+                ],
               },
             ],
           },
@@ -323,18 +329,9 @@ const GameMachine = createMachine(
   {
     guards: {
       isBiddingWon: (ctx, _) => ctx.bid.status.filter((st) => st).length === 1,
-      isGamePlayOver: (ctx, _) =>
-        ctx.game.score.some((score) => score >= WINNING_SCORE),
       isPlayOver: (ctx, _) => getIsLastTrick(ctx.play.playerHands),
-      didBidderMakeBid: (ctx, _) => {
-        // safe to assert that bidWinner  both exist here
-        const { bidWinner, bids } = ctx.bid;
-        const bidWinnerPoints = ctx.round.points.reduce(
-          (acc, curr) => acc + curr[getPlayerTeam(bidWinner)],
-          0
-        );
-        return bidWinnerPoints >= bids[bidWinner];
-      },
+      isGamePlayOver,
+      didBidderMakeBid,
     },
     actions: {
       dealCards: assign({
@@ -549,8 +546,12 @@ const GameMachine = createMachine(
           is_last_trick: getIsLastTrick(ctx.play.playerHands),
         });
       }),
-      sendRoundEnd: sendParent((ctx, evt) =>
-        createGameplayUpdate("gameplay.post_play.round_end")
+      sendRoundStats: sendParent((ctx, evt) =>
+        createGameplayUpdate("gameplay.post_play.round_end", null, {
+          score: ctx.game.score,
+          has_made_bid: didBidderMakeBid(ctx),
+          game_over: isGamePlayOver(ctx),
+        })
       ),
       newTrick: assign({
         // trick winner starts next round of play

@@ -2268,11 +2268,29 @@ describe("integration test", () => {
         is_last_trick: true,
       });
 
-      // and the round is over!
-      await player0.waitForMessage("gameplay.post_play.round_end");
-      await player1.waitForMessage("gameplay.post_play.round_end");
-      await player2.waitForMessage("gameplay.post_play.round_end");
-      await player3.waitForMessage("gameplay.post_play.round_end");
+      // and the round is over! (team 0 didn't make their bid, i guess...)
+      await player0.waitForMessage("gameplay.post_play.round_end", {
+        score: [170, 200],
+        has_made_bid: true,
+        game_over: false,
+      });
+      await player1.waitForMessage("gameplay.post_play.round_end", {
+        score: [170, 200],
+        has_made_bid: true,
+        game_over: false,
+      });
+      await player2.waitForMessage("gameplay.post_play.round_end", {
+        score: [170, 200],
+        has_made_bid: true,
+        game_over: false,
+      });
+      await player3.waitForMessage("gameplay.post_play.round_end", {
+        score: [170, 200],
+        has_made_bid: true,
+        game_over: false,
+      });
+
+      // post game
     },
     60 * 1000
   );
