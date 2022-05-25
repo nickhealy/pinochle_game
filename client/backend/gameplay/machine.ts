@@ -1,5 +1,5 @@
-import { createMachine, assign } from "xstate";
-import { sendParent, log, pure } from "xstate/lib/actions";
+import { createMachine, assign, actions } from "xstate";
+import { sendParent, pure, log } from "xstate/lib/actions";
 import { createGameplayUpdate } from "./events";
 import { WINNING_SCORE } from "./constants";
 import Deck, { Suit } from "./Deck";
@@ -69,10 +69,13 @@ const GameMachine = createMachine(
           bid: {
             id: "bidMachine",
             initial: "awaiting_bid",
-            entry: [log("starting bid", "[bid]"), "setStartingTurn"],
+            entry: [log("starting bid", "[gameplay]"), "setStartingTurn"],
             states: {
               awaiting_bid: {
-                entry: [log("awaiting next bid", "[bid]"), "promptPlayerBid"],
+                entry: [
+                  log("awaiting next bid", "[gameplay]"),
+                  "promptPlayerBid",
+                ],
                 on: {
                   BID: {
                     target: "bid_choice_pseudostate",
@@ -87,17 +90,13 @@ const GameMachine = createMachine(
               // choice pseudostate for either continuing with bid or declaring winner
               bid_choice_pseudostate: {
                 entry: [
-                  log(
-                    (ctx, evt) =>
-                      // @ts-expect-error typing is weird here
+                  (ctx, evt) =>
+                    log(
                       `bid turn executed by player ${ctx.turn}, type: ${
                         evt.type
-                      }, value: ${
-                        // @ts-expect-error typing is weird here
-                        evt.type == "BID" ? evt.value : null
-                      }`,
-                    "[bid]"
-                  ),
+                      }, value: ${evt.type == "BID" ? evt.value : null}`,
+                      "[gameplay]"
+                    ),
                 ],
                 always: [
                   {
@@ -113,13 +112,13 @@ const GameMachine = createMachine(
               },
               bid_winner: {
                 entry: [
-                  log<GameplayContext, GameEvents>(
-                    (ctx, _) =>
+                  (ctx, evt) =>
+                    log(
                       `player ${ctx.turn} has won the bid at ${
                         ctx.bid.bids[ctx.turn]
                       }`,
-                    "[bid]"
-                  ),
+                      "[gameplay]"
+                    ),
                   "sendBidWinner",
                 ],
                 always: {
@@ -134,7 +133,14 @@ const GameMachine = createMachine(
             initial: "awaiting_trump",
             states: {
               awaiting_trump: {
-                entry: "promptTrumpChoice",
+                entry: [
+                  (ctx) =>
+                    log(
+                      `awaiting player ${ctx.turn} to choose trump`,
+                      "[gameplay]"
+                    ),
+                  "promptTrumpChoice",
+                ],
                 on: {
                   TRUMP_CHOSEN: {
                     target: "meld_submission",
@@ -144,10 +150,15 @@ const GameMachine = createMachine(
               },
               meld_submission: {
                 id: "meldSubmissionMachine",
-                entry: ["promptMeldSubmission"],
+                entry: [
+                  (ctx, evt) => log(`meld submission phase`, "[gameplay]"),
+                  "promptMeldSubmission",
+                ],
                 initial: "no_submit",
                 states: {
                   no_submit: {
+                    entry: (ctx, evt) =>
+                      log(`awaiting first meld`, "[gameplay]"),
                     on: {
                       COMMIT_MELDS: {
                         target: "one_submit",
@@ -156,6 +167,8 @@ const GameMachine = createMachine(
                     },
                   },
                   one_submit: {
+                    entry: (ctx, evt) =>
+                      log(`awaiting second meld`, "[gameplay]"),
                     on: {
                       COMMIT_MELDS: {
                         target: "two_submit",
@@ -164,6 +177,8 @@ const GameMachine = createMachine(
                     },
                   },
                   two_submit: {
+                    entry: (ctx, evt) =>
+                      log(`awaiting third meld`, "[gameplay]"),
                     on: {
                       COMMIT_MELDS: {
                         target: "three_submit",
@@ -172,6 +187,8 @@ const GameMachine = createMachine(
                     },
                   },
                   three_submit: {
+                    entry: (ctx, evt) =>
+                      log(`awaiting fourth meld`, "[gameplay]"),
                     on: {
                       COMMIT_MELDS: {
                         target: "#playMachine",
