@@ -14,10 +14,10 @@
   flex-direction: column;
 }
 
-#join-room {
+.network-join {
   background-color: lightgreen;
 }
 
-#leave-room {
+.network-leave {
   background-color: lightcoral;
 }
