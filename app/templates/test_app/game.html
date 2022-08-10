@@ -1,0 +1,16 @@
+<html>
+  <head>
+    <!-- these paths could probably be changed -->
+    <link rel="stylesheet" href="../../static/test_app/app.css">
+  </head>
+  <title>Pinochle networking test</title>
+  <body>
+    <div id="player-container"></div>
+  </body>
+  <script type="text/javascript">
+    const _is_host_int = '{{ data.is_host }}' // for converting to boolean
+    const HOST_ID = '{{ data.host_id }}'
+    const IS_HOST = Boolean(Number(_is_host_int))
+  </script>
+  <script src="../../static/test_app/game.out.js"></script>
+</html>

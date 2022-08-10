@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/axios": "^0.14.0",
     "xstate": "^4.30.6"
   },
   "devDependencies": {
@@ -22,6 +23,7 @@
     "@xstate/cli": "^0.1.6",
     "babel-jest": "^27.5.1",
     "babel-plugin-dynamic-import-node": "^2.3.3",
+    "esbuild": "^0.14.53",
     "jest": "^27.5.1",
     "jest-mock-random": "^1.1.1",
     "ts-node": "^10.7.0",

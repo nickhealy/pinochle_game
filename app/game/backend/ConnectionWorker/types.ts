@@ -18,9 +18,6 @@ export type ConnectionWorkerEvent =
   | { type: "GAMEPLAY_UPDATE"; payload: any }
   | ReturnType<typeof createIncomingAction>;
 
-export const connectionExists = (ref: null | Connection): ref is Connection =>
-  !!ref?.send && !!ref.onmessage;
-
 export const metadataExists = (
   metadata: undefined | string
 ): metadata is string => !!metadata && metadata !== "";

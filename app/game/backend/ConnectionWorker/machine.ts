@@ -1,10 +1,9 @@
 import { assign, createMachine, DoneInvokeEvent, send } from "xstate";
 import { sendParent } from "xstate/lib/actions";
 import Connection from "../networking/types";
-import getWebRtcConnection from "../networking/webrtc";
+import { getWebRTCClient } from "../networking/webrtc";
 import { createIncomingAction } from "./eventHelpers";
 import {
-  connectionExists,
   ConnectionWorkerContext,
   ConnectionWorkerEvent,
   metadataExists,
@@ -39,9 +38,8 @@ const ConnectionWorkerMachine = createMachine(
       },
       connecting: {
         invoke: {
-          id: "getWebRtcConnection",
-          src: async (ctx) =>
-            await getWebRtcConnection(ctx.connection_metadata),
+          id: "getWebRTCClient",
+          src: async (ctx) => await getWebRTCClient(ctx.connection_metadata),
           onDone: {
             actions: ["sendSelfConnected"],
           },
@@ -65,7 +63,7 @@ const ConnectionWorkerMachine = createMachine(
         invoke: {
           id: "rxtxLoop",
           src: (ctx) => (cb, onReceive) => {
-            if (!connectionExists(ctx.connection_ref)) {
+            if (!ctx.connection_ref) {
               throw new Error("Connection does not exists"); // should not get here
             }
 
@@ -89,7 +87,7 @@ const ConnectionWorkerMachine = createMachine(
             };
 
             onReceive((e) => {
-              if (!connectionExists(ctx.connection_ref)) {
+              if (!ctx.connection_ref) {
                 throw new Error("Connection does not exists"); // should not get here
               }
               switch (e.type) {
