@@ -42,13 +42,21 @@ window.peer.on("open", (id) => {
   console.log("Connected to Peer server, my id is ", id);
   if (!IS_HOST) {
     document.getElementById("join-room").removeAttribute("disabled");
+  } else {
+    lobby.send({
+      type: "PLAYER_JOIN_REQUEST",
+      connection_info: window.peer.id,
+      name: "host",
+    });
   }
 });
 
 window.peer.on("connection", (conn) => {
   console.log("Just connected to ", conn.peer);
-  document.getElementById("join-room").setAttribute("disabled", true);
-  document.getElementById("leave-room").removeAttribute("disabled");
+  if (!IS_HOST) {
+    document.getElementById("join-room").setAttribute("disabled", true);
+    document.getElementById("leave-room").removeAttribute("disabled");
+  }
 
   conn.on("data", (data) => console.log(data));
 });

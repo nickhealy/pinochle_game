@@ -32,10 +32,11 @@ class WebRTCClient implements Connection {
 }
 
 export function getWebRTCClient(metadata: string | undefined) {
+  debugger
   let conn: DataConnection;
   return new Promise((res, rej) => {
     // @ts-expect-error
-    conn = (window.peer as Peer).connect(metadata);
+    conn = (window._host_peer as Peer).connect(metadata);
     conn.on("open", () => {
       console.log(`connection to ${metadata} has been opened`);
       res(conn);

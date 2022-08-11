@@ -76,9 +76,9 @@
     });
   };
 
-  // ../../../node_modules/peerjs-js-binarypack/lib/bufferbuilder.js
+  // node_modules/peerjs-js-binarypack/lib/bufferbuilder.js
   var require_bufferbuilder = __commonJS({
-    "../../../node_modules/peerjs-js-binarypack/lib/bufferbuilder.js"(exports, module) {
+    "node_modules/peerjs-js-binarypack/lib/bufferbuilder.js"(exports, module) {
       var binaryFeatures = {};
       binaryFeatures.useBlobBuilder = function() {
         try {
@@ -138,9 +138,9 @@
     }
   });
 
-  // ../../../node_modules/peerjs-js-binarypack/lib/binarypack.js
+  // node_modules/peerjs-js-binarypack/lib/binarypack.js
   var require_binarypack = __commonJS({
-    "../../../node_modules/peerjs-js-binarypack/lib/binarypack.js"(exports, module) {
+    "node_modules/peerjs-js-binarypack/lib/binarypack.js"(exports, module) {
       var BufferBuilder = require_bufferbuilder().BufferBuilder;
       var binaryFeatures = require_bufferbuilder().binaryFeatures;
       var BinaryPack = {
@@ -601,9 +601,9 @@
     }
   });
 
-  // ../../../node_modules/sdp/sdp.js
+  // node_modules/sdp/sdp.js
   var require_sdp = __commonJS({
-    "../../../node_modules/sdp/sdp.js"(exports, module) {
+    "node_modules/sdp/sdp.js"(exports, module) {
       "use strict";
       var SDPUtils2 = {};
       SDPUtils2.generateIdentifier = function() {
@@ -1228,9 +1228,9 @@
     }
   });
 
-  // ../../../node_modules/rtcpeerconnection-shim/rtcpeerconnection.js
+  // node_modules/rtcpeerconnection-shim/rtcpeerconnection.js
   var require_rtcpeerconnection = __commonJS({
-    "../../../node_modules/rtcpeerconnection-shim/rtcpeerconnection.js"(exports, module) {
+    "node_modules/rtcpeerconnection-shim/rtcpeerconnection.js"(exports, module) {
       "use strict";
       var SDPUtils2 = require_sdp();
       function fixStatsType(stat) {
@@ -3977,10 +3977,10 @@
     }
   });
 
-  // ../../../node_modules/peerjs/dist/bundler.mjs
+  // node_modules/peerjs/dist/bundler.mjs
   var import_peerjs_js_binarypack = __toESM(require_binarypack(), 1);
 
-  // ../../../node_modules/webrtc-adapter/src/js/utils.js
+  // node_modules/webrtc-adapter/src/js/utils.js
   var logDisabled_ = true;
   var deprecationWarnings_ = true;
   function extractVersion(uastring, expr, pos) {
@@ -4187,7 +4187,7 @@
     return filteredResult;
   }
 
-  // ../../../node_modules/webrtc-adapter/src/js/chrome/chrome_shim.js
+  // node_modules/webrtc-adapter/src/js/chrome/chrome_shim.js
   var chrome_shim_exports = {};
   __export(chrome_shim_exports, {
     fixNegotiationNeeded: () => fixNegotiationNeeded,
@@ -4203,7 +4203,7 @@
     shimSenderReceiverGetStats: () => shimSenderReceiverGetStats
   });
 
-  // ../../../node_modules/webrtc-adapter/src/js/chrome/getusermedia.js
+  // node_modules/webrtc-adapter/src/js/chrome/getusermedia.js
   var logging = log;
   function shimGetUserMedia(window2, browserDetails) {
     const navigator2 = window2 && window2.navigator;
@@ -4361,7 +4361,7 @@
     }
   }
 
-  // ../../../node_modules/webrtc-adapter/src/js/chrome/getdisplaymedia.js
+  // node_modules/webrtc-adapter/src/js/chrome/getdisplaymedia.js
   function shimGetDisplayMedia(window2, getSourceId) {
     if (window2.navigator.mediaDevices && "getDisplayMedia" in window2.navigator.mediaDevices) {
       return;
@@ -4396,7 +4396,7 @@
     };
   }
 
-  // ../../../node_modules/webrtc-adapter/src/js/chrome/chrome_shim.js
+  // node_modules/webrtc-adapter/src/js/chrome/chrome_shim.js
   function shimMediaStream(window2) {
     window2.MediaStream = window2.MediaStream || window2.webkitMediaStream;
   }
@@ -4972,7 +4972,7 @@
     });
   }
 
-  // ../../../node_modules/webrtc-adapter/src/js/edge/edge_shim.js
+  // node_modules/webrtc-adapter/src/js/edge/edge_shim.js
   var edge_shim_exports = {};
   __export(edge_shim_exports, {
     shimGetDisplayMedia: () => shimGetDisplayMedia2,
@@ -4981,7 +4981,7 @@
     shimReplaceTrack: () => shimReplaceTrack
   });
 
-  // ../../../node_modules/webrtc-adapter/src/js/edge/filtericeservers.js
+  // node_modules/webrtc-adapter/src/js/edge/filtericeservers.js
   function filterIceServers(iceServers, edgeVersion) {
     let hasTurn = false;
     iceServers = JSON.parse(JSON.stringify(iceServers));
@@ -5013,10 +5013,10 @@
     });
   }
 
-  // ../../../node_modules/webrtc-adapter/src/js/edge/edge_shim.js
+  // node_modules/webrtc-adapter/src/js/edge/edge_shim.js
   var import_rtcpeerconnection_shim = __toESM(require_rtcpeerconnection());
 
-  // ../../../node_modules/webrtc-adapter/src/js/edge/getusermedia.js
+  // node_modules/webrtc-adapter/src/js/edge/getusermedia.js
   function shimGetUserMedia2(window2) {
     const navigator2 = window2 && window2.navigator;
     const shimError_ = function(e) {
@@ -5035,7 +5035,7 @@
     };
   }
 
-  // ../../../node_modules/webrtc-adapter/src/js/edge/getdisplaymedia.js
+  // node_modules/webrtc-adapter/src/js/edge/getdisplaymedia.js
   function shimGetDisplayMedia2(window2) {
     if (!("getDisplayMedia" in window2.navigator)) {
       return;
@@ -5049,7 +5049,7 @@
     window2.navigator.mediaDevices.getDisplayMedia = window2.navigator.getDisplayMedia.bind(window2.navigator);
   }
 
-  // ../../../node_modules/webrtc-adapter/src/js/edge/edge_shim.js
+  // node_modules/webrtc-adapter/src/js/edge/edge_shim.js
   function shimPeerConnection2(window2, browserDetails) {
     if (window2.RTCIceGatherer) {
       if (!window2.RTCIceCandidate) {
@@ -5116,7 +5116,7 @@
     }
   }
 
-  // ../../../node_modules/webrtc-adapter/src/js/firefox/firefox_shim.js
+  // node_modules/webrtc-adapter/src/js/firefox/firefox_shim.js
   var firefox_shim_exports = {};
   __export(firefox_shim_exports, {
     shimAddTransceiver: () => shimAddTransceiver,
@@ -5133,7 +5133,7 @@
     shimSenderGetStats: () => shimSenderGetStats
   });
 
-  // ../../../node_modules/webrtc-adapter/src/js/firefox/getusermedia.js
+  // node_modules/webrtc-adapter/src/js/firefox/getusermedia.js
   function shimGetUserMedia3(window2, browserDetails) {
     const navigator2 = window2 && window2.navigator;
     const MediaStreamTrack = window2 && window2.MediaStreamTrack;
@@ -5183,7 +5183,7 @@
     }
   }
 
-  // ../../../node_modules/webrtc-adapter/src/js/firefox/getdisplaymedia.js
+  // node_modules/webrtc-adapter/src/js/firefox/getdisplaymedia.js
   function shimGetDisplayMedia3(window2, preferredMediaSource) {
     if (window2.navigator.mediaDevices && "getDisplayMedia" in window2.navigator.mediaDevices) {
       return;
@@ -5207,7 +5207,7 @@
     };
   }
 
-  // ../../../node_modules/webrtc-adapter/src/js/firefox/firefox_shim.js
+  // node_modules/webrtc-adapter/src/js/firefox/firefox_shim.js
   function shimOnTrack2(window2) {
     if (typeof window2 === "object" && window2.RTCTrackEvent && "receiver" in window2.RTCTrackEvent.prototype && !("transceiver" in window2.RTCTrackEvent.prototype)) {
       Object.defineProperty(window2.RTCTrackEvent.prototype, "transceiver", {
@@ -5431,7 +5431,7 @@
     };
   }
 
-  // ../../../node_modules/webrtc-adapter/src/js/safari/safari_shim.js
+  // node_modules/webrtc-adapter/src/js/safari/safari_shim.js
   var safari_shim_exports = {};
   __export(safari_shim_exports, {
     shimAudioContext: () => shimAudioContext,
@@ -5747,7 +5747,7 @@
     window2.AudioContext = window2.webkitAudioContext;
   }
 
-  // ../../../node_modules/webrtc-adapter/src/js/common_shim.js
+  // node_modules/webrtc-adapter/src/js/common_shim.js
   var common_shim_exports = {};
   __export(common_shim_exports, {
     removeExtmapAllowMixed: () => removeExtmapAllowMixed,
@@ -6034,7 +6034,7 @@
     };
   }
 
-  // ../../../node_modules/webrtc-adapter/src/js/adapter_factory.js
+  // node_modules/webrtc-adapter/src/js/adapter_factory.js
   function adapterFactory({ window: window2 } = {}, options = {
     shimChrome: true,
     shimFirefox: true,
@@ -6144,11 +6144,11 @@
     return adapter2;
   }
 
-  // ../../../node_modules/webrtc-adapter/src/js/adapter_core.js
+  // node_modules/webrtc-adapter/src/js/adapter_core.js
   var adapter = adapterFactory({ window: typeof window === "undefined" ? void 0 : window });
   var adapter_core_default = adapter;
 
-  // ../../../node_modules/peerjs/dist/bundler.mjs
+  // node_modules/peerjs/dist/bundler.mjs
   function $parcel$export(e, n, v, s) {
     Object.defineProperty(e, n, { get: v, set: s, enumerable: true, configurable: true });
   }
@@ -6675,7 +6675,7 @@
     $60fadef21a2daafc$export$adb4a1754da6f10d2["Expire"] = "EXPIRE";
   })($60fadef21a2daafc$export$adb4a1754da6f10d || ($60fadef21a2daafc$export$adb4a1754da6f10d = {}));
   var $0d1ed891c5cb27c0$exports = {};
-  $0d1ed891c5cb27c0$exports = JSON.parse('{"name":"peerjs","version":"1.4.6","keywords":["peerjs","webrtc","p2p","rtc"],"description":"PeerJS client","homepage":"https://peerjs.com","bugs":{"url":"https://github.com/peers/peerjs/issues"},"repository":{"type":"git","url":"https://github.com/peers/peerjs"},"license":"MIT","contributors":["Michelle Bu <michelle@michellebu.com>","afrokick <devbyru@gmail.com>","ericz <really.ez@gmail.com>","Jairo <kidandcat@gmail.com>","Jonas Gloning <34194370+jonasgloning@users.noreply.github.com>","Jairo Caro-Accino Viciana <jairo@galax.be>","Carlos Caballero <carlos.caballero.gonzalez@gmail.com>","hc <hheennrryy@gmail.com>","Muhammad Asif <capripio@gmail.com>","PrashoonB <prashoonbhattacharjee@gmail.com>","Harsh Bardhan Mishra <47351025+HarshCasper@users.noreply.github.com>","akotynski <aleksanderkotbury@gmail.com>","lmb <i@lmb.io>","Jairooo <jairocaro@msn.com>","Moritz St\xFCckler <moritz.stueckler@gmail.com>","Simon <crydotsnakegithub@gmail.com>","Denis Lukov <denismassters@gmail.com>","Philipp Hancke <fippo@andyet.net>","Hans Oksendahl <hansoksendahl@gmail.com>","Jess <jessachandler@gmail.com>","khankuan <khankuan@gmail.com>","DUODVK <kurmanov.work@gmail.com>","XiZhao <kwang1imsa@gmail.com>","Matthias Lohr <matthias@lohr.me>","=frank tree <=frnktrb@googlemail.com>","Andre Eckardt <aeckardt@outlook.com>","Chris Cowan <agentme49@gmail.com>","Alex Chuev <alex@chuev.com>","alxnull <alxnull@e.mail.de>","Yemel Jardi <angel.jardi@gmail.com>","Ben Parnell <benjaminparnell.94@gmail.com>","Benny Lichtner <bennlich@gmail.com>","fresheneesz <bitetrudpublic@gmail.com>","bob.barstead@exaptive.com <bob.barstead@exaptive.com>","chandika <chandika@gmail.com>","emersion <contact@emersion.fr>","Christopher Van <cvan@users.noreply.github.com>","eddieherm <edhermoso@gmail.com>","Eduardo Pinho <enet4mikeenet@gmail.com>","Evandro Zanatta <ezanatta@tray.net.br>","Gardner Bickford <gardner@users.noreply.github.com>","Gian Luca <gianluca.cecchi@cynny.com>","PatrickJS <github@gdi2290.com>","jonnyf <github@jonathanfoss.co.uk>","Hizkia Felix <hizkifw@gmail.com>","Hristo Oskov <hristo.oskov@gmail.com>","Isaac Madwed <i.madwed@gmail.com>","Ilya Konanykhin <ilya.konanykhin@gmail.com>","jasonbarry <jasbarry@me.com>","Jonathan Burke <jonathan.burke.1311@googlemail.com>","Josh Hamit <josh.hamit@gmail.com>","Jordan Austin <jrax86@gmail.com>","Joel Wetzell <jwetzell@yahoo.com>","xizhao <kevin.wang@cloudera.com>","Alberto Torres <kungfoobar@gmail.com>","Jonathan Mayol <mayoljonathan@gmail.com>","Jefferson Felix <me@jsfelix.dev>","Rolf Erik Lekang <me@rolflekang.com>","Kevin Mai-Husan Chia <mhchia@users.noreply.github.com>","Pepijn de Vos <pepijndevos@gmail.com>","JooYoung <qkdlql@naver.com>","Tobias Speicher <rootcommander@gmail.com>","Steve Blaurock <sblaurock@gmail.com>","Kyrylo Shegeda <shegeda@ualberta.ca>","Diwank Singh Tomer <singh@diwank.name>","So\u0308ren Balko <Soeren.Balko@gmail.com>","Arpit Solanki <solankiarpit1997@gmail.com>","Yuki Ito <yuki@gnnk.net>","Artur Zayats <zag2art@gmail.com>"],"funding":{"type":"opencollective","url":"https://opencollective.com/peer"},"collective":{"type":"opencollective","url":"https://opencollective.com/peer"},"files":["dist/*"],"type":"module","sideEffects":["lib/global.ts","lib/supports.ts"],"main":"dist/bundler.cjs","module":"dist/bundler.mjs","browser-minified":"dist/peerjs.min.cjs","browser-unminified":"dist/peerjs.cjs","types":"dist/types.d.ts","engines":{"node":">= 10"},"targets":{"types":{"source":"lib/exports.ts"},"main":{"source":"lib/exports.ts","sourceMap":{"inlineSources":true}},"module":{"source":"lib/exports.ts","includeNodeModules":["eventemitter3"],"sourceMap":{"inlineSources":true}},"browser-minified":{"includeNodeModules":true,"context":"browser","optimize":true,"engines":{"browsers":"cover 99%, not dead"},"source":"lib/global.ts"},"browser-unminified":{"includeNodeModules":true,"context":"browser","optimize":false,"engines":{"browsers":"cover 99%, not dead"},"source":"lib/global.ts"}},"scripts":{"contributors":"git-authors-cli --print=false && prettier --write package.json && git add package.json package-lock.json && git commit -m \\"chore(contributors): update and sort contributors list\\"","check":"tsc --noEmit","watch":"parcel watch","build":"rm -rf dist && parcel build && cp dist/peerjs.cjs dist/peerjs.js && cp dist/peerjs.min.cjs dist/peerjs.min.js","prepublishOnly":"npm run build","test":"mocha -r ts-node/register -r jsdom-global/register test/**/*.ts","format":"prettier --write .","semantic-release":"semantic-release"},"devDependencies":{"@parcel/config-default":"^2.5.0","@parcel/packager-ts":"^2.5.0","@parcel/transformer-typescript-tsc":"^2.5.0","@parcel/transformer-typescript-types":"^2.5.0","@semantic-release/changelog":"^6.0.1","@semantic-release/git":"^10.0.1","@types/chai":"^4.3.0","@types/mocha":"^9.1.0","@types/node":"^17.0.18","chai":"^4.3.6","git-authors-cli":"^1.0.40","jsdom":"^19.0.0","jsdom-global":"^3.0.2","mocha":"^9.2.0","mock-socket":"8.0.5","parcel":"^2.5.0","parcel-transformer-tsc-sourcemaps":"^1.0.2","prettier":"^2.6.2","semantic-release":"^19.0.2","standard":"^16.0.4","ts-node":"^10.5.0","typescript":"^4.5.5"},"dependencies":{"@swc/helpers":"^0.3.13","eventemitter3":"^4.0.7","peerjs-js-binarypack":"1.0.1","webrtc-adapter":"^7.7.1"}}');
+  $0d1ed891c5cb27c0$exports = JSON.parse('{"name":"peerjs","version":"1.4.7","keywords":["peerjs","webrtc","p2p","rtc"],"description":"PeerJS client","homepage":"https://peerjs.com","bugs":{"url":"https://github.com/peers/peerjs/issues"},"repository":{"type":"git","url":"https://github.com/peers/peerjs"},"license":"MIT","contributors":["Michelle Bu <michelle@michellebu.com>","afrokick <devbyru@gmail.com>","ericz <really.ez@gmail.com>","Jairo <kidandcat@gmail.com>","Jonas Gloning <34194370+jonasgloning@users.noreply.github.com>","Jairo Caro-Accino Viciana <jairo@galax.be>","Carlos Caballero <carlos.caballero.gonzalez@gmail.com>","hc <hheennrryy@gmail.com>","Muhammad Asif <capripio@gmail.com>","PrashoonB <prashoonbhattacharjee@gmail.com>","Harsh Bardhan Mishra <47351025+HarshCasper@users.noreply.github.com>","akotynski <aleksanderkotbury@gmail.com>","lmb <i@lmb.io>","Jairooo <jairocaro@msn.com>","Moritz St\xFCckler <moritz.stueckler@gmail.com>","Simon <crydotsnakegithub@gmail.com>","Denis Lukov <denismassters@gmail.com>","Philipp Hancke <fippo@andyet.net>","Hans Oksendahl <hansoksendahl@gmail.com>","Jess <jessachandler@gmail.com>","khankuan <khankuan@gmail.com>","DUODVK <kurmanov.work@gmail.com>","XiZhao <kwang1imsa@gmail.com>","Matthias Lohr <matthias@lohr.me>","=frank tree <=frnktrb@googlemail.com>","Andre Eckardt <aeckardt@outlook.com>","Chris Cowan <agentme49@gmail.com>","Alex Chuev <alex@chuev.com>","alxnull <alxnull@e.mail.de>","Yemel Jardi <angel.jardi@gmail.com>","Ben Parnell <benjaminparnell.94@gmail.com>","Benny Lichtner <bennlich@gmail.com>","fresheneesz <bitetrudpublic@gmail.com>","bob.barstead@exaptive.com <bob.barstead@exaptive.com>","chandika <chandika@gmail.com>","emersion <contact@emersion.fr>","Christopher Van <cvan@users.noreply.github.com>","eddieherm <edhermoso@gmail.com>","Eduardo Pinho <enet4mikeenet@gmail.com>","Evandro Zanatta <ezanatta@tray.net.br>","Gardner Bickford <gardner@users.noreply.github.com>","Gian Luca <gianluca.cecchi@cynny.com>","PatrickJS <github@gdi2290.com>","jonnyf <github@jonathanfoss.co.uk>","Hizkia Felix <hizkifw@gmail.com>","Hristo Oskov <hristo.oskov@gmail.com>","Isaac Madwed <i.madwed@gmail.com>","Ilya Konanykhin <ilya.konanykhin@gmail.com>","jasonbarry <jasbarry@me.com>","Jonathan Burke <jonathan.burke.1311@googlemail.com>","Josh Hamit <josh.hamit@gmail.com>","Jordan Austin <jrax86@gmail.com>","Joel Wetzell <jwetzell@yahoo.com>","xizhao <kevin.wang@cloudera.com>","Alberto Torres <kungfoobar@gmail.com>","Jonathan Mayol <mayoljonathan@gmail.com>","Jefferson Felix <me@jsfelix.dev>","Rolf Erik Lekang <me@rolflekang.com>","Kevin Mai-Husan Chia <mhchia@users.noreply.github.com>","Pepijn de Vos <pepijndevos@gmail.com>","JooYoung <qkdlql@naver.com>","Tobias Speicher <rootcommander@gmail.com>","Steve Blaurock <sblaurock@gmail.com>","Kyrylo Shegeda <shegeda@ualberta.ca>","Diwank Singh Tomer <singh@diwank.name>","So\u0308ren Balko <Soeren.Balko@gmail.com>","Arpit Solanki <solankiarpit1997@gmail.com>","Yuki Ito <yuki@gnnk.net>","Artur Zayats <zag2art@gmail.com>"],"funding":{"type":"opencollective","url":"https://opencollective.com/peer"},"collective":{"type":"opencollective","url":"https://opencollective.com/peer"},"files":["dist/*"],"sideEffects":["lib/global.ts","lib/supports.ts"],"main":"dist/bundler.cjs","module":"dist/bundler.mjs","browser-minified":"dist/peerjs.min.js","browser-unminified":"dist/peerjs.js","types":"dist/types.d.ts","engines":{"node":">= 10"},"targets":{"types":{"source":"lib/exports.ts"},"main":{"source":"lib/exports.ts","sourceMap":{"inlineSources":true}},"module":{"source":"lib/exports.ts","includeNodeModules":["eventemitter3"],"sourceMap":{"inlineSources":true}},"browser-minified":{"context":"browser","outputFormat":"global","optimize":true,"engines":{"browsers":"cover 99%, not dead"},"source":"lib/global.ts"},"browser-unminified":{"context":"browser","outputFormat":"global","optimize":false,"engines":{"browsers":"cover 99%, not dead"},"source":"lib/global.ts"}},"scripts":{"contributors":"git-authors-cli --print=false && prettier --write package.json && git add package.json package-lock.json && git commit -m \\"chore(contributors): update and sort contributors list\\"","check":"tsc --noEmit","watch":"parcel watch","build":"rm -rf dist && parcel build","prepublishOnly":"npm run build","test":"mocha -r ts-node/register -r jsdom-global/register test/**/*.ts","format":"prettier --write .","semantic-release":"semantic-release"},"devDependencies":{"@parcel/config-default":"^2.5.0","@parcel/packager-ts":"^2.5.0","@parcel/transformer-typescript-tsc":"^2.5.0","@parcel/transformer-typescript-types":"^2.5.0","@semantic-release/changelog":"^6.0.1","@semantic-release/git":"^10.0.1","@types/chai":"^4.3.0","@types/mocha":"^9.1.0","@types/node":"^17.0.18","chai":"^4.3.6","git-authors-cli":"^1.0.40","jsdom":"^19.0.0","jsdom-global":"^3.0.2","mocha":"^9.2.0","mock-socket":"8.0.5","parcel":"^2.5.0","parcel-transformer-tsc-sourcemaps":"^1.0.2","prettier":"^2.6.2","semantic-release":"^19.0.2","standard":"^16.0.4","ts-node":"^10.5.0","typescript":"^4.5.5"},"dependencies":{"@swc/helpers":"^0.3.13","eventemitter3":"^4.0.7","peerjs-js-binarypack":"1.0.1","webrtc-adapter":"^7.7.1"}}');
   var $31d11a8d122cb4b7$var$__extends = function() {
     var extendStatics = function(d1, b1) {
       extendStatics = Object.setPrototypeOf || {
@@ -12609,9 +12609,10 @@
 
   // backend/networking/webrtc.ts
   function getWebRTCClient(metadata) {
+    debugger;
     let conn;
     return new Promise((res, rej) => {
-      conn = window.peer.connect(metadata);
+      conn = window._host_peer.connect(metadata);
       conn.on("open", () => {
         console.log(`connection to ${metadata} has been opened`);
         res(conn);
@@ -13830,17 +13831,26 @@
   }
   var container = document.getElementById("player-container");
   container.append(createPlayer(IS_HOST));
+  window._host_peer = new $70d766613f57b014$export$2e2bcd8739ae039();
   window.peer = new $70d766613f57b014$export$2e2bcd8739ae039();
   window.peer.on("open", (id) => {
     console.log("Connected to Peer server, my id is ", id);
     if (!IS_HOST) {
       document.getElementById("join-room").removeAttribute("disabled");
+    } else {
+      lobby_default.send({
+        type: "PLAYER_JOIN_REQUEST",
+        connection_info: window.peer.id,
+        name: "host"
+      });
     }
   });
   window.peer.on("connection", (conn) => {
     console.log("Just connected to ", conn.peer);
-    document.getElementById("join-room").setAttribute("disabled", true);
-    document.getElementById("leave-room").removeAttribute("disabled");
+    if (!IS_HOST) {
+      document.getElementById("join-room").setAttribute("disabled", true);
+      document.getElementById("leave-room").removeAttribute("disabled");
+    }
     conn.on("data", (data) => console.log(data));
   });
   var evtSource;
