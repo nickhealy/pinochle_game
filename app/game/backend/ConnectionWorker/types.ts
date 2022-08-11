@@ -1,4 +1,4 @@
-import Connection from "../networking/types";
+import { DataConnection } from "peerjs";
 import { createIncomingAction } from "./eventHelpers";
 
 export interface ConnectionWorkerContext {
@@ -7,7 +7,7 @@ export interface ConnectionWorkerContext {
   incoming_queue: {}[];
   outgoing_queue: {}[];
   last_heartbeat: string | undefined;
-  connection_ref: null | Connection;
+  connection_ref: null | DataConnection;
 }
 
 export type ConnectionWorkerEvent =

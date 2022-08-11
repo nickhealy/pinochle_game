@@ -1,6 +1,6 @@
-import { assign, createMachine, DoneInvokeEvent, send } from "xstate";
+import { DataConnection } from "peerjs";
+import { assign, createMachine, send } from "xstate";
 import { sendParent } from "xstate/lib/actions";
-import Connection from "../networking/types";
 import { getWebRTCClient } from "../networking/webrtc";
 import { createIncomingAction } from "./eventHelpers";
 import {
@@ -67,9 +67,10 @@ const ConnectionWorkerMachine = createMachine(
               throw new Error("Connection does not exists"); // should not get here
             }
 
-            ctx.connection_ref.onmessage = (message) => {
+            ctx.connection_ref.on('data', (message) => {
               // TODO: validate the fields of the incoming request, try/catch around JSON.parse
               const parsedMessage = JSON.parse(message);
+              console.log({ parsedMessage })
               console.log(
                 `[connection-worker] received incoming message : ${message}`
               );
@@ -84,7 +85,7 @@ const ConnectionWorkerMachine = createMachine(
                 )
               );
               // obviously, some sort of error handling here
-            };
+            });
 
             onReceive((e) => {
               if (!ctx.connection_ref) {
@@ -118,7 +119,7 @@ const ConnectionWorkerMachine = createMachine(
         worker_key: (_, evt) => evt.worker_key,
       }),
       saveConnectionRef: assign({
-        connection_ref: (_, evt) => evt.connection as Connection,
+        connection_ref: (_, evt) => evt.connection as DataConnection,
       }),
       sendSelfConnected: send((_, evt) => ({
         type: "CONNECTED",

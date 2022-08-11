@@ -32,7 +32,6 @@ class WebRTCClient implements Connection {
 }
 
 export function getWebRTCClient(metadata: string | undefined) {
-  debugger
   let conn: DataConnection;
   return new Promise((res, rej) => {
     // @ts-expect-error

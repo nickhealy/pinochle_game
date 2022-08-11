@@ -1,6 +1,5 @@
 node_modules/
 **/__pycache__
 **/*.typegen.ts
-**/**/*.out.js
+**/*.out.js
 venv/
-app/static/test_app/game.out.js

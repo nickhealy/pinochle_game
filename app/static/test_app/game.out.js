@@ -12609,7 +12609,6 @@
 
   // backend/networking/webrtc.ts
   function getWebRTCClient(metadata) {
-    debugger;
     let conn;
     return new Promise((res, rej) => {
       conn = window._host_peer.connect(metadata);
@@ -12692,8 +12691,9 @@
               if (!ctx.connection_ref) {
                 throw new Error("Connection does not exists");
               }
-              ctx.connection_ref.onmessage = (message) => {
+              ctx.connection_ref.on("data", (message) => {
                 const parsedMessage = JSON.parse(message);
+                console.log({ parsedMessage });
                 console.log(
                   `[connection-worker] received incoming message : ${message}`
                 );
@@ -12707,7 +12707,7 @@
                     parsedMessage.data
                   )
                 );
-              };
+              });
               onReceive((e) => {
                 if (!ctx.connection_ref) {
                   throw new Error("Connection does not exists");
@@ -13820,12 +13820,12 @@
       <button type='button' id='pass-btn'>Pass</button>
       <button type='button' id='hez-btn'>Hez</button>
     </div>
-    ${!isHost && `
+    ${isHost && "<button id='start-game' disabled>START GAME</button>" || `
       <div>
         <button class='network-join' id='join-room' disabled>Start</button>
         <button class='network-leave' id='leave-room' disabled>End</button>
       </div>
-      ` || ""}
+`}
   `;
     return container2;
   }
@@ -13851,7 +13851,29 @@
       document.getElementById("join-room").setAttribute("disabled", true);
       document.getElementById("leave-room").removeAttribute("disabled");
     }
-    conn.on("data", (data) => console.log(data));
+    conn.on("data", (data) => {
+      console.log("received : ", data);
+      const { type } = JSON.parse(data);
+      switch (type) {
+        case "lobby.all_players_connected":
+          const startBtn = document.getElementById("start-game");
+          if (IS_HOST) {
+            debugger;
+            startBtn.addEventListener(
+              "click",
+              () => conn.send(
+                JSON.stringify({
+                  event: "lobby.start_game"
+                })
+              )
+            );
+            startBtn.removeAttribute("disabled");
+          }
+          break;
+        default:
+          break;
+      }
+    });
   });
   var evtSource;
   if (IS_HOST) {

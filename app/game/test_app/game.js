@@ -19,14 +19,13 @@ function createPlayer(isHost) {
       <button type='button' id='hez-btn'>Hez</button>
     </div>
     ${
-      (!isHost &&
-        `
+      (isHost && "<button id='start-game' disabled>START GAME</button>") ||
+      `
       <div>
         <button class='network-join' id='join-room' disabled>Start</button>
         <button class='network-leave' id='leave-room' disabled>End</button>
       </div>
-      `) ||
-      ""
+`
     }
   `;
   return container;
@@ -58,7 +57,30 @@ window.peer.on("connection", (conn) => {
     document.getElementById("leave-room").removeAttribute("disabled");
   }
 
-  conn.on("data", (data) => console.log(data));
+  conn.on("data", (data) => {
+    console.log("received : ", data);
+    const { type } = JSON.parse(data);
+
+    switch (type) {
+      case "lobby.all_players_connected":
+        const startBtn = document.getElementById("start-game");
+        if (IS_HOST) {
+          debugger
+          startBtn.addEventListener("click", () =>
+            conn.send(
+              JSON.stringify({
+                event: "lobby.start_game",
+              })
+            )
+          );
+          startBtn.removeAttribute("disabled");
+        }
+        break;
+      default:
+        break;
+      // console.error("received unknown event : ", data);
+    }
+  });
 });
 
 let evtSource;
