@@ -5,22 +5,23 @@ describe("TestClient", () => {
     const [client, connection] = getTestClient();
 
     connection.send("hello client");
+    connection.on('data', () => {})
     expect(client.onmessage).toBeCalledTimes(1);
     expect(client.onmessage).toBeCalledWith("hello client");
 
     client.send("hello connection");
-    expect(connection.onmessage).toBeCalledTimes(1);
-    expect(connection.onmessage).toBeCalledWith("hello connection");
+    expect(connection.eventHandlers['data']).toBeCalledTimes(1);
+    expect(connection.eventHandlers['data']).toBeCalledWith("hello connection");
   });
 
-  it("can handle overriding onmessage method", () => {
-    const overridingMethod = jest.fn();
+  it("can handle adding event listener", () => {
+    const listenerCb = jest.fn();
     const [client, connection] = getTestClient();
-    connection.onmessage = overridingMethod;
+    connection.on('data', listenerCb)
 
-    client.send("hello new method");
-    expect(overridingMethod).toBeCalledTimes(1);
-    expect(overridingMethod).toBeCalledWith("hello new method");
+    client.send("hello new cb");
+    expect(listenerCb).toBeCalledTimes(1);
+    expect(listenerCb).toBeCalledWith("hello new cb");
   });
 
   describe("waitForMessage", () => {
