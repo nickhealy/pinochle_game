@@ -73,16 +73,16 @@ describe("integration test", () => {
 
       // round start
       await player0.waitForMessage("gameplay.pre_play.round_start", {
-        dealer: 0,
+        player: player0.id,
       });
       await player1.waitForMessage("gameplay.pre_play.round_start", {
-        dealer: 0,
+        player: player0.id,
       });
       await player2.waitForMessage("gameplay.pre_play.round_start", {
-        dealer: 0,
+        player: player0.id,
       });
       await player3.waitForMessage("gameplay.pre_play.round_start", {
-        dealer: 0,
+        player: player0.id,
       });
 
       // send cards to each player
@@ -151,10 +151,10 @@ describe("integration test", () => {
         ],
       });
 
-      await player0.waitForMessage("gameplay.bid.awaiting_bid", { player: 1 });
-      await player1.waitForMessage("gameplay.bid.awaiting_bid", { player: 1 });
-      await player2.waitForMessage("gameplay.bid.awaiting_bid", { player: 1 });
-      await player3.waitForMessage("gameplay.bid.awaiting_bid", { player: 1 });
+      await player0.waitForMessage("gameplay.bid.awaiting_bid", { player: player1.id });
+      await player1.waitForMessage("gameplay.bid.awaiting_bid", { player: player1.id });
+      await player2.waitForMessage("gameplay.bid.awaiting_bid", { player: player1.id });
+      await player3.waitForMessage("gameplay.bid.awaiting_bid", { player: player1.id });
 
       // player @ index 1 (scott's) turn to make a bid
       player1.send(
@@ -165,22 +165,22 @@ describe("integration test", () => {
       );
 
       await player0.waitForMessage("gameplay.bid.player_bid", {
-        player: 1,
+        player: player1.id,
         bid: 140,
       });
       await player2.waitForMessage("gameplay.bid.player_bid", {
-        player: 1,
+        player: player1.id,
         bid: 140,
       });
       await player3.waitForMessage("gameplay.bid.player_bid", {
-        player: 1,
+        player: player1.id,
         bid: 140,
       });
 
-      await player0.waitForMessage("gameplay.bid.awaiting_bid", { player: 2 });
-      await player1.waitForMessage("gameplay.bid.awaiting_bid", { player: 2 });
-      await player2.waitForMessage("gameplay.bid.awaiting_bid", { player: 2 });
-      await player3.waitForMessage("gameplay.bid.awaiting_bid", { player: 2 });
+      await player0.waitForMessage("gameplay.bid.awaiting_bid", { player: player2.id });
+      await player1.waitForMessage("gameplay.bid.awaiting_bid", { player: player2.id });
+      await player2.waitForMessage("gameplay.bid.awaiting_bid", { player: player2.id });
+      await player3.waitForMessage("gameplay.bid.awaiting_bid", { player: player2.id });
 
       player2.send(
         JSON.stringify({
@@ -190,22 +190,22 @@ describe("integration test", () => {
       );
 
       await player0.waitForMessage("gameplay.bid.player_bid", {
-        player: 2,
+        player: player2.id,
         bid: 150,
       });
       await player1.waitForMessage("gameplay.bid.player_bid", {
-        player: 2,
+        player: player2.id,
         bid: 150,
       });
       await player3.waitForMessage("gameplay.bid.player_bid", {
-        player: 2,
+        player: player2.id,
         bid: 150,
       });
 
-      await player0.waitForMessage("gameplay.bid.awaiting_bid", { player: 3 });
-      await player1.waitForMessage("gameplay.bid.awaiting_bid", { player: 3 });
-      await player2.waitForMessage("gameplay.bid.awaiting_bid", { player: 3 });
-      await player3.waitForMessage("gameplay.bid.awaiting_bid", { player: 3 });
+      await player0.waitForMessage("gameplay.bid.awaiting_bid", { player: player3.id });
+      await player1.waitForMessage("gameplay.bid.awaiting_bid", { player: player3.id });
+      await player2.waitForMessage("gameplay.bid.awaiting_bid", { player: player3.id });
+      await player3.waitForMessage("gameplay.bid.awaiting_bid", { player: player3.id });
 
       player3.send(
         JSON.stringify({
@@ -214,19 +214,19 @@ describe("integration test", () => {
       );
 
       await player0.waitForMessage("gameplay.bid.player_fold", {
-        player: 3,
+        player: player3.id,
       });
       await player1.waitForMessage("gameplay.bid.player_fold", {
-        player: 3,
+        player: player3.id,
       });
       await player2.waitForMessage("gameplay.bid.player_fold", {
-        player: 3,
+        player: player3.id,
       });
 
-      await player0.waitForMessage("gameplay.bid.awaiting_bid", { player: 0 });
-      await player1.waitForMessage("gameplay.bid.awaiting_bid", { player: 0 });
-      await player2.waitForMessage("gameplay.bid.awaiting_bid", { player: 0 });
-      await player3.waitForMessage("gameplay.bid.awaiting_bid", { player: 0 });
+      await player0.waitForMessage("gameplay.bid.awaiting_bid", { player: player0.id });
+      await player1.waitForMessage("gameplay.bid.awaiting_bid", { player: player0.id });
+      await player2.waitForMessage("gameplay.bid.awaiting_bid", { player: player0.id });
+      await player3.waitForMessage("gameplay.bid.awaiting_bid", { player: player0.id });
 
       player0.send(
         JSON.stringify({
@@ -236,22 +236,22 @@ describe("integration test", () => {
       );
 
       await player1.waitForMessage("gameplay.bid.player_bid", {
-        player: 0,
+        player: player0.id,
         bid: 160,
       });
       await player2.waitForMessage("gameplay.bid.player_bid", {
-        player: 0,
+        player: player0.id,
         bid: 160,
       });
       await player3.waitForMessage("gameplay.bid.player_bid", {
-        player: 0,
+        player: player0.id,
         bid: 160,
       });
 
-      await player0.waitForMessage("gameplay.bid.awaiting_bid", { player: 1 });
-      await player1.waitForMessage("gameplay.bid.awaiting_bid", { player: 1 });
-      await player2.waitForMessage("gameplay.bid.awaiting_bid", { player: 1 });
-      await player3.waitForMessage("gameplay.bid.awaiting_bid", { player: 1 });
+      await player0.waitForMessage("gameplay.bid.awaiting_bid", { player: player1.id });
+      await player1.waitForMessage("gameplay.bid.awaiting_bid", { player: player1.id });
+      await player2.waitForMessage("gameplay.bid.awaiting_bid", { player: player1.id });
+      await player3.waitForMessage("gameplay.bid.awaiting_bid", { player: player1.id });
 
       player1.send(
         JSON.stringify({
@@ -260,19 +260,19 @@ describe("integration test", () => {
       );
 
       await player0.waitForMessage("gameplay.bid.player_fold", {
-        player: 1,
+        player: player1.id,
       });
       await player2.waitForMessage("gameplay.bid.player_fold", {
-        player: 1,
+        player: player1.id,
       });
       await player3.waitForMessage("gameplay.bid.player_fold", {
-        player: 1,
+        player: player1.id,
       });
 
-      await player0.waitForMessage("gameplay.bid.awaiting_bid", { player: 2 });
-      await player1.waitForMessage("gameplay.bid.awaiting_bid", { player: 2 });
-      await player2.waitForMessage("gameplay.bid.awaiting_bid", { player: 2 });
-      await player3.waitForMessage("gameplay.bid.awaiting_bid", { player: 2 });
+      await player0.waitForMessage("gameplay.bid.awaiting_bid", { player: player2.id });
+      await player1.waitForMessage("gameplay.bid.awaiting_bid", { player: player2.id });
+      await player2.waitForMessage("gameplay.bid.awaiting_bid", { player: player2.id });
+      await player3.waitForMessage("gameplay.bid.awaiting_bid", { player: player2.id });
 
       player2.send(
         JSON.stringify({
@@ -281,31 +281,31 @@ describe("integration test", () => {
       );
 
       await player0.waitForMessage("gameplay.bid.player_fold", {
-        player: 2,
+        player: player2.id,
       });
       await player1.waitForMessage("gameplay.bid.player_fold", {
-        player: 2,
+        player: player2.id,
       });
       await player3.waitForMessage("gameplay.bid.player_fold", {
-        player: 2,
+        player: player2.id,
       });
 
-      await player0.waitForMessage("gameplay.bid.bid_winner", { player: 0 });
-      await player1.waitForMessage("gameplay.bid.bid_winner", { player: 0 });
-      await player2.waitForMessage("gameplay.bid.bid_winner", { player: 0 });
-      await player3.waitForMessage("gameplay.bid.bid_winner", { player: 0 });
+      await player0.waitForMessage("gameplay.bid.bid_winner", { player: player0.id });
+      await player1.waitForMessage("gameplay.bid.bid_winner", { player: player0.id });
+      await player2.waitForMessage("gameplay.bid.bid_winner", { player: player0.id });
+      await player3.waitForMessage("gameplay.bid.bid_winner", { player: player0.id });
 
       await player0.waitForMessage("gameplay.pre_play.trump_choosing", {
-        player: 0,
+        player: player0.id,
       });
       await player1.waitForMessage("gameplay.pre_play.trump_choosing", {
-        player: 0,
+        player: player0.id,
       });
       await player2.waitForMessage("gameplay.pre_play.trump_choosing", {
-        player: 0,
+        player: player0.id,
       });
       await player3.waitForMessage("gameplay.pre_play.trump_choosing", {
-        player: 0,
+        player: player0.id,
       });
 
       player0.send(
@@ -337,7 +337,7 @@ describe("integration test", () => {
         JSON.stringify({
           event: "gameplay.pre_play.player_add_meld",
           data: {
-            player: 0,
+            player: player0.id,
             meld: {
               type: "royal-marriage",
               cards: ["KS", "QS"],
@@ -352,7 +352,7 @@ describe("integration test", () => {
           cards: ["KS", "QS"],
         },
 
-        player: 0,
+        player: player0.id,
         points: [
           [40, 0],
           [0, 0],
@@ -363,7 +363,7 @@ describe("integration test", () => {
           type: "royal-marriage",
           cards: ["KS", "QS"],
         },
-        player: 0,
+        player: player0.id,
         points: [
           [40, 0],
           [0, 0],
@@ -374,7 +374,7 @@ describe("integration test", () => {
           type: "royal-marriage",
           cards: ["KS", "QS"],
         },
-        player: 0,
+        player: player0.id,
         points: [
           [40, 0],
           [0, 0],
@@ -386,7 +386,7 @@ describe("integration test", () => {
         JSON.stringify({
           event: "gameplay.pre_play.player_add_meld",
           data: {
-            player: 1,
+            player: player1.id,
             meld: {
               type: "marriage",
               cards: ["KC", "QC"],
@@ -400,7 +400,7 @@ describe("integration test", () => {
           type: "marriage",
           cards: ["KC", "QC"],
         },
-        player: 1,
+        player: player1.id,
         points: [
           [40, 0],
           [20, 0],
@@ -411,7 +411,7 @@ describe("integration test", () => {
           type: "marriage",
           cards: ["KC", "QC"],
         },
-        player: 1,
+        player: player1.id,
         points: [
           [40, 0],
           [20, 0],
@@ -422,7 +422,7 @@ describe("integration test", () => {
           type: "marriage",
           cards: ["KC", "QC"],
         },
-        player: 1,
+        player: player1.id,
         points: [
           [40, 0],
           [20, 0],
@@ -434,7 +434,7 @@ describe("integration test", () => {
         JSON.stringify({
           event: "gameplay.pre_play.player_add_meld",
           data: {
-            player: 2,
+            player: player2.id,
             meld: {
               type: "trump-nine",
               cards: ["9S"],
@@ -447,7 +447,7 @@ describe("integration test", () => {
         JSON.stringify({
           event: "gameplay.pre_play.player_commit_melds",
           data: {
-            player: 2,
+            player: player2.id,
           },
         })
       );
@@ -458,7 +458,7 @@ describe("integration test", () => {
           type: "trump-nine",
           cards: ["9S"],
         },
-        player: 2,
+        player: player2.id,
         points: [
           [50, 0],
           [20, 0],
@@ -469,7 +469,7 @@ describe("integration test", () => {
           type: "trump-nine",
           cards: ["9S"],
         },
-        player: 2,
+        player: player2.id,
         points: [
           [50, 0],
           [20, 0],
@@ -480,7 +480,7 @@ describe("integration test", () => {
           type: "trump-nine",
           cards: ["9S"],
         },
-        player: 2,
+        player: player2.id,
         points: [
           [50, 0],
           [20, 0],
@@ -489,13 +489,13 @@ describe("integration test", () => {
 
       //...and then they receive messages that he committed them
       await player0.waitForMessage("gameplay.pre_play.player_melds_committed", {
-        player: 2,
+        player: player2.id,
       });
       await player1.waitForMessage("gameplay.pre_play.player_melds_committed", {
-        player: 2,
+        player: player2.id,
       });
       await player3.waitForMessage("gameplay.pre_play.player_melds_committed", {
-        player: 2,
+        player: player2.id,
       });
 
       // player0 now remembers he has a pinochle
@@ -503,7 +503,7 @@ describe("integration test", () => {
         JSON.stringify({
           event: "gameplay.pre_play.player_add_meld",
           data: {
-            player: 0,
+            player: player0.id,
             meld: {
               type: "pinochle",
               cards: ["QS", "JD"],
@@ -517,7 +517,7 @@ describe("integration test", () => {
           type: "pinochle",
           cards: ["QS", "JD"],
         },
-        player: 0,
+        player: player0.id,
         points: [
           [90, 0],
           [20, 0],
@@ -528,7 +528,7 @@ describe("integration test", () => {
           type: "pinochle",
           cards: ["QS", "JD"],
         },
-        player: 0,
+        player: player0.id,
         points: [
           [90, 0],
           [20, 0],
@@ -539,7 +539,7 @@ describe("integration test", () => {
           type: "pinochle",
           cards: ["QS", "JD"],
         },
-        player: 0,
+        player: player0.id,
         points: [
           [90, 0],
           [20, 0],
@@ -551,7 +551,7 @@ describe("integration test", () => {
         JSON.stringify({
           event: "gameplay.pre_play.player_commit_melds",
           data: {
-            player: 0,
+            player: player0.id,
           },
         })
       );
@@ -561,29 +561,29 @@ describe("integration test", () => {
         JSON.stringify({
           event: "gameplay.pre_play.player_commit_melds",
           data: {
-            player: 1,
+            player: player1.id,
           },
         })
       );
 
       await player1.waitForMessage("gameplay.pre_play.player_melds_committed", {
-        player: 0,
+        player: player0.id,
       });
       await player2.waitForMessage("gameplay.pre_play.player_melds_committed", {
-        player: 0,
+        player: player0.id,
       });
       await player3.waitForMessage("gameplay.pre_play.player_melds_committed", {
-        player: 0,
+        player: player0.id,
       });
 
       await player0.waitForMessage("gameplay.pre_play.player_melds_committed", {
-        player: 1,
+        player: player1.id,
       });
       await player2.waitForMessage("gameplay.pre_play.player_melds_committed", {
-        player: 1,
+        player: player1.id,
       });
       await player3.waitForMessage("gameplay.pre_play.player_melds_committed", {
-        player: 1,
+        player: player1.id,
       });
 
       // player3 submits his 9 trump
@@ -591,7 +591,7 @@ describe("integration test", () => {
         JSON.stringify({
           event: "gameplay.pre_play.player_add_meld",
           data: {
-            player: 3,
+            player: player3.id,
             meld: {
               type: "trump-nine",
               cards: ["9S"],
@@ -605,7 +605,7 @@ describe("integration test", () => {
           type: "trump-nine",
           cards: ["9S"],
         },
-        player: 3,
+        player: player3.id,
         points: [
           [90, 0],
           [30, 0],
@@ -616,7 +616,7 @@ describe("integration test", () => {
           type: "trump-nine",
           cards: ["9S"],
         },
-        player: 3,
+        player: player3.id,
         points: [
           [90, 0],
           [30, 0],
@@ -627,7 +627,7 @@ describe("integration test", () => {
           type: "trump-nine",
           cards: ["9S"],
         },
-        player: 3,
+        player: player3.id,
         points: [
           [90, 0],
           [30, 0],
@@ -638,19 +638,19 @@ describe("integration test", () => {
         JSON.stringify({
           event: "gameplay.pre_play.player_commit_melds",
           data: {
-            player: 3,
+            player: player3.id,
           },
         })
       );
 
       await player0.waitForMessage("gameplay.pre_play.player_melds_committed", {
-        player: 3,
+        player: player3.id,
       });
       await player1.waitForMessage("gameplay.pre_play.player_melds_committed", {
-        player: 3,
+        player: player3.id,
       });
       await player2.waitForMessage("gameplay.pre_play.player_melds_committed", {
-        player: 3,
+        player: player3.id,
       });
 
       await player0.waitForMessage("gameplay.play.play_start");
@@ -663,108 +663,108 @@ describe("integration test", () => {
       // round one
 
       // player 0 won the bid, so they should play first
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 0 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player0.id });
 
       player0.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "AC", player: 0 },
+          data: { card: "AC", player: player0.id },
         })
       );
 
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "AC",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "AC",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "AC",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 1 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player1.id });
 
       player1.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "QC", player: 1 },
+          data: { card: "QC", player: player1.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "QC",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "QC",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "QC",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 2 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player2.id });
 
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "QC", player: 2 },
+          data: { card: "QC", player: player2.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "QC",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "QC",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "QC",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 3 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player3.id });
 
       player3.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "9C", player: 3 },
+          data: { card: "9C", player: player3.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "9C",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "9C",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "9C",
       });
 
       await player0.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 0,
+        player: player0.id,
         points: [
           [90, 20],
           [30, 0],
@@ -772,7 +772,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 0,
+        player: player0.id,
         points: [
           [90, 20],
           [30, 0],
@@ -780,7 +780,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 0,
+        player: player0.id,
         points: [
           [90, 20],
           [30, 0],
@@ -788,7 +788,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 0,
+        player: player0.id,
         points: [
           [90, 20],
           [30, 0],
@@ -799,108 +799,108 @@ describe("integration test", () => {
       // round 2
 
       // player 0 won the trick, so he starts the next one
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 0 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player0.id });
 
       player0.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "QH", player: 0 },
+          data: { card: "QH", player: player0.id },
         })
       );
 
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "QH",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "QH",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "QH",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 1 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player1.id });
 
       player1.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "AH", player: 1 },
+          data: { card: "AH", player: player1.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "AH",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "AH",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "AH",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 2 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player2.id });
 
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "QH", player: 2 },
+          data: { card: "QH", player: player2.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "QH",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "QH",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "QH",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 3 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player3.id });
 
       player3.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "10H", player: 3 },
+          data: { card: "10H", player: player3.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "10H",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "10H",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "10H",
       });
 
       await player0.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 1,
+        player: player1.id,
         points: [
           [90, 20],
           [30, 30],
@@ -908,7 +908,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 1,
+        player: player1.id,
         points: [
           [90, 20],
           [30, 30],
@@ -916,7 +916,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 1,
+        player: player1.id,
         points: [
           [90, 20],
           [30, 30],
@@ -924,7 +924,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 1,
+        player: player1.id,
         points: [
           [90, 20],
           [30, 30],
@@ -934,108 +934,108 @@ describe("integration test", () => {
 
       // round 3
       // player 1 won the trick, so he starts the next one
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 1 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player1.id });
 
       player1.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "AS", player: 1 },
+          data: { card: "AS", player: player1.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "AS",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "AS",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "AS",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 2 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player2.id });
 
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "9S", player: 2 },
+          data: { card: "9S", player: player2.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "9S",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "9S",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "9S",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 3 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player3.id });
 
       player3.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "KS", player: 3 },
+          data: { card: "KS", player: player3.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "KS",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "KS",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "KS",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 0 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player0.id });
 
       player0.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "QS", player: 0 },
+          data: { card: "QS", player: player0.id },
         })
       );
 
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "QS",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "QS",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "QS",
       });
 
       await player0.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 1,
+        player: player1.id,
         points: [
           [90, 20],
           [30, 50],
@@ -1043,7 +1043,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 1,
+        player: player1.id,
         points: [
           [90, 20],
           [30, 50],
@@ -1051,7 +1051,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 1,
+        player: player1.id,
         points: [
           [90, 20],
           [30, 50],
@@ -1059,7 +1059,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 1,
+        player: player1.id,
         points: [
           [90, 20],
           [30, 50],
@@ -1069,108 +1069,108 @@ describe("integration test", () => {
 
       // round 4
       // player 1 won the trick, so he starts the next one
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 1 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player1.id });
 
       player1.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "QD", player: 1 },
+          data: { card: "QD", player: player1.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "QD",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "QD",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "QD",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 2 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player2.id });
 
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "9D", player: 2 },
+          data: { card: "9D", player: player2.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "9D",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "9D",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "9D",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 3 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player3.id });
 
       player3.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "AD", player: 3 },
+          data: { card: "AD", player: player3.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "AD",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "AD",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "AD",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 0 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player0.id });
 
       player0.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "JD", player: 0 },
+          data: { card: "JD", player: player0.id },
         })
       );
 
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "JD",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "JD",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "JD",
       });
 
       await player0.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 3,
+        player: player3.id,
         points: [
           [90, 20],
           [30, 65],
@@ -1178,7 +1178,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 3,
+        player: player3.id,
         points: [
           [90, 20],
           [30, 65],
@@ -1186,7 +1186,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 3,
+        player: player3.id,
         points: [
           [90, 20],
           [30, 65],
@@ -1194,7 +1194,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 3,
+        player: player3.id,
         points: [
           [90, 20],
           [30, 65],
@@ -1204,108 +1204,108 @@ describe("integration test", () => {
 
       // round 5
       // player 3 won the trick, so he starts the next one
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 3 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player3.id });
 
       player3.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "AD", player: 3 },
+          data: { card: "AD", player: player3.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "AD",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "AD",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "AD",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 0 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player0.id });
 
       player0.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "KD", player: 0 },
+          data: { card: "KD", player: player0.id },
         })
       );
 
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "KD",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "KD",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "KD",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 1 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player1.id });
 
       player1.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "10D", player: 1 },
+          data: { card: "10D", player: player1.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "10D",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "10D",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "10D",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 2 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player2.id });
 
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "JD", player: 2 },
+          data: { card: "JD", player: player2.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "JD",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "JD",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "JD",
       });
 
       await player0.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 3,
+        player: player3.id,
         points: [
           [90, 20],
           [30, 90],
@@ -1313,7 +1313,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 3,
+        player: player3.id,
         points: [
           [90, 20],
           [30, 90],
@@ -1321,7 +1321,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 3,
+        player: player3.id,
         points: [
           [90, 20],
           [30, 90],
@@ -1329,7 +1329,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 3,
+        player: player3.id,
         points: [
           [90, 20],
           [30, 90],
@@ -1339,108 +1339,108 @@ describe("integration test", () => {
 
       // round 6
       // player3 won the trick, so he starts the next one
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 3 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player3.id });
 
       player3.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "KH", player: 3 },
+          data: { card: "KH", player: player3.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "KH",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "KH",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "KH",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 0 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player0.id });
 
       player0.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "JH", player: 0 },
+          data: { card: "JH", player: player0.id },
         })
       );
 
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "JH",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "JH",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "JH",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 1 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player1.id });
 
       player1.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "9H", player: 1 },
+          data: { card: "9H", player: player1.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "9H",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "9H",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "9H",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 2 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player2.id });
 
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "10H", player: 2 },
+          data: { card: "10H", player: player2.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "10H",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "10H",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "10H",
       });
 
       await player0.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 2,
+        player: player2.id,
         points: [
           [90, 35],
           [30, 90],
@@ -1448,7 +1448,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 2,
+        player: player2.id,
         points: [
           [90, 35],
           [30, 90],
@@ -1456,7 +1456,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 2,
+        player: player2.id,
         points: [
           [90, 35],
           [30, 90],
@@ -1464,7 +1464,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 2,
+        player: player2.id,
         points: [
           [90, 35],
           [30, 90],
@@ -1474,108 +1474,108 @@ describe("integration test", () => {
 
       // round 7
       // player2 won the trick, so he starts the next one
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 2 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player2.id });
 
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "QD", player: 2 },
+          data: { card: "QD", player: player2.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "QD",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "QD",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "QD",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 3 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player3.id });
 
       player3.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "KD", player: 3 },
+          data: { card: "KD", player: player3.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "KD",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "KD",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "KD",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 0 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player0.id });
 
       player0.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "10S", player: 0 },
+          data: { card: "10S", player: player0.id },
         })
       );
 
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "10S",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "10S",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "10S",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 1 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player1.id });
 
       player1.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "9D", player: 1 },
+          data: { card: "9D", player: player1.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "9D",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "9D",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "9D",
       });
 
       await player0.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 0,
+        player: player0.id,
         points: [
           [90, 55],
           [30, 90],
@@ -1583,7 +1583,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 0,
+        player: player0.id,
         points: [
           [90, 55],
           [30, 90],
@@ -1591,7 +1591,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 0,
+        player: player0.id,
         points: [
           [90, 55],
           [30, 90],
@@ -1599,7 +1599,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 0,
+        player: player0.id,
         points: [
           [90, 55],
           [30, 90],
@@ -1609,108 +1609,108 @@ describe("integration test", () => {
 
       // round 8
       // player0 won the trick, so he starts the next one
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 0 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player0.id });
 
       player0.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "JC", player: 0 },
+          data: { card: "JC", player: player0.id },
         })
       );
 
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "JC",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "JC",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "JC",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 1 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player1.id });
 
       player1.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "KC", player: 1 },
+          data: { card: "KC", player: player1.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "KC",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "KC",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "KC",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 2 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player2.id });
 
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "AC", player: 2 },
+          data: { card: "AC", player: player2.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "AC",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "AC",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "AC",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 3 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player3.id });
 
       player3.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "9S", player: 3 },
+          data: { card: "9S", player: player3.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "9S",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "9S",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "9S",
       });
 
       await player0.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 3,
+        player: player3.id,
         points: [
           [90, 55],
           [30, 105],
@@ -1718,7 +1718,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 3,
+        player: player3.id,
         points: [
           [90, 55],
           [30, 105],
@@ -1726,7 +1726,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 3,
+        player: player3.id,
         points: [
           [90, 55],
           [30, 105],
@@ -1734,7 +1734,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 3,
+        player: player3.id,
         points: [
           [90, 55],
           [30, 105],
@@ -1744,108 +1744,108 @@ describe("integration test", () => {
 
       // // round 9
       // player3 won the trick, so he starts the next one
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 3 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player3.id });
 
       player3.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "JH", player: 3 },
+          data: { card: "JH", player: player3.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "JH",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "JH",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "JH",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 0 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player0.id });
 
       player0.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "AS", player: 0 },
+          data: { card: "AS", player: player0.id },
         })
       );
 
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "AS",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "AS",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "AS",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 1 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player1.id });
 
       player1.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "QS", player: 1 },
+          data: { card: "QS", player: player1.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "QS",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "QS",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "QS",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 2 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player2.id });
 
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "AH", player: 2 },
+          data: { card: "AH", player: player2.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "AH",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "AH",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "AH",
       });
 
       await player0.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 0,
+        player: player0.id,
         points: [
           [90, 80],
           [30, 105],
@@ -1853,7 +1853,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 0,
+        player: player0.id,
         points: [
           [90, 80],
           [30, 105],
@@ -1861,7 +1861,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 0,
+        player: player0.id,
         points: [
           [90, 80],
           [30, 105],
@@ -1869,7 +1869,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 0,
+        player: player0.id,
         points: [
           [90, 80],
           [30, 105],
@@ -1879,108 +1879,108 @@ describe("integration test", () => {
 
       // round 10
       // player0 won the trick, so he starts the next one
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 0 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player0.id });
 
       player0.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "9C", player: 0 },
+          data: { card: "9C", player: player0.id },
         })
       );
 
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "9C",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "9C",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "9C",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 1 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player1.id });
 
       player1.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "KC", player: 1 },
+          data: { card: "KC", player: player1.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "KC",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "KC",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "KC",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 2 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player2.id });
 
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "10D", player: 2 },
+          data: { card: "10D", player: player2.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "10D",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "10D",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "10D",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 3 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player3.id });
 
       player3.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "JS", player: 3 },
+          data: { card: "JS", player: player3.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "JS",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "JS",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "JS",
       });
 
       await player0.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 3,
+        player: player3.id,
         points: [
           [90, 80],
           [30, 120],
@@ -1988,7 +1988,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 3,
+        player: player3.id,
         points: [
           [90, 80],
           [30, 120],
@@ -1996,7 +1996,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 3,
+        player: player3.id,
         points: [
           [90, 80],
           [30, 120],
@@ -2004,7 +2004,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 3,
+        player: player3.id,
         points: [
           [90, 80],
           [30, 120],
@@ -2014,108 +2014,108 @@ describe("integration test", () => {
 
       // round 11
       // player3 won the trick, so he starts the next one
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 3 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player3.id });
 
       player3.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "9H", player: 3 },
+          data: { card: "9H", player: player3.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "9H",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "9H",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "9H",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 0 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player0.id });
 
       player0.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "KS", player: 0 },
+          data: { card: "KS", player: player0.id },
         })
       );
 
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "KS",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "KS",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "KS",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 1 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player1.id });
 
       player1.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "10S", player: 1 },
+          data: { card: "10S", player: player1.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "10S",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "10S",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "10S",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 2 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player2.id });
 
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "KH", player: 2 },
+          data: { card: "KH", player: player2.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "KH",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "KH",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "KH",
       });
 
       await player0.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 1,
+        player: player1.id,
         points: [
           [90, 80],
           [30, 140],
@@ -2123,7 +2123,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 1,
+        player: player1.id,
         points: [
           [90, 80],
           [30, 140],
@@ -2131,7 +2131,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 1,
+        player: player1.id,
         points: [
           [90, 80],
           [30, 140],
@@ -2139,7 +2139,7 @@ describe("integration test", () => {
         is_last_trick: false,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 1,
+        player: player1.id,
         points: [
           [90, 80],
           [30, 140],
@@ -2149,108 +2149,108 @@ describe("integration test", () => {
 
       // // round 12
       // // player1 won the trick, so he starts the next one
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 1 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 1 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player1.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player1.id });
 
       player1.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "10C", player: 1 },
+          data: { card: "10C", player: player1.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "10C",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "10C",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 1,
+        player: player1.id,
         card: "10C",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 2 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 2 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player2.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player2.id });
 
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "JC", player: 2 },
+          data: { card: "JC", player: player2.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "JC",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "JC",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 2,
+        player: player2.id,
         card: "JC",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 3 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 3 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player3.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player3.id });
 
       player3.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "JS", player: 3 },
+          data: { card: "JS", player: player3.id },
         })
       );
 
       await player0.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "JS",
       });
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "JS",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 3,
+        player: player3.id,
         card: "JS",
       });
 
-      await player0.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player1.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player2.waitForMessage("gameplay.play.player_turn", { player: 0 });
-      await player3.waitForMessage("gameplay.play.player_turn", { player: 0 });
+      await player0.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player1.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player2.waitForMessage("gameplay.play.player_turn", { player: player0.id });
+      await player3.waitForMessage("gameplay.play.player_turn", { player: player0.id });
 
       player0.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "10C", player: 0 },
+          data: { card: "10C", player: player0.id },
         })
       );
 
       await player1.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "10C",
       });
       await player2.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "10C",
       });
       await player3.waitForMessage("gameplay.play.player_play_card", {
-        player: 0,
+        player: player0.id,
         card: "10C",
       });
 
       await player0.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 3,
+        player: player3.id,
         points: [
           [90, 80],
           [30, 170],
@@ -2258,7 +2258,7 @@ describe("integration test", () => {
         is_last_trick: true,
       });
       await player1.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 3,
+        player: player3.id,
         points: [
           [90, 80],
           [30, 170],
@@ -2266,7 +2266,7 @@ describe("integration test", () => {
         is_last_trick: true,
       });
       await player2.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 3,
+        player: player3.id,
         points: [
           [90, 80],
           [30, 170],
@@ -2274,7 +2274,7 @@ describe("integration test", () => {
         is_last_trick: true,
       });
       await player3.waitForMessage("gameplay.play.trick_end", {
-        winning_player: 3,
+        player: player3.id,
         points: [
           [90, 80],
           [30, 170],
@@ -2306,16 +2306,16 @@ describe("integration test", () => {
 
       // new round begins
       await player0.waitForMessage("gameplay.pre_play.round_start", {
-        dealer: 1,
+        player: player1.id,
       });
       await player1.waitForMessage("gameplay.pre_play.round_start", {
-        dealer: 1,
+        player: player1.id,
       });
       await player2.waitForMessage("gameplay.pre_play.round_start", {
-        dealer: 1,
+        player: player1.id,
       });
       await player3.waitForMessage("gameplay.pre_play.round_start", {
-        dealer: 1,
+        player: player1.id,
       });
     },
     60 * 1000

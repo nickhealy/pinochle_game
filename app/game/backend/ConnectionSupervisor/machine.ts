@@ -4,7 +4,7 @@ import ConnectionWorkerMachine from "../ConnectionWorker/machine";
 import GameMachine from "../gameplay/machine";
 import { createLobbyUpdate, parseSupervisorEvent } from "./eventHelpers";
 import { getWorkerId } from "./eventHelpers";
-import { addPlayerIds, sendToPlayers, shuffleConnectedWorkerKeys } from "./lobbyHelpers";
+import { addPlayerIds, removePlayerIds, sendToPlayers, shuffleConnectedWorkerKeys } from "./lobbyHelpers";
 import {
   ConnectionSupervisorContext,
   ConnectionSupervisorEvents,
@@ -221,7 +221,7 @@ const ConnectionSupervisorMachine = createMachine(
       clearWorker: () => {
         // see https://githubhot.com/repo/davidkpiano/xstate/issues/2531
       },
-      forwardToGameplayMachine: send((_, evt) => evt.event, {
+      forwardToGameplayMachine: send((ctx, evt) => removePlayerIds(evt.event, ctx), {
         to: "gameplay_machine",
       }),
       createTeams: assign((ctx) => {

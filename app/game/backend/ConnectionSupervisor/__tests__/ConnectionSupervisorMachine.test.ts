@@ -21,7 +21,7 @@ describe("ConnectionSupervisorMachine", () => {
       name: "nick",
     });
     await player0.waitForMessage("lobby.room_description", {
-      players: [{ name: "nick", id: player0.id }],
+      players: [{ name: "nick", id: player0.id }], own_id: player0.id
     });
 
     // P1 joins
@@ -38,6 +38,7 @@ describe("ConnectionSupervisorMachine", () => {
         { name: "nick", id: player0.id },
         { name: "annabelle", id: player1.id },
       ],
+      own_id: player1.id
     });
 
     // P2 joins
@@ -58,6 +59,7 @@ describe("ConnectionSupervisorMachine", () => {
         { name: "annabelle", id: player1.id },
         { name: "scott", id: player2.id },
       ],
+      own_id: player2.id
     });
 
     // P3 joins
@@ -82,6 +84,7 @@ describe("ConnectionSupervisorMachine", () => {
         { name: "scott", id: player2.id },
         { name: "chris", id: player3.id },
       ],
+      own_id: player3.id
     });
 
     await player0.waitForMessage("lobby.all_players_connected");

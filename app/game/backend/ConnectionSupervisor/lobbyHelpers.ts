@@ -3,7 +3,8 @@ import { send } from "xstate/lib/actions";
 import { createIncomingAction } from "../ConnectionWorker/eventHelpers";
 import { ConnectionWorkerEvent } from "../ConnectionWorker/types";
 import { createGameplayUpdate } from "../gameplay/events";
-import { createLobbyUpdate } from "./eventHelpers";
+import { GameEvents } from "../gameplay/types";
+import { createIncomingGameplayEvent, createLobbyUpdate } from "./eventHelpers";
 import {
   ConnectionSupervisorContext,
   ConnectionSupervisorEvents,
@@ -40,7 +41,8 @@ export const addPlayerIds = (
   action: ReturnType<typeof createGameplayUpdate>,
   lobbyCtx: ConnectionSupervisorContext
 ): ReturnType<typeof createGameplayUpdate> => {
-  const playerIdx: number | null = 'player' in action.payload.data ? action.payload.data.player : null;
+  const playerIdx: number | null =
+    "player" in action.payload.data ? action.payload.data.player : null;
   return {
     ...action,
     payload: {
@@ -54,4 +56,18 @@ export const addPlayerIds = (
       },
     },
   };
+};
+
+export const removePlayerIds = (
+  action: GameEvents,
+  lobbyCtx: ConnectionSupervisorContext
+): GameEvents => {
+  if ("player" in action) {
+    return {
+      ...action,
+      // @ts-expect-error this will actually be a string at runtime
+      player: lobbyCtx.workers_x_player_ids.indexOf(action.player),
+    };
+  }
+  return action;
 };

@@ -548,7 +548,7 @@ const GameMachine = createMachine(
       }),
       sendTrickEnd: sendParent((ctx, evt) => {
         return createGameplayUpdate("gameplay.play.trick_end", null, {
-          winning_player: ctx.play.winning_player,
+          player: ctx.play.winning_player,
           points: ctx.round.points,
           is_last_trick: getIsLastTrick(ctx.play.playerHands),
         });
