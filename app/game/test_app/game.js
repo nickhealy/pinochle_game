@@ -74,7 +74,6 @@ window.peer.on("connection", (conn) => {
       case "lobby.all_players_connected":
         const startBtn = document.getElementById("start-game");
         if (IS_HOST) {
-          debugger;
           startBtn.addEventListener("click", () =>
             conn.send(
               JSON.stringify({

@@ -4,7 +4,7 @@ import ConnectionWorkerMachine from "../ConnectionWorker/machine";
 import GameMachine from "../gameplay/machine";
 import { createLobbyUpdate, parseSupervisorEvent } from "./eventHelpers";
 import { getWorkerId } from "./eventHelpers";
-import { sendToPlayers, shuffleConnectedWorkerKeys } from "./lobbyHelpers";
+import { addPlayerIds, sendToPlayers, shuffleConnectedWorkerKeys } from "./lobbyHelpers";
 import {
   ConnectionSupervisorContext,
   ConnectionSupervisorEvents,
@@ -128,7 +128,7 @@ const ConnectionSupervisorMachine = createMachine(
                 ctx.connected_workers[ctx.workers_x_player_ids[target]]
             )
           : Object.values(ctx.connected_workers);
-        return targetWorkers.map((wkr) => send(evt, { to: () => wkr }));
+        return targetWorkers.map((wkr) => send(addPlayerIds(evt, ctx), { to: () => wkr }));
       }),
       announceNewPlayer: pure((ctx, evt) => {
         const workerKey = evt.worker_key;
@@ -149,12 +149,13 @@ const ConnectionSupervisorMachine = createMachine(
           );
       }),
       sendRoomDescription: send(
-        (ctx) =>
+        (ctx, evt) =>
           createLobbyUpdate("lobby.room_description", null, {
             players: Object.keys(ctx.connected_workers).map((wkr) => ({
               name: ctx.player_info[wkr].name,
               id: wkr,
             })),
+            own_id: evt.worker_key,
           }),
         {
           to: (ctx, evt) => ctx.connected_workers[evt.worker_key],

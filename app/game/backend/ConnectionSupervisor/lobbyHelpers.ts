@@ -1,6 +1,8 @@
 import { ActorRef } from "xstate";
 import { send } from "xstate/lib/actions";
+import { createIncomingAction } from "../ConnectionWorker/eventHelpers";
 import { ConnectionWorkerEvent } from "../ConnectionWorker/types";
+import { createGameplayUpdate } from "../gameplay/events";
 import { createLobbyUpdate } from "./eventHelpers";
 import {
   ConnectionSupervisorContext,
@@ -33,3 +35,23 @@ export const sendToPlayers = (
       ConnectionSupervisorEvents | { type: "" }
     >(createLobbyUpdate(messageId, null, payloadData), { to: () => player })
   );
+
+export const addPlayerIds = (
+  action: ReturnType<typeof createGameplayUpdate>,
+  lobbyCtx: ConnectionSupervisorContext
+): ReturnType<typeof createGameplayUpdate> => {
+  const playerIdx: number | null = 'player' in action.payload.data ? action.payload.data.player : null;
+  return {
+    ...action,
+    payload: {
+      ...action.payload,
+      data: {
+        ...action.payload.data,
+        ...((playerIdx !== null && {
+          player: lobbyCtx.workers_x_player_ids[playerIdx],
+        }) ||
+          {}),
+      },
+    },
+  };
+};

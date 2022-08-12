@@ -344,7 +344,8 @@ const GameMachine = createMachine(
       sendGameStart: sendParent(createGameplayUpdate("lobby.game_start")),
       sendRoundStart: sendParent((ctx) =>
         createGameplayUpdate("gameplay.pre_play.round_start", null, {
-          dealer: ctx.game.dealer,
+          // we send player here to make consistent how we refer to players
+          player: ctx.game.dealer,
         })
       ),
       sendCards: pure((ctx) =>
