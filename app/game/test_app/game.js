@@ -34,7 +34,15 @@ function createPlayer(isHost) {
 const container = document.getElementById("player-container");
 container.append(createPlayer(IS_HOST));
 // set up peer connection
-window._host_peer = new Peer();
+if (IS_HOST) {
+  window._host_peer = new Peer(undefined, { debug: 3 });
+  window._host_connected = false
+  window._host_peer.on('error', console.error)
+  window._host_peer.on("open", (id) => {
+    window._host_connected = true
+    console.log("host peer connected to peer server, id is ", id);
+  });
+}
 
 window.peer = new Peer(); // this will also have to be a singleton somehow
 window.peer.on("open", (id) => {
@@ -42,6 +50,7 @@ window.peer.on("open", (id) => {
   if (!IS_HOST) {
     document.getElementById("join-room").removeAttribute("disabled");
   } else {
+    console.log("inside this thing");
     lobby.send({
       type: "PLAYER_JOIN_REQUEST",
       connection_info: window.peer.id,
@@ -65,7 +74,7 @@ window.peer.on("connection", (conn) => {
       case "lobby.all_players_connected":
         const startBtn = document.getElementById("start-game");
         if (IS_HOST) {
-          debugger
+          debugger;
           startBtn.addEventListener("click", () =>
             conn.send(
               JSON.stringify({

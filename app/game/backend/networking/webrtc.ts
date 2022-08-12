@@ -31,9 +31,18 @@ class WebRTCClient implements Connection {
   registerMessageHandlers() {}
 }
 
-export function getWebRTCClient(metadata: string | undefined) {
+export function getWebRTCClient(metadata: string | undefined): Promise<DataConnection> {
   let conn: DataConnection;
-  return new Promise((res, rej) => {
+  return new Promise((res, _rej) => {
+    // @ts-expect-error
+    if (!window._host_connected) {
+      // this is a bit messy, but we need to make sure that the
+      // host peer is ready before trying to use it
+       return res(new Promise((res) => {
+        setTimeout(() => res(getWebRTCClient(metadata)), 50)
+      }))
+    }
+    console.log("reqesting to open connection to ", metadata)
     // @ts-expect-error
     conn = (window._host_peer as Peer).connect(metadata);
     conn.on("open", () => {
