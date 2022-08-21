@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   entry: "./index.ts",
-  mode: "production",
+  mode: "development",
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "game.bundle.js",
@@ -13,9 +13,11 @@ module.exports = {
     static: "./dist",
     open: true,
     port: 3000,
-    watchFiles: [
-      '*.js', "*.html"
-    ]
+    watchFiles: ["*.ts", "*.js", "*.html"],
+  },
+
+  resolve: {
+    extensions: [".js", ".ts"],
   },
 
   module: {

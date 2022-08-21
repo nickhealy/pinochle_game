@@ -1,9 +1,6 @@
-import WebRTCClient from "./backend/networking/webrtc";
-import ConnectionSupervisorMachine from "./backend/ConnectionSupervisor/machine";
-import { Peer } from "peerjs";
-import { interpret } from "xstate";
+import Game from "./ui/game/Game";
+import main from "./ui/inversify.config";
+import TYPES from "./ui/types/main";
 
-// roomId will come from params
-const init = (id: string, isHost: boolean = false) => {
-  const peer = new Peer(id);
-};
+const game = main.get<Game>(TYPES.Game);
+game.launch();
