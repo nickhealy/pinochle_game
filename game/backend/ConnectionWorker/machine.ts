@@ -6,8 +6,8 @@ import { createIncomingAction } from "./eventHelpers";
 import {
   ConnectionWorkerContext,
   ConnectionWorkerEvent,
-  metadataExists,
-} from "./types";
+  metadataExists,    
+} from "./types"; 
 
 const ConnectionWorkerMachine = createMachine(
   {

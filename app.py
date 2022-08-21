@@ -7,7 +7,6 @@ app = Flask(__name__)
 
 
 class MessageAnnouncer:
-
     def __init__(self):
         self.listeners = dict()
 
@@ -41,6 +40,13 @@ def game(id):
             "host_id": 'host-12345'}
     print(data['is_host'])
     return render_template('test_app/game.html', data=data)
+
+
+@app.post('/join')
+def join_room_code():
+    req_data = request.json
+    code = req_data["code"]
+
 
 
 @app.route('/ping', methods=['GET'])
@@ -82,7 +88,7 @@ room_registry = dict()
 @app.post('/rooms/create')
 def create_room():
     req_data = request.json
-    room_id = uuid.uuid4().int
+    room_id = 1234
     own_peer_id = req_data.get('own_peer_id')
     if own_peer_id is not None:
         link = f'http://localhost:5000/game/{room_id}-{own_peer_id}'
@@ -95,4 +101,9 @@ def create_room():
 
 @app.route('/')
 def index():
-    return render_template('test_app/index.html')
+    host_token = request.cookies.get('host_token')
+    if host_token is None:
+        # render beginning of flow, we will pass in host things
+        return render_template('test_app/index.html')
+    
+    # this is where we handle if host is coming back to a game, i guess? tbd

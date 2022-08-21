@@ -3,3 +3,4 @@ node_modules/
 **/*.typegen.ts
 **/*.out.js
 venv/
+dist/

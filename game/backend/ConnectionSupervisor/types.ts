@@ -1,13 +1,9 @@
 import { ActorRef, Spawnable } from "xstate";
+import { createIncomingAction } from "../ConnectionWorker/eventHelpers";
 import {
-  ConnectionWorkerContext,
   ConnectionWorkerEvent,
 } from "../ConnectionWorker/types";
 import { createGameplayUpdate } from "../gameplay/events";
-import {
-  GamePlayUpdatePayload,
-  PlayerEventPayload,
-} from "../gameplay/gamePlayEventTypes";
 import { GameEvents } from "../gameplay/types";
 
 export interface ConnectionSupervisorContext {
@@ -22,11 +18,7 @@ export type ConnectionSupervisorEvents =
   | { type: "PLAYER_CONNECTED"; worker_key: string }
   | { type: "PLAYER_CONNECTION_FAIL"; id: number }
   | ReturnType<typeof createGameplayUpdate>
-  | {
-      type: "INCOMING_ACTION";
-      connection_info: string;
-      payload: PlayerEventPayload;
-    }
+  | ReturnType<typeof createIncomingAction>
   | {
       type: "INCOMING_GAME_EVENT";
       event: GameEvents;
