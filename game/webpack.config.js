@@ -1,5 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   entry: "./index.ts",
@@ -20,6 +21,8 @@ module.exports = {
     extensions: [".js", ".ts"],
   },
 
+  devtool: "eval-source-map",
+
   module: {
     rules: [
       {
@@ -31,6 +34,10 @@ module.exports = {
   },
 
   plugins: [
+    new CopyPlugin({
+      patterns: [{ from: "static/" }],
+    }),
+
     new HtmlWebpackPlugin({
       template: "./index.html",
     }),

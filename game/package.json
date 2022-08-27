@@ -16,6 +16,7 @@
   "dependencies": {
     "inversify": "^6.0.1",
     "peerjs": "^1.4.7",
+    "pixi.js": "^6.5.2",
     "reflect-metadata": "^0.1.13",
     "xstate": "^4.30.6"
   },
@@ -29,6 +30,7 @@
     "@xstate/cli": "^0.1.6",
     "babel-jest": "^27.5.1",
     "babel-plugin-dynamic-import-node": "^2.3.3",
+    "copy-webpack-plugin": "^11.0.0",
     "esbuild": "^0.14.53",
     "html-webpack-plugin": "^5.5.0",
     "jest": "^27.5.1",
