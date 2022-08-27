@@ -1,6 +1,7 @@
 import { Container } from "inversify";
 import { Application } from "pixi.js";
 import Background from "./containers/background/Background";
+import HTMLContentLayer from "./containers/HTMLContentLayer/HTMLContentLayer";
 import Game from "./game/Game";
 import { Manager } from "./Manager";
 import WelcomeStage from "./scenes/welcome/Welcome.scene";
@@ -11,6 +12,9 @@ main.bind<Game>(TYPES.Game).to(Game);
 main.bind<Background>(TYPES.Background).to(Background);
 main.bind<WelcomeStage>(TYPES.WelcomeStage).to(WelcomeStage);
 main.bind<Manager>(TYPES.Manager).to(Manager);
+main
+  .bind<HTMLContentLayer>(TYPES.HtmlContentLayer)
+  .toConstantValue(new HTMLContentLayer());
 main.bind<Application>(TYPES.Application).toConstantValue(
   new Application({
     view: document.getElementById("pixi-canvas") as HTMLCanvasElement,

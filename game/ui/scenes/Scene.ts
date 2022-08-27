@@ -6,18 +6,18 @@ import TYPES from "../types/main";
 @injectable()
 export abstract class Scene {
   private _sceneDO: DisplayObject;
-  private app: Application;
+  protected app: Application;
   constructor(app: Application) {
     this._sceneDO = this.createScene();
     this.app = app;
   }
 
   render() {
-    this.setup();
+    this.init();
     this.app.stage.addChild(this.sceneDO);
   }
 
-  abstract setup(): void;
+  abstract init(): void;
 
   abstract createScene(): DisplayObject;
 
