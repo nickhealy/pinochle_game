@@ -28,13 +28,27 @@ class HTMLViewManager {
     this._currentView = initialView;
     this._container.appendChild(this._currentView);
   }
-  private doTransition() {
-    console.log("doing transition");
+  private doTransitionUi() {
+    // could be extended to include animiations. etc.
+    if (this._currentView) {
+      this._container.removeChild(this._currentView);
+    }
+    if (this._nextView) {
+      this._container.appendChild(this._nextView);
+    }
   }
   public transition(target: HTMLDivElement) {
     this._prevView = this._currentView;
     this._nextView = target;
-    this.doTransition();
+    this.doTransitionUi();
+    this._currentView = this._nextView;
+    this._nextView = null;
+  }
+
+  public goBack() {
+    this._nextView = this._prevView;
+    this._prevView = this._currentView;
+    this.doTransitionUi();
     this._currentView = this._nextView;
     this._nextView = null;
   }

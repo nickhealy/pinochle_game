@@ -2,28 +2,31 @@ import { injectable } from "inversify";
 import HTMLView from "../../containers/HTMLContentLayer/HTMLView";
 import {
   createButton,
-  createCenteredContainer,
+  createCenteredFullScreenContainer,
+  createInnerContainer,
   createSpacer,
   Spacer,
 } from "../../containers/HTMLContentLayer/utils";
+import { PreGameUIEvents } from "./PreGame.scene";
 
 @injectable()
-class WelcomeView implements HTMLView {
+class WelcomeView extends HTMLView {
   _container: HTMLDivElement;
   private joinGameBtn!: HTMLButtonElement;
   private createGameBtn!: HTMLButtonElement;
   constructor() {
+    super();
     this._container = this.createWelcome();
   }
   get view() {
     return this._container;
   }
   addClickListeners() {
-    this.joinGameBtn!.addEventListener("click", () =>
-      console.log("joinGame clicked")
+    this.joinGameBtn.addEventListener("click", () =>
+      this.dispatch(PreGameUIEvents.JOIN_GAME_PRESSED)
     );
-    this.createGameBtn!.addEventListener("click", () =>
-      console.log("createGame clicked")
+    this.createGameBtn.addEventListener("click", () =>
+      this.dispatch(PreGameUIEvents.NEW_GAME_PRESSED)
     );
   }
   createBtns() {
@@ -35,18 +38,11 @@ class WelcomeView implements HTMLView {
     const btn = createButton(text);
     return btn;
   }
-  createBtnContainer() {
-    const container = document.createElement("div");
-    container.style.display = "flex";
-    container.style.alignItems = "center";
-    container.style.justifyContent = "center";
-    container.style.flexDirection = "column";
-    return container;
-  }
+
   createWelcome() {
     this.createBtns();
-    const container = createCenteredContainer();
-    const btnContainer = this.createBtnContainer();
+    const container = createCenteredFullScreenContainer();
+    const btnContainer = createInnerContainer();
     btnContainer.appendChild(this.joinGameBtn);
     btnContainer.appendChild(createSpacer(Spacer.medium));
     btnContainer.appendChild(this.createGameBtn);

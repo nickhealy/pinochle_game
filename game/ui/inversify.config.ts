@@ -8,12 +8,14 @@ import ViewManager from "./containers/HTMLContentLayer/HTMLViewManager";
 import PreGameScene from "./scenes/welcome/PreGame.scene";
 import TYPES from "./types/main";
 import WelcomeView from "./scenes/welcome/WelcomeView";
+import JoinGameView from "./scenes/welcome/JoinGameView";
 
 const main = new Container({ defaultScope: "Singleton" });
 main.bind<Game>(TYPES.Game).to(Game);
 main.bind<Background>(TYPES.Background).to(Background);
 main.bind<PreGameScene>(TYPES.PreGameScene).to(PreGameScene);
 main.bind<WelcomeView>(TYPES.WelcomeView).to(WelcomeView);
+main.bind<JoinGameView>(TYPES.JoinGameView).to(JoinGameView);
 main.bind<Manager>(TYPES.Manager).to(Manager);
 main
   .bind<HTMLContentLayer>(TYPES.HtmlContentLayer)
