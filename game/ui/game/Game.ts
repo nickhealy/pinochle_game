@@ -1,24 +1,25 @@
 import "reflect-metadata";
 import { injectable, inject } from "inversify";
-import WelcomeStage from "../scenes/welcome/Welcome.scene";
+import WelcomeStage from "../scenes/welcome/PreGame.scene";
 import TYPES from "../types/main";
 import { Manager } from "../Manager";
+import PreGameScene from "../scenes/welcome/PreGame.scene";
 
 @injectable()
 class Game {
   protected manager: Manager;
-  protected ws: WelcomeStage;
+  protected preGameScene: PreGameScene;
   constructor(
     @inject<Manager>(TYPES.Manager) manager: Manager,
-    @inject<WelcomeStage>(TYPES.WelcomeStage) ws: WelcomeStage
+    @inject<PreGameScene>(TYPES.PreGameScene) preGameScene: PreGameScene
   ) {
     this.manager = manager;
-    this.ws = ws;
+    this.preGameScene = preGameScene;
   }
 
   public launch() {
     console.log("game is launched");
-    this.manager.changeScene(this.ws);
+    this.manager.changeScene(this.preGameScene);
   }
 }
 

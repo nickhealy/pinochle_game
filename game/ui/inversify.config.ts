@@ -4,17 +4,21 @@ import Background from "./containers/background/Background";
 import HTMLContentLayer from "./containers/HTMLContentLayer/HTMLContentLayer";
 import Game from "./game/Game";
 import { Manager } from "./Manager";
-import WelcomeStage from "./scenes/welcome/Welcome.scene";
+import ViewManager from "./containers/HTMLContentLayer/HTMLViewManager";
+import PreGameScene from "./scenes/welcome/PreGame.scene";
 import TYPES from "./types/main";
+import WelcomeView from "./scenes/welcome/WelcomeView";
 
 const main = new Container({ defaultScope: "Singleton" });
 main.bind<Game>(TYPES.Game).to(Game);
 main.bind<Background>(TYPES.Background).to(Background);
-main.bind<WelcomeStage>(TYPES.WelcomeStage).to(WelcomeStage);
+main.bind<PreGameScene>(TYPES.PreGameScene).to(PreGameScene);
+main.bind<WelcomeView>(TYPES.WelcomeView).to(WelcomeView);
 main.bind<Manager>(TYPES.Manager).to(Manager);
 main
   .bind<HTMLContentLayer>(TYPES.HtmlContentLayer)
   .toConstantValue(new HTMLContentLayer());
+main.bind<ViewManager>(TYPES.ViewManager).to(ViewManager);
 main.bind<Application>(TYPES.Application).toConstantValue(
   new Application({
     view: document.getElementById("pixi-canvas") as HTMLCanvasElement,
