@@ -11,6 +11,7 @@ const TYPES = {
   HtmlContentLayer: Symbol.for("html-content-layer"),
   ViewManager: Symbol.for("view-manager"),
   OwnPeerManager: Symbol.for("own-peer-manager"),
+  HostPeerManager: Symbol.for("host-peer-manager"),
 };
 
 export default TYPES;

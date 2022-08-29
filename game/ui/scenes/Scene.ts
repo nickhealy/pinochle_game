@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { injectable, inject } from "inversify";
 import { Application, DisplayObject } from "pixi.js";
-import TYPES from "../types/main";
+import TYPES from "../../inversify-types";
 
 @injectable()
 export abstract class Scene {

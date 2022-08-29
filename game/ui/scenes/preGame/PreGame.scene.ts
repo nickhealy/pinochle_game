@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { injectable, inject } from "inversify";
 import Background from "../../containers/background/Background";
-import TYPES from "../../types/main";
+import TYPES from "../../../inversify-types";
 import { Scene } from "../Scene";
 import { Application, DisplayObject, Container } from "pixi.js";
 import HTMLContentLayer from "../../containers/HTMLContentLayer/HTMLContentLayer";

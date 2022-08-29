@@ -3,7 +3,7 @@ import { Application } from "@pixi/app";
 import { DisplayObject } from "@pixi/display";
 import { inject, injectable } from "inversify";
 import { Scene } from "./scenes/Scene";
-import TYPES from "./types/main";
+import TYPES from "../inversify-types";
 import Background from "./containers/background/Background";
 
 @injectable()

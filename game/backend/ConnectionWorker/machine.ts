@@ -1,13 +1,16 @@
 import { DataConnection } from "peerjs";
 import { assign, createMachine, send } from "xstate";
 import { sendParent } from "xstate/lib/actions";
+import main from "../../inversify.config";
+import TYPES from "../../inversify-types";
+import HostPeerManager from "../../ui/webrtc/HostPeerManager";
 import { getWebRTCClient } from "../networking/webrtc";
 import { createIncomingAction } from "./eventHelpers";
 import {
   ConnectionWorkerContext,
   ConnectionWorkerEvent,
-  metadataExists,    
-} from "./types"; 
+  metadataExists,
+} from "./types";
 
 const ConnectionWorkerMachine = createMachine(
   {
@@ -39,7 +42,8 @@ const ConnectionWorkerMachine = createMachine(
       connecting: {
         invoke: {
           id: "getWebRTCClient",
-          src: async (ctx) => await getWebRTCClient(ctx.connection_metadata),
+          src: async () =>
+            await main.get<HostPeerManager>(TYPES.HostPeerManager).connect(), // awkward, but works for now
           onDone: {
             actions: ["sendSelfConnected"],
           },
@@ -67,10 +71,10 @@ const ConnectionWorkerMachine = createMachine(
               throw new Error("Connection does not exists"); // should not get here
             }
 
-            ctx.connection_ref.on('data', (message) => {
+            ctx.connection_ref.on("data", (message) => {
               // TODO: validate the fields of the incoming request, try/catch around JSON.parse
               const parsedMessage = JSON.parse(message as string);
-              
+
               console.log(
                 `[connection-worker] received incoming message : ${message}`
               );

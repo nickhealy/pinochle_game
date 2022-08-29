@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
-import Peer from "peerjs";
+import Peer, { DataConnection } from "peerjs";
 
-enum WebRTCManagerStates {
+export enum WebRTCManagerStates {
   INITIAL = "initial",
   READY_TO_CONNECT = "ready_to_connect",
   CONNECTED = "connected",
@@ -12,7 +12,8 @@ const RETRY_TIMEOUT = 50;
 
 @injectable()
 abstract class WebRTCManager {
-  _state: WebRTCManagerStates = WebRTCManagerStates.INITIAL;
+  private _state: WebRTCManagerStates = WebRTCManagerStates.INITIAL;
+  protected _connection: DataConnection | undefined;
   constructor() {}
 
   abstract init(): void;

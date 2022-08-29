@@ -11,7 +11,7 @@ import {
 import EventEmitter from "../../events/EventEmitter";
 import { PreGameEvents } from "../../events/events";
 
-import TYPES from "../../types/main";
+import TYPES from "../../../inversify-types";
 import OwnPeerManager from "../../webrtc/OwnPeerManager";
 
 const JOIN_GAME_TEXT = "Join Game";

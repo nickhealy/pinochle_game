@@ -11,7 +11,7 @@ import {
   Spacer,
 } from "../../containers/HTMLContentLayer/utils";
 import { PreGameEvents } from "../../events/events";
-import TYPES from "../../types/main";
+import TYPES from "../../../inversify-types";
 
 @injectable()
 class WelcomeView extends HTMLView {

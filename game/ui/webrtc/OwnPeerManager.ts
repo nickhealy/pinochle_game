@@ -2,7 +2,7 @@ import { inject, injectable } from "inversify";
 import Peer, { DataConnection } from "peerjs";
 import EventEmitter from "../events/EventEmitter";
 import { WebRTCEvents } from "../events/events";
-import TYPES from "../types/main";
+import TYPES from "../../inversify-types";
 import WebRTCManager from "./WebRTCManager";
 
 enum WebRTCManagerStates {
@@ -14,7 +14,6 @@ enum WebRTCManagerStates {
 @injectable()
 class OwnPeerManager extends WebRTCManager {
   private _ownPeer: Peer | undefined;
-  private _connection: DataConnection | undefined;
   private _eventEmitter: EventEmitter;
   constructor(
     @inject<EventEmitter>(TYPES.EventEmitter) eventEmitter: EventEmitter
