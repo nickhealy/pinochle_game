@@ -10,7 +10,7 @@ const TYPES = {
   Manager: Symbol.for("manager"),
   HtmlContentLayer: Symbol.for("html-content-layer"),
   ViewManager: Symbol.for("view-manager"),
-  WebRtcManager: Symbol.for("web-rtc-manager"),
+  OwnPeerManager: Symbol.for("own-peer-manager"),
 };
 
 export default TYPES;

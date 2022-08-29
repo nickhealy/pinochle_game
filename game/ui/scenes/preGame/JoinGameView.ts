@@ -12,7 +12,7 @@ import EventEmitter from "../../events/EventEmitter";
 import { PreGameEvents } from "../../events/events";
 
 import TYPES from "../../types/main";
-import WebRTCManager from "../../webrtc/OwnPeerManager";
+import OwnPeerManager from "../../webrtc/OwnPeerManager";
 
 const JOIN_GAME_TEXT = "Join Game";
 
@@ -20,7 +20,7 @@ const JOIN_GAME_TEXT = "Join Game";
 class JoinGameView extends HTMLView {
   private _container: HTMLDivElement;
   private _eventEmitter: EventEmitter;
-  private _webRtcManager: WebRTCManager;
+  private _ownPeerManager: OwnPeerManager;
   private joinBtn!: HTMLButtonElement;
   private joinError!: HTMLParagraphElement;
   private nameInput!: HTMLInputElement;
@@ -28,11 +28,11 @@ class JoinGameView extends HTMLView {
 
   constructor(
     @inject<EventEmitter>(TYPES.EventEmitter) eventEmitter: EventEmitter,
-    @inject<WebRTCManager>(TYPES.WebRtcManager) webRtcManager: WebRTCManager
+    @inject<OwnPeerManager>(TYPES.OwnPeerManager) webRtcManager: OwnPeerManager
   ) {
     super();
     this._eventEmitter = eventEmitter;
-    this._webRtcManager = webRtcManager;
+    this._ownPeerManager = webRtcManager;
     this._container = this.createContainer();
     this.addSubscriptions();
   }
@@ -43,7 +43,7 @@ class JoinGameView extends HTMLView {
   async joinGame() {
     const roomId = this.inputs.reduce((acc, curr) => (acc += curr.value), "");
     try {
-      const ownPeerId = await this._webRtcManager.waitForId();
+      const ownPeerId = await this._ownPeerManager.waitForId();
       const res: Response = await fetch(`/rooms/${roomId}/join`, {
         method: "POST",
         redirect: "follow",
