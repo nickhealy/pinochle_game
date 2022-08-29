@@ -8,12 +8,8 @@ import HTMLContentLayer from "../../containers/HTMLContentLayer/HTMLContentLayer
 import ViewManager from "../../containers/HTMLContentLayer/HTMLViewManager";
 import WelcomeView from "./WelcomeView";
 import JoinGameView from "./JoinGameView";
-
-export enum PreGameUIEvents {
-  JOIN_GAME_PRESSED = "join_game_pressed",
-  NEW_GAME_PRESSED = "new_game_pressed",
-  BACK_BTN_PRESSED = "back_btn_pressed",
-}
+import EventEmitter from "../../events/EventEmitter";
+import { PreGameEvents } from "../../events/events";
 
 @injectable()
 class PreGameScene extends Scene {
@@ -21,9 +17,10 @@ class PreGameScene extends Scene {
   private welcomeView: WelcomeView;
   private joinGameView: JoinGameView;
   private htmlLayer: HTMLContentLayer;
-  private _listeners: Record<PreGameUIEvents, () => void>;
+  private _eventEmitter: EventEmitter;
   constructor(
     @inject<Background>(TYPES.Application) app: Application,
+    @inject<EventEmitter>(TYPES.EventEmitter) eventEmitter: EventEmitter,
     @inject<HTMLContentLayer>(TYPES.HtmlContentLayer)
     htmlLayer: HTMLContentLayer,
     @inject<ViewManager>(TYPES.ViewManager) viewManager: ViewManager,
@@ -35,25 +32,26 @@ class PreGameScene extends Scene {
     this.viewManager = viewManager;
     this.welcomeView = welcomeView;
     this.joinGameView = joinGameView;
-    this._listeners = {
-      [PreGameUIEvents.BACK_BTN_PRESSED]: this.goBack,
-      [PreGameUIEvents.JOIN_GAME_PRESSED]: this.goToJoinGameView,
-      [PreGameUIEvents.NEW_GAME_PRESSED]: this.goToNewGameView,
-    };
-  }
-  dispatchEvent(event: PreGameUIEvents) {
-    const fn = this._listeners[event];
-    if (!fn) {
-      console.error("unrecognized pregame scene ui event : ", event);
-    } else {
-      fn.bind(this)();
-    }
+    this._eventEmitter = eventEmitter;
   }
   init() {
     this.viewManager.init(this.welcomeView.view);
-    this.joinGameView.registerDispatch(this.dispatchEvent.bind(this));
-    this.welcomeView.registerDispatch(this.dispatchEvent.bind(this));
     this.renderWelcomeView();
+    this.registerListeners();
+  }
+  registerListeners() {
+    this._eventEmitter.addEventListener(
+      PreGameEvents.GO_TO_JOIN_GAME,
+      this.goToJoinGameView.bind(this)
+    );
+    this._eventEmitter.addEventListener(
+      PreGameEvents.GO_TO_NEW_GAME,
+      this.goToNewGameView.bind(this)
+    );
+    this._eventEmitter.addEventListener(
+      PreGameEvents.GO_BACK,
+      this.goBack.bind(this)
+    );
   }
   createScene(): DisplayObject {
     return new Container(); // playing around with having blank container

@@ -1,4 +1,6 @@
+import { EventEmitter } from "@pixi/utils";
 import { inject, injectable } from "inversify";
+import { INTERNAL_FORMAT_TO_BYTES_PER_PIXEL } from "pixi.js";
 import { init } from "xstate/lib/actionTypes";
 import HTMLView from "../../containers/HTMLContentLayer/HTMLView";
 import {
@@ -8,34 +10,34 @@ import {
   createSpacer,
   Spacer,
 } from "../../containers/HTMLContentLayer/utils";
-import { PreGameUIEvents } from "./PreGame.scene";
+import { PreGameEvents } from "../../events/events";
+import TYPES from "../../types/main";
 
 @injectable()
 class WelcomeView extends HTMLView {
-  _container: HTMLDivElement;
+  private _container: HTMLDivElement;
+  private _eventEmitter: EventEmitter;
   private joinGameBtn!: HTMLButtonElement;
   private createGameBtn!: HTMLButtonElement;
-  constructor() {
+  constructor(
+    @inject<EventEmitter>(TYPES.EventEmitter) eventEmitter: EventEmitter
+  ) {
     super();
+    this._eventEmitter = eventEmitter;
     this._container = this.createWelcome();
-    this.init();
   }
   get view() {
     return this._container;
   }
-  init() {}
-  addClickListeners() {
-    this.joinGameBtn.addEventListener("click", () =>
-      this.dispatch(PreGameUIEvents.JOIN_GAME_PRESSED)
-    );
-    this.createGameBtn.addEventListener("click", () =>
-      this.dispatch(PreGameUIEvents.NEW_GAME_PRESSED)
-    );
-  }
   createBtns() {
     this.joinGameBtn = this.createBtn("Join Existing Game");
     this.createGameBtn = this.createBtn("Create New Game");
-    this.addClickListeners();
+    this.joinGameBtn.addEventListener("click", () =>
+      this._eventEmitter.emit(PreGameEvents.GO_TO_JOIN_GAME)
+    );
+    this.createGameBtn.addEventListener("click", () =>
+      this._eventEmitter.emit(PreGameEvents.GO_TO_NEW_GAME)
+    );
   }
   createBtn(text: string) {
     const btn = createButton(text);

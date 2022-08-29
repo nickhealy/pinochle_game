@@ -11,7 +11,6 @@ class EventEmitter extends EventTarget {
   }
 
   emit(eventType: AllEvents, payload: Record<string, any> = {}) {
-    // @ts-ignore
     const event = new CustomEvent(eventType, { detail: payload });
     console.log("Emitting event: ", {
       type: event.type,

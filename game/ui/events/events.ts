@@ -1,4 +1,7 @@
 export enum PreGameEvents {
+  GO_TO_JOIN_GAME = "go_to_join_game",
+  GO_TO_NEW_GAME = "go_to_new_game",
+  GO_BACK = "go_back",
   JOIN_GAME = "join_game",
   JOIN_GAME_SUCCESS = "join_game_success",
   JOIN_GAME_FAIL = "join_game_fail",

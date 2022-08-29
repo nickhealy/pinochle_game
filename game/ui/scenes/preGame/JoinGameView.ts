@@ -12,7 +12,6 @@ import EventEmitter from "../../events/EventEmitter";
 import { PreGameEvents } from "../../events/events";
 
 import TYPES from "../../types/main";
-import { PreGameUIEvents } from "./PreGame.scene";
 
 const JOIN_GAME_TEXT = "Join Game";
 
@@ -153,7 +152,7 @@ class JoinGameView extends HTMLView {
   createBackButton() {
     const backBtn = createInlineBackButton();
     backBtn.addEventListener("click", () => {
-      this.dispatch(PreGameUIEvents.BACK_BTN_PRESSED);
+      this._eventEmitter.emit(PreGameEvents.GO_BACK);
       this.reset();
       this.nameInput.value = "";
     });
