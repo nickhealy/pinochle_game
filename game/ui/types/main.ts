@@ -1,5 +1,7 @@
 const TYPES = {
   Game: Symbol.for("game"),
+  Store: Symbol.for("store"),
+  EventEmitter: Symbol.for("event-emitter"),
   Background: Symbol.for("background"),
   Application: Symbol.for("application"),
   PreGameScene: Symbol.for("pregame-scene"),
@@ -8,6 +10,7 @@ const TYPES = {
   Manager: Symbol.for("manager"),
   HtmlContentLayer: Symbol.for("html-content-layer"),
   ViewManager: Symbol.for("view-manager"),
+  WebRtcManager: Symbol.for("web-rtc-manager"),
 };
 
 export default TYPES;

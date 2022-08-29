@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { PreGameUIEvents } from "../../scenes/welcome/PreGame.scene";
+import { PreGameUIEvents } from "../../scenes/preGame/PreGame.scene";
 export type Dispatch = (event: PreGameUIEvents) => void;
 
 @injectable()

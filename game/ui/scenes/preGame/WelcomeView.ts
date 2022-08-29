@@ -1,4 +1,5 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
+import { init } from "xstate/lib/actionTypes";
 import HTMLView from "../../containers/HTMLContentLayer/HTMLView";
 import {
   createButton,
@@ -17,10 +18,12 @@ class WelcomeView extends HTMLView {
   constructor() {
     super();
     this._container = this.createWelcome();
+    this.init();
   }
   get view() {
     return this._container;
   }
+  init() {}
   addClickListeners() {
     this.joinGameBtn.addEventListener("click", () =>
       this.dispatch(PreGameUIEvents.JOIN_GAME_PRESSED)

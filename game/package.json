@@ -14,6 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@reduxjs/toolkit": "^1.8.5",
     "inversify": "^6.0.1",
     "peerjs": "^1.4.7",
     "pixi.js": "^6.5.2",
