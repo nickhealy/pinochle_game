@@ -1,15 +1,16 @@
 import { Container } from "inversify";
-import Game from "./ui/game/Game";
-import ViewManager from "./ui/containers/HTMLContentLayer/HTMLViewManager";
+import Game from "./ui/Game";
+import ViewManager from "./ui/HTMLContentLayer/HTMLViewManager";
 import PreGameScene from "./ui/scenes/preGame/PreGame.scene";
 import TYPES from "./inversify-types";
 import WelcomeView from "./ui/scenes/preGame/WelcomeView";
 import JoinGameView from "./ui/scenes/preGame/JoinGameView";
 import EventEmitter from "./ui/events/EventEmitter";
-import OwnPeerManager from "./ui/webrtc/OwnPeerManager";
-import HostPeerManager from "./ui/webrtc/HostPeerManager";
+import OwnPeerManager from "./ui/networking/OwnPeerManager";
+import HostPeerManager from "./ui/networking/HostPeerManager";
 import NewGameView from "./ui/scenes/preGame/NewGameView";
 import ErrorComponent from "./ui/scenes/ErrorComponent";
+import EventSourceManager from "./ui/networking/EventSourceManager";
 
 const main = new Container({ defaultScope: "Singleton" });
 main.bind<Game>(TYPES.Game).to(Game);
@@ -30,6 +31,10 @@ main
 main
   .bind<HostPeerManager>(TYPES.HostPeerManager)
   .to(HostPeerManager)
+  .inSingletonScope();
+main
+  .bind<EventSourceManager>(TYPES.EventSourceManager)
+  .to(EventSourceManager)
   .inSingletonScope();
 
 export default main;

@@ -11,6 +11,7 @@ const TYPES = {
   OwnPeerManager: Symbol.for("own-peer-manager"),
   HostPeerManager: Symbol.for("host-peer-manager"),
   ErrorComponent: Symbol.for("error-component"),
+  EventSourceManager: Symbol.for("event-source-manager"),
 };
 
 export default TYPES;

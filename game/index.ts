@@ -1,4 +1,4 @@
-import Game from "./ui/game/Game";
+import Game from "./ui/Game";
 import main from "./inversify.config";
 import TYPES from "./inversify-types";
 

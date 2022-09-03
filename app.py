@@ -3,7 +3,7 @@ import json
 import uuid
 from flask import request, Flask, Response, render_template, jsonify
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="game/dist", static_folder="game/dist", static_url_path="")
 
 
 class MessageAnnouncer:
@@ -81,14 +81,12 @@ def listen(room_id):
 
 room_registry = dict()
 
-# if __name__ == "__main__":
-#     app.run(host='localhost', port=5001, debug=True)
 
 
 @app.post('/rooms/create')
 def create_room():
     req_data = request.json
-    room_id = 1234
+    room_id = '1234'
     own_peer_id = req_data.get('own_peer_id')
     if own_peer_id is not None:
         link = f'http://localhost:5000/game/{room_id}-{own_peer_id}'
@@ -101,9 +99,12 @@ def create_room():
 
 @app.route('/')
 def index():
-    host_token = request.cookies.get('host_token')
-    if host_token is None:
+    # host_token = request.cookies.get('host_token')
+    # if host_token is None:
         # render beginning of flow, we will pass in host things
-        return render_template('test_app/index.html')
+    return render_template('index.html')
     
     # this is where we handle if host is coming back to a game, i guess? tbd
+
+if __name__ == "__main__":
+    app.run(host='localhost', port=5001, debug=True)

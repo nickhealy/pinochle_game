@@ -7,7 +7,6 @@ module.exports = {
   mode: "development",
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "game.bundle.js",
   },
   performance: { hints: false },
   devServer: {

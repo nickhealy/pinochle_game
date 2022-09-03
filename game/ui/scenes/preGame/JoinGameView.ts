@@ -1,11 +1,12 @@
 import { inject, injectable } from "inversify";
-import HTMLView from "../../containers/HTMLContentLayer/HTMLView";
+import HTMLView from "../../HTMLContentLayer/HTMLView";
 import EventEmitter from "../../events/EventEmitter";
 import { PreGameEvents } from "../../events/events";
 
 import TYPES from "../../../inversify-types";
-import OwnPeerManager from "../../webrtc/OwnPeerManager";
+import OwnPeerManager from "../../networking/OwnPeerManager";
 import ErrorComponent from "../ErrorComponent";
+import { joinRoom } from "../../networking/requests";
 
 const JOIN_GAME_TEXT = "Join Game";
 
@@ -62,19 +63,7 @@ class JoinGameView extends HTMLView {
     );
     try {
       const ownPeerId = await this._ownPeerManager.waitForId();
-      const res: Response = await fetch(`/rooms/${roomId}/join`, {
-        method: "POST",
-        redirect: "follow",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          peer_id: ownPeerId,
-        }),
-      });
-      if (res.status !== 200) {
-        throw new Error("error joining the game");
-      }
+      await joinRoom(roomId, ownPeerId);
       this._eventEmitter.emit(PreGameEvents.JOIN_GAME_SUCCESS);
     } catch (e) {
       this._eventEmitter.emit(PreGameEvents.JOIN_GAME_FAIL, {

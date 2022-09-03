@@ -3,7 +3,7 @@ import { assign, createMachine, send } from "xstate";
 import { sendParent } from "xstate/lib/actions";
 import main from "../../inversify.config";
 import TYPES from "../../inversify-types";
-import HostPeerManager from "../../ui/webrtc/HostPeerManager";
+import HostPeerManager from "../../ui/networking/HostPeerManager";
 import { getWebRTCClient } from "../networking/webrtc";
 import { createIncomingAction } from "./eventHelpers";
 import {

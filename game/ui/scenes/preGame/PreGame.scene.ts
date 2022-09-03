@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { injectable, inject } from "inversify";
 import TYPES from "../../../inversify-types";
-import ViewManager from "../../containers/HTMLContentLayer/HTMLViewManager";
+import ViewManager from "../../HTMLContentLayer/HTMLViewManager";
 import WelcomeView from "./WelcomeView";
 import JoinGameView from "./JoinGameView";
 import EventEmitter from "../../events/EventEmitter";

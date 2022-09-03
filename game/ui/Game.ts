@@ -1,9 +1,9 @@
 import "reflect-metadata";
 import { injectable, inject } from "inversify";
-import TYPES from "../../inversify-types";
-import PreGameScene from "../scenes/preGame/PreGame.scene";
-import OwnPeerManager from "../webrtc/OwnPeerManager";
-import HostPeerManager from "../webrtc/HostPeerManager";
+import TYPES from "../inversify-types";
+import PreGameScene from "./scenes/preGame/PreGame.scene";
+import OwnPeerManager from "./networking/OwnPeerManager";
+import HostPeerManager from "./networking/HostPeerManager";
 
 @injectable()
 class Game {

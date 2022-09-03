@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import HTMLView from "../../containers/HTMLContentLayer/HTMLView";
+import HTMLView from "../../HTMLContentLayer/HTMLView";
 import { PreGameEvents } from "../../events/events";
 import TYPES from "../../../inversify-types";
 import EventEmitter from "../../events/EventEmitter";
