@@ -1,56 +1,34 @@
 import { injectable } from "inversify";
+import HTMLView from "./HTMLView";
 
 @injectable()
 class HTMLViewManager {
-  private _container: HTMLDivElement;
-  private _currentView: HTMLDivElement | null = null;
-  private _prevView: HTMLDivElement | null = null;
-  private _nextView: HTMLDivElement | null = null;
+  private _currentView: HTMLView | null = null;
+  private _prevView: HTMLView | null = null;
 
-  private createContainer() {
-    const container = document.createElement("div");
-    container.style.width = "100%";
-    container.style.height = "100%";
-    container.style.display = "flex";
-    container.style.alignItems = "center";
-    container.style.justifyContent = "center";
-    return container;
-  }
-  constructor() {
-    this._container = this.createContainer();
-  }
-
-  public get view() {
-    return this._container;
-  }
-
-  public init(initialView: HTMLDivElement) {
+  public init(initialView: HTMLView) {
     this._currentView = initialView;
-    this._container.appendChild(this._currentView);
   }
-  private doTransitionUi() {
-    // could be extended to include animiations. etc.
+  public render(target: HTMLView) {
     if (this._currentView) {
-      this._container.removeChild(this._currentView);
+      this._prevView = this._currentView;
+      this._prevView.destroy();
     }
-    if (this._nextView) {
-      this._container.appendChild(this._nextView);
-    }
-  }
-  public transition(target: HTMLDivElement) {
-    this._prevView = this._currentView;
-    this._nextView = target;
-    this.doTransitionUi();
-    this._currentView = this._nextView;
-    this._nextView = null;
+    this._currentView = target;
+    this._currentView.render();
   }
 
   public goBack() {
-    this._nextView = this._prevView;
-    this._prevView = this._currentView;
-    this.doTransitionUi();
-    this._currentView = this._nextView;
-    this._nextView = null;
+    // only supports going back once (stack nav is a bit overkill)
+    if (!this._currentView || !this._prevView) {
+      throw new Error(
+        "no view and/or pre-view currently registered for HTMLViewManager"
+      );
+    }
+    this._currentView.destroy();
+    this._currentView = this._prevView;
+    this._prevView = null;
+    this._currentView.render();
   }
 }
 

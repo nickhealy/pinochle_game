@@ -5,6 +5,9 @@ export enum PreGameEvents {
   JOIN_GAME = "join_game",
   JOIN_GAME_SUCCESS = "join_game_success",
   JOIN_GAME_FAIL = "join_game_fail",
+  CREATE_GAME = "create_game",
+  CREATE_GAME_SUCESS = "create_game_success",
+  CREATE_GAME_FAIL = "create_game_fail",
 }
 
 export enum WebRTCEvents {

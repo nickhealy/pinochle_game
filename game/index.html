@@ -3,34 +3,149 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Pinochle.io</title>
+    <title>Pinochle.io - Online Multiplayer Pinochle Game</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
     <style>
+        /* reset */
+        /* Box sizing rules */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        /* Remove default margin */
+        body,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        p,
+        i {
+            margin: 0;
+        }
+
         html,
         body {
             margin: 0;
             padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        #pixi-content {
-            /* background: #000000; */
-            width: 100%;
+        /* utility classes */
+
+        .hidden {
+            display: none !important;
+        }
+
+        .invisible {
+            visibility: hidden !important;
+        }
+
+        /* general classes */
+
+        .button {
+            width: 45%;
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: transparent;
+            border: 2px solid white;
+            color: white;
+            cursor: pointer;
+            margin-bottom: 5px;
+        }
+
+        .input {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 10px;
+        }
+
+        .input .prompt {
+            color: white;
+            padding-bottom: 5px;
+        }
+
+        .input input {
+            text-align: center;
+        }
+
+        /* specifc component stylings */
+
+        canvas {
             height: 100%;
+            width: 100%;
+            background-color: green;
+        }
+
+        #back-btn {
+            color: white;
+            cursor: pointer;
+            width: 30px;
+            opacity: .5;
+            background-color: transparent;
+            border: none;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        #back-btn:hover {
+            opacity: 1;
+        }
+
+        #room-code-input input {
+            height: 20px;
+            width: 20px;
+        }
+
+        #center-container {
+            position: relative;
+            height: 100%;
+            width: 75%;
+        }
+
+        #game-container {
+            height: 75%;
+            width: 100%;
+            position: relative;
+        }
+
+        #game-container canvas {
+            height: '100%';
+            width: '100%';
+            position: absolute;
             z-index: 1;
+            left: 0;
+            top: 0
         }
 
         #html-layer {
             width: 100%;
             height: 100%;
             position: absolute;
-            top: 0;
-            left: 0;
             z-index: 10;
-            display: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #html-layer>div {
+            width: 60%;
+            height: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
         }
     </style>
     <script src="https://kit.fontawesome.com/12f6611ba5.js" crossorigin="anonymous"></script>
@@ -38,10 +153,57 @@
 
 <body>
     <noscript>Please enable JavaScript in your web browser to view this page.</noscript>
-    <div id="pixi-content">
-        <canvas id="pixi-canvas" />
+    <div id="center-container">
+        <h2>Online Pinochle Game</h2>
+        <div id="game-container">
+            <div id="error" class="hidden">
+                <p />
+            </div>
+            <canvas id="pixi-canvas"></canvas>
+            <div id="html-layer">
+                <!-- PREGAME ELEMENTS -->
+
+                <!-- WELCOME CONTAINER -->
+                <div id="welcome-container" class="hidden">
+                    <button class="button" id="nav-to-join-game-btn">Join Game</button>
+                    <button class="button" id="nav-to-create-game-btn">Create New Game</button>
+                </div>
+
+                <!-- JOIN GAME CONTAINER -->
+                <div id="join-game-container" class="hidden">
+                    <button id="back-btn"><i class="fa-solid fa-arrow-left fa-xl"></i></button>
+                    <div id="name-input" class="input">
+                        <h5 class="prompt">Enter Name</h5>
+                        <form>
+                            <input type='text' />
+                        </form>
+                    </div>
+                    <div id="room-code-input" class="input">
+                        <h5 class="prompt">Enter Room Code</h5>
+                        <form>
+                            <input maxlength="1" />
+                            <input maxlength="1" />
+                            <input maxlength="1" />
+                            <input maxlength="1" />
+                        </form>
+                    </div>
+                    <button class="button invisible" id="join-game-btn">Join Game</button>
+                </div>
+
+                <!-- CREATE GAME CONTAINER -->
+                <div id="create-game-container" class="hidden">
+                    <button id="back-btn"><i class="fa-solid fa-arrow-left fa-xl"></i></button>
+                    <div id="name-input" class="input">
+                        <h5 class="prompt">Enter Name</h5>
+                        <form>
+                            <input type='text' />
+                        </form>
+                    </div>
+                    <button class="button" id="create-game-btn">Create Game</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <div id="html-layer" />
 </body>
 
 </html>
