@@ -10,6 +10,7 @@ const TYPES = {
   ViewManager: Symbol.for("view-manager"),
   OwnPeerManager: Symbol.for("own-peer-manager"),
   HostPeerManager: Symbol.for("host-peer-manager"),
+  ErrorComponent: Symbol.for("error-component"),
 };
 
 export default TYPES;

@@ -86,6 +86,20 @@
             background-color: green;
         }
 
+        #error {
+            position: absolute;
+            background-color: red;
+            z-index: 10;
+            width: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            left: 25%;
+            top: 10px;
+            color: white
+        }
+
         #back-btn {
             color: white;
             cursor: pointer;
@@ -156,9 +170,7 @@
     <div id="center-container">
         <h2>Online Pinochle Game</h2>
         <div id="game-container">
-            <div id="error" class="hidden">
-                <p />
-            </div>
+            <div id="error" class="hidden"></div>
             <canvas id="pixi-canvas"></canvas>
             <div id="html-layer">
                 <!-- PREGAME ELEMENTS -->

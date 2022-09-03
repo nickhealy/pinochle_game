@@ -5,6 +5,7 @@ import { PreGameEvents } from "../../events/events";
 
 import TYPES from "../../../inversify-types";
 import OwnPeerManager from "../../webrtc/OwnPeerManager";
+import ErrorComponent from "../ErrorComponent";
 
 const JOIN_GAME_TEXT = "Join Game";
 
@@ -12,21 +13,23 @@ const JOIN_GAME_TEXT = "Join Game";
 class JoinGameView extends HTMLView {
   private _eventEmitter: EventEmitter;
   private _ownPeerManager: OwnPeerManager;
+  private error: ErrorComponent;
   private $container: HTMLElement;
   private $joinBtn: HTMLElement;
   private $codeInputContainer: HTMLElement;
   private $codeInputs: Array<HTMLInputElement>;
   private $backBtn: HTMLElement;
   private $nameInput: HTMLElement;
-  private joinError!: HTMLParagraphElement;
 
   constructor(
     @inject<EventEmitter>(TYPES.EventEmitter) eventEmitter: EventEmitter,
-    @inject<OwnPeerManager>(TYPES.OwnPeerManager) webRtcManager: OwnPeerManager
+    @inject<OwnPeerManager>(TYPES.OwnPeerManager) webRtcManager: OwnPeerManager,
+    @inject<ErrorComponent>(TYPES.ErrorComponent) error: ErrorComponent
   ) {
     super();
     this._eventEmitter = eventEmitter;
     this._ownPeerManager = webRtcManager;
+    this.error = error;
     this.addSubscriptions();
 
     this.$container = document.getElementById(
@@ -70,7 +73,7 @@ class JoinGameView extends HTMLView {
         }),
       });
       if (res.status !== 200) {
-        throw new Error("there was an error");
+        throw new Error("error joining the game");
       }
       this._eventEmitter.emit(PreGameEvents.JOIN_GAME_SUCCESS);
     } catch (e) {
@@ -89,7 +92,7 @@ class JoinGameView extends HTMLView {
     this._eventEmitter.addEventListener(PreGameEvents.JOIN_GAME_FAIL, (e) => {
       this.$joinBtn.innerText = JOIN_GAME_TEXT;
       // @ts-expect-error will be custom error class but dgaf atm
-      this.joinError.innerText = e.detail.message;
+      this.error.showError(e.detail.message);
     });
     this._eventEmitter.addEventListener(PreGameEvents.GO_BACK, () => {
       this.reset.bind(this)();
@@ -141,6 +144,7 @@ class JoinGameView extends HTMLView {
   reset() {
     this.$codeInputs.forEach((input) => (input.value = ""));
     this.$joinBtn.classList.add("invisible");
+    this.error.hide();
   }
 
   render(): void {
