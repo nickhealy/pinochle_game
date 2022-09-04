@@ -1,4 +1,6 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
+import TYPES from "../../inversify-types";
+import { Lobby } from "../../lobby";
 
 const EVENT_SOURCE_URL_BASE = "/listen/";
 const CONNECTION_RETRIES = 5;
@@ -8,6 +10,11 @@ const CONNECTION_TIMEOUT = 50;
 class EventSourceManager {
   private _eventSource: EventSource | undefined;
   private _roomId: string | undefined;
+  private lobby: Lobby;
+
+  constructor(@inject<Lobby>(TYPES.Lobby) lobby: Lobby) {
+    this.lobby = lobby;
+  }
 
   async startListening(roomId: string) {
     this._roomId = roomId;
@@ -32,7 +39,20 @@ class EventSourceManager {
     if (!this._eventSource) {
       throw new Error("EventSource not initialized");
     }
-    console.log("initialzied event source listeners");
+    this._eventSource.onmessage = (ev) => {
+      const { event, peer_id: peerId } = JSON.parse(ev.data);
+      switch (event) {
+        case "player_join_request":
+          this.lobby.send({
+            type: "PLAYER_JOIN_REQUEST",
+            connection_info: peerId,
+            name: "Nick",
+          });
+          break;
+        default:
+          console.log("unrecognized SSE event : ", event);
+      }
+    };
   }
 }
 

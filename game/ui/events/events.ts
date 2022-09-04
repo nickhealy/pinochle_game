@@ -17,4 +17,8 @@ export enum WebRTCEvents {
   HOST_PEER_CONNECTED = "host_peer_connected",
 }
 
-export type AllEvents = PreGameEvents | WebRTCEvents;
+export enum LobbyEvents {
+  SELF_JOINED_LOBBY = "self_joined_lobby",
+}
+
+export type AllEvents = PreGameEvents | WebRTCEvents | LobbyEvents;

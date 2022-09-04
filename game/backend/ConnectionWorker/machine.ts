@@ -42,8 +42,10 @@ const ConnectionWorkerMachine = createMachine(
       connecting: {
         invoke: {
           id: "getWebRTCClient",
-          src: async () =>
-            await main.get<HostPeerManager>(TYPES.HostPeerManager).connect(), // awkward, but works for now
+          src: async (ctx) =>
+            await main
+              .get<HostPeerManager>(TYPES.HostPeerManager)
+              .connect(ctx.connection_metadata), // awkward, but works for now
           onDone: {
             actions: ["sendSelfConnected"],
           },

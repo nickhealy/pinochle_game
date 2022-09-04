@@ -11,6 +11,10 @@ import HostPeerManager from "./ui/networking/HostPeerManager";
 import NewGameView from "./ui/scenes/preGame/NewGameView";
 import ErrorComponent from "./ui/scenes/ErrorComponent";
 import EventSourceManager from "./ui/networking/EventSourceManager";
+import store from "./ui/store";
+import type { StoreType } from "./ui/store";
+import LobbyView from "./ui/scenes/lobby/LobbyView";
+import lobby, { Lobby } from "./lobby";
 
 const main = new Container({ defaultScope: "Singleton" });
 main.bind<Game>(TYPES.Game).to(Game);
@@ -36,5 +40,8 @@ main
   .bind<EventSourceManager>(TYPES.EventSourceManager)
   .to(EventSourceManager)
   .inSingletonScope();
+main.bind<StoreType>(TYPES.Store).toConstantValue(store);
+main.bind<LobbyView>(TYPES.LobbyView).to(LobbyView);
+main.bind<Lobby>(TYPES.Lobby).toConstantValue(lobby);
 
 export default main;

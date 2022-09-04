@@ -58,6 +58,9 @@ class PreGameScene {
   goToNewGameView() {
     this.viewManager.render(this.newGameView);
   }
+  destroy() {
+    this.viewManager.destroyCurrentView();
+  }
 }
 
 export default PreGameScene;

@@ -5,7 +5,7 @@ import { WebRTCEvents } from "../events/events";
 import TYPES from "../../inversify-types";
 import WebRTCManager, { WebRTCManagerStates } from "./WebRTCManager";
 
-const CONNECTION_TIMEOUT = 500;
+const CONNECTION_TIMEOUT = 5000;
 
 @injectable()
 class HostPeerManager extends WebRTCManager {
@@ -39,9 +39,19 @@ class HostPeerManager extends WebRTCManager {
       console.log("host peer opened with event ", e.detail.hostPeerId);
       this.state = WebRTCManagerStates.READY_TO_CONNECT;
     });
+    this._eventEmitter.addEventListener(
+      WebRTCEvents.HOST_PEER_CONNECTED,
+      (e) => {
+        console.log("host peer connected");
+        this.state = WebRTCManagerStates.CONNECTED;
+      }
+    );
   }
 
-  async connect() {
+  async connect(metadata: string | undefined) {
+    if (!metadata) {
+      throw new Error("no peer info passed to host for connection");
+    }
     await this.waitForId(); // to ensure we have connected to peer server
     return new Promise((res, rej) => {
       if (!this.peer) {
@@ -52,10 +62,10 @@ class HostPeerManager extends WebRTCManager {
         () => rej(new Error("Host could not connect to peer")),
         CONNECTION_TIMEOUT
       );
+      this._connection = this.peer.connect(metadata);
 
-      this.peer.on("connection", (conn) => {
+      this._connection.on("open", () => {
         clearTimeout(connectionTimeout);
-        this._connection = conn;
         this.state = WebRTCManagerStates.CONNECTED;
         this._eventEmitter.emit(WebRTCEvents.HOST_PEER_CONNECTED);
         res(this._connection);

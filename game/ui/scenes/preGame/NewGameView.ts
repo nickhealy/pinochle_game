@@ -9,6 +9,7 @@ import OwnPeerManager from "../../networking/OwnPeerManager";
 import HostPeerManager from "../../networking/HostPeerManager";
 import { createRoom, joinRoom } from "../../networking/requests";
 import EventSourceManager from "../../networking/EventSourceManager";
+import { StoreType } from "../../store";
 
 @injectable()
 class NewGameView extends HTMLView {
@@ -19,6 +20,7 @@ class NewGameView extends HTMLView {
   ownPeerManager: OwnPeerManager;
   hostPeerManager: HostPeerManager;
   eventSourceManager: EventSourceManager;
+  store: StoreType;
   $nameInput: HTMLInputElement;
   $newGameBtn!: HTMLElement;
   constructor(
@@ -29,7 +31,8 @@ class NewGameView extends HTMLView {
     @inject<HostPeerManager>(TYPES.HostPeerManager)
     hostPeerManager: HostPeerManager,
     @inject<EventSourceManager>(TYPES.EventSourceManager)
-    eventSourceManager: EventSourceManager
+    eventSourceManager: EventSourceManager,
+    @inject<StoreType>(TYPES.Store) store: StoreType
   ) {
     super();
     this.$container = document.getElementById(
@@ -49,6 +52,7 @@ class NewGameView extends HTMLView {
     this.ownPeerManager = ownPeerManager;
     this.hostPeerManager = hostPeerManager;
     this.eventSourceManager = eventSourceManager;
+    this.store = store;
 
     this.addSubscriptions();
     this.addButtonListeners();
@@ -59,6 +63,7 @@ class NewGameView extends HTMLView {
       await this.hostPeerManager.waitForId();
       const ownPeerId = await this.ownPeerManager.waitForId();
       const { room_id: roomId } = await createRoom(ownPeerId);
+      this.store.set("roomId", roomId);
       await this.eventSourceManager.startListening(roomId);
       await joinRoom(roomId, ownPeerId);
       this._eventEmitter.emit(PreGameEvents.CREATE_GAME_SUCCESS, { roomId });

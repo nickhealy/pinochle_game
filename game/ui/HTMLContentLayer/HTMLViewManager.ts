@@ -30,6 +30,15 @@ class HTMLViewManager {
     this._prevView = null;
     this._currentView.render();
   }
+
+  public destroyCurrentView() {
+    if (!this._currentView) {
+      throw new Error("no current view available to destroy");
+    }
+    this._currentView.destroy();
+    this._currentView = null;
+    this._prevView = null;
+  }
 }
 
 export default HTMLViewManager;

@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import Peer, { DataConnection } from "peerjs";
 import EventEmitter from "../events/EventEmitter";
-import { WebRTCEvents } from "../events/events";
+import { LobbyEvents, WebRTCEvents } from "../events/events";
 import TYPES from "../../inversify-types";
 import WebRTCManager from "./WebRTCManager";
 
@@ -61,8 +61,16 @@ class OwnPeerManager extends WebRTCManager {
       return;
     }
 
-    this._connection.on("data", () => {
+    this._connection.on("data", (ev) => {
       // init game play listeners
+      //@ts-ignore
+      const { type, data } = JSON.parse(ev);
+      switch (type) {
+        case "lobby.room_description":
+          this._eventEmitter.emit(LobbyEvents.SELF_JOINED_LOBBY, {
+            players: data.players,
+          });
+      }
     });
   }
 }
