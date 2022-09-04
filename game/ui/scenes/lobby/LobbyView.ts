@@ -12,6 +12,7 @@ class LobbyView extends HTMLView {
   $container: HTMLElement;
   $roomId: HTMLElement;
   $players: Array<HTMLElement>;
+  $startGameBtn: HTMLButtonElement;
   constructor(
     @inject<StoreType>(TYPES.Store) store: StoreType,
     @inject<EventEmitter>(TYPES.EventEmitter) eventEmitter: EventEmitter
@@ -22,6 +23,9 @@ class LobbyView extends HTMLView {
     this.$container = document.getElementById("lobby-container") as HTMLElement;
     this.$roomId = this.$container.querySelector("#room-id") as HTMLElement;
     this.$players = Array.from(this.$container.querySelectorAll(".player"));
+    this.$startGameBtn = this.$container.querySelector(
+      "#start-game"
+    ) as HTMLButtonElement;
 
     this.initializeSubscriptions();
   }
@@ -47,6 +51,16 @@ class LobbyView extends HTMLView {
         // @ts-ignore
         const { playerInfo } = event.detail;
         this.store.set("players", [...this.store.get("players"), playerInfo]);
+      }
+    );
+    this.eventEmitter.addEventListener(
+      LobbyEvents.ALL_PLAYERS_CONNECTED,
+      () => {
+        if (this.store.get("isHost")) {
+          this.$startGameBtn.innerText = "Start Game";
+        } else {
+          this.$startGameBtn.innerText = "Waiting for Host to Start";
+        }
       }
     );
   }

@@ -76,6 +76,9 @@ class OwnPeerManager extends WebRTCManager {
           this._eventEmitter.emit(LobbyEvents.PLAYER_JOINED_LOBBY, {
             playerInfo: data.player_info,
           });
+          break;
+        case "lobby.all_players_connected":
+          this._eventEmitter.emit(LobbyEvents.ALL_PLAYERS_CONNECTED);
       }
     });
   }
