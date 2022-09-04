@@ -2,6 +2,10 @@ export const joinRoom = async (
   roomId: string,
   { ownPeerId, name }: { ownPeerId: string; name: string }
 ) => {
+  // @ts-ignore
+  if (globalThis._useMocks) {
+    return { room_id: "1234" };
+  }
   const res = await fetch(`/rooms/${roomId}/join`, {
     method: "POST",
     redirect: "follow",
@@ -21,6 +25,10 @@ export const joinRoom = async (
 };
 
 export const createRoom = async (ownId: string) => {
+  // @ts-ignore
+  if (globalThis._useMocks) {
+    return { room_id: "1234" };
+  }
   const res = await fetch("/rooms/create", {
     method: "POST",
     redirect: "follow",

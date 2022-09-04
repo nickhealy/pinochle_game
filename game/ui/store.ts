@@ -4,11 +4,13 @@ interface StoreValTypes {
   roomId: string | null;
   isHost: boolean;
   players: Array<{ id: string; name: string }>;
+  peerId: string | null;
 }
 const _store: StoreValTypes = {
   roomId: null,
   isHost: false,
   players: [],
+  peerId: null,
 };
 
 const subscribe = <T extends keyof typeof _store>(

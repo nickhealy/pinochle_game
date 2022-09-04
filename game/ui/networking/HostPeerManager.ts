@@ -52,6 +52,7 @@ class HostPeerManager extends WebRTCManager {
     if (!metadata) {
       throw new Error("no peer info passed to host for connection");
     }
+
     await this.waitForId(); // to ensure we have connected to peer server
     return new Promise((res, rej) => {
       if (!this.peer) {

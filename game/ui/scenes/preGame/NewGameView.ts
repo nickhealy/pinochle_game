@@ -75,6 +75,12 @@ class NewGameView extends HTMLView {
         message: e.message,
       });
     }
+
+    //@ts-ignore this is so messy but this is how we are doing it now
+    if (globalThis._useMocks) {
+      //@ts-ignore
+      globalThis.host.joinRoom();
+    }
   }
 
   private addSubscriptions() {

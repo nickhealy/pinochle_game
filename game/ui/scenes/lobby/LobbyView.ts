@@ -34,7 +34,6 @@ class LobbyView extends HTMLView {
       this.$roomId.querySelector("span")!.innerText = id;
     });
     this.store.subscribe("players", (players) => {
-      console.log("here");
       this.showPlayersInLobby();
     });
     this.eventEmitter.addEventListener(

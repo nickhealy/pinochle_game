@@ -32,22 +32,6 @@ def format_sse(data: str, event='message') -> str:
     return msg
 
 
-@app.route('/game/<id>')
-def game(id):
-    host_token = request.cookies.get('host_token')
-    print(host_token)
-    data = {"is_host": 1 if host_token is not None else 0,
-            "host_id": 'host-12345'}
-    print(data['is_host'])
-    return render_template('test_app/game.html', data=data)
-
-
-@app.post('/join')
-def join_room_code():
-    req_data = request.json
-    code = req_data["code"]
-
-
 
 @app.route('/ping', methods=['GET'])
 def hello_world():
@@ -100,12 +84,7 @@ def create_room():
 
 @app.route('/')
 def index():
-    # host_token = request.cookies.get('host_token')
-    # if host_token is None:
-        # render beginning of flow, we will pass in host things
     return render_template('index.html')
-    
-    # this is where we handle if host is coming back to a game, i guess? tbd
 
 if __name__ == "__main__":
     app.run(host='192.168.1.199', port=5001, debug=True)

@@ -1,6 +1,7 @@
 import { inject, injectable } from "inversify";
 import TYPES from "../../inversify-types";
 import { Lobby } from "../../lobby";
+import { mockEV } from "./mocks";
 
 const EVENT_SOURCE_URL_BASE = "/listen/";
 const CONNECTION_RETRIES = 5;
@@ -18,12 +19,17 @@ class EventSourceManager {
 
   async startListening(roomId: string) {
     this._roomId = roomId;
-    const ev = new EventSource(`${EVENT_SOURCE_URL_BASE}${this._roomId}`);
+    // @ts-ignore
+    const ev = globalThis._useMocks
+      ? (mockEV as unknown as EventSource) // for mocking
+      : new EventSource(`${EVENT_SOURCE_URL_BASE}${this._roomId}`);
+
     let retriesLeft = CONNECTION_RETRIES;
 
     const retry = () =>
       new Promise((res) => setTimeout(res, CONNECTION_TIMEOUT));
 
+    console.log({ retriesLeft });
     while (retriesLeft-- > 0) {
       if (ev.readyState === ev.OPEN) {
         this._eventSource = ev;
@@ -39,6 +45,7 @@ class EventSourceManager {
     if (!this._eventSource) {
       throw new Error("EventSource not initialized");
     }
+    console.log(this._eventSource);
     this._eventSource.onmessage = (ev) => {
       const { event, peer_id: peerId, name } = JSON.parse(ev.data);
       switch (event) {

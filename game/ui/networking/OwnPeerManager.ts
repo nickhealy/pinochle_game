@@ -4,6 +4,7 @@ import EventEmitter from "../events/EventEmitter";
 import { LobbyEvents, WebRTCEvents } from "../events/events";
 import TYPES from "../../inversify-types";
 import WebRTCManager from "./WebRTCManager";
+import { StoreType } from "../store";
 
 enum WebRTCManagerStates {
   INITIAL = "initial",
@@ -15,11 +16,14 @@ enum WebRTCManagerStates {
 class OwnPeerManager extends WebRTCManager {
   private _ownPeer: Peer | undefined;
   private _eventEmitter: EventEmitter;
+  private store: StoreType;
   constructor(
-    @inject<EventEmitter>(TYPES.EventEmitter) eventEmitter: EventEmitter
+    @inject<EventEmitter>(TYPES.EventEmitter) eventEmitter: EventEmitter,
+    @inject<StoreType>(TYPES.Store) store: StoreType
   ) {
     super();
     this._eventEmitter = eventEmitter;
+    this.store = store;
   }
   public init() {
     this.addPreGameListeners();
@@ -46,6 +50,8 @@ class OwnPeerManager extends WebRTCManager {
     this._eventEmitter.addEventListener(WebRTCEvents.OWN_PEER_OPENED, (e) => {
       // @ts-ignore another error problem
       console.log("own peer opened with event ", e.detail.ownPeerId);
+      // @ts-ignore another error problem
+      this.store.set("peerId", e.detail.ownPeerId);
       this.state = WebRTCManagerStates.READY_TO_CONNECT;
     });
     this._eventEmitter.addEventListener(WebRTCEvents.OWN_PEER_CONNECTED, () => {
@@ -65,7 +71,7 @@ class OwnPeerManager extends WebRTCManager {
       // init game play listeners
       //@ts-ignore
       const { type, data } = JSON.parse(ev);
-      console.log({ type, data });
+
       switch (type) {
         case "lobby.room_description":
           this._eventEmitter.emit(LobbyEvents.SELF_JOINED_LOBBY, {
@@ -79,6 +85,9 @@ class OwnPeerManager extends WebRTCManager {
           break;
         case "lobby.all_players_connected":
           this._eventEmitter.emit(LobbyEvents.ALL_PLAYERS_CONNECTED);
+          break;
+        default:
+          console.error("received unknown webrtc event : ", type);
       }
     });
   }
