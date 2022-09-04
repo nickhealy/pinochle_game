@@ -63,7 +63,7 @@ def join_room(room_id):
         data = json.dumps({"event": 'player_join_request', 'peer_id': peer_id, 'name': name})
         msg = format_sse(data)
         announcer.announce(room_id, msg=msg)
-        return {}, 200
+        return {"room_id": room_id}, 200
     return 400, "MISSING_PEER_ID"
 
 
@@ -108,4 +108,4 @@ def index():
     # this is where we handle if host is coming back to a game, i guess? tbd
 
 if __name__ == "__main__":
-    app.run(host='localhost', port=5001, debug=True)
+    app.run(host='192.168.1.199', port=5001, debug=True)

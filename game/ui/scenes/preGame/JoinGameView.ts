@@ -7,6 +7,7 @@ import TYPES from "../../../inversify-types";
 import OwnPeerManager from "../../networking/OwnPeerManager";
 import ErrorComponent from "../ErrorComponent";
 import { joinRoom } from "../../networking/requests";
+import { StoreType } from "../../store";
 
 const JOIN_GAME_TEXT = "Join Game";
 
@@ -14,6 +15,7 @@ const JOIN_GAME_TEXT = "Join Game";
 class JoinGameView extends HTMLView {
   private _eventEmitter: EventEmitter;
   private _ownPeerManager: OwnPeerManager;
+  private store: StoreType;
   private error: ErrorComponent;
   private $container: HTMLElement;
   private $joinBtn: HTMLElement;
@@ -25,11 +27,13 @@ class JoinGameView extends HTMLView {
   constructor(
     @inject<EventEmitter>(TYPES.EventEmitter) eventEmitter: EventEmitter,
     @inject<OwnPeerManager>(TYPES.OwnPeerManager) webRtcManager: OwnPeerManager,
-    @inject<ErrorComponent>(TYPES.ErrorComponent) error: ErrorComponent
+    @inject<ErrorComponent>(TYPES.ErrorComponent) error: ErrorComponent,
+    @inject<StoreType>(TYPES.Store) store: StoreType
   ) {
     super();
     this._eventEmitter = eventEmitter;
     this._ownPeerManager = webRtcManager;
+    this.store = store;
     this.error = error;
     this.addSubscriptions();
 
@@ -64,7 +68,11 @@ class JoinGameView extends HTMLView {
     const name = this.$nameInput.querySelector("input")!.value;
     try {
       const ownPeerId = await this._ownPeerManager.waitForId();
-      await joinRoom(roomId, { ownPeerId, name });
+      const { room_id: resRoomId } = await joinRoom(roomId, {
+        ownPeerId,
+        name,
+      });
+      this.store.set("roomId", resRoomId);
       this._eventEmitter.emit(PreGameEvents.JOIN_GAME_SUCCESS);
     } catch (e) {
       this._eventEmitter.emit(PreGameEvents.JOIN_GAME_FAIL, {

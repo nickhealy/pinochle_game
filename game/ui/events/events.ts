@@ -19,6 +19,7 @@ export enum WebRTCEvents {
 
 export enum LobbyEvents {
   SELF_JOINED_LOBBY = "self_joined_lobby",
+  PLAYER_JOINED_LOBBY = "player_joined_lobby",
 }
 
 export type AllEvents = PreGameEvents | WebRTCEvents | LobbyEvents;

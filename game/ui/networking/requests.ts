@@ -17,7 +17,7 @@ export const joinRoom = async (
     // this could be custom error type
     throw new Error("error joining the game");
   }
-  return res;
+  return await res.json();
 };
 
 export const createRoom = async (ownId: string) => {

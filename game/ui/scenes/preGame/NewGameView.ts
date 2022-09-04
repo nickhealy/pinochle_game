@@ -67,6 +67,7 @@ class NewGameView extends HTMLView {
       this.store.set("roomId", roomId);
       await this.eventSourceManager.startListening(roomId);
       await joinRoom(roomId, { ownPeerId, name });
+      this.store.set("isHost", true);
       this._eventEmitter.emit(PreGameEvents.CREATE_GAME_SUCCESS, { roomId });
     } catch (e) {
       this._eventEmitter.emit(PreGameEvents.CREATE_GAME_FAIL, {

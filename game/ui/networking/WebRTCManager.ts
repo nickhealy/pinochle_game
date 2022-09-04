@@ -32,7 +32,7 @@ abstract class WebRTCManager {
     let retriesLeft = GET_ID_RETRIES;
     while (retriesLeft-- > 0) {
       if (
-        this.state !== WebRTCManagerStates.READY_TO_CONNECT ||
+        this.state == WebRTCManagerStates.INITIAL ||
         !this.peer?.id // shouldn't be possible, but just to be safe
       ) {
         await wait();

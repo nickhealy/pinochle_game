@@ -26,11 +26,11 @@ const get = <T extends keyof typeof _store>(key: T) => {
 };
 
 const set = <T extends keyof typeof _store>(key: T, val: StoreValTypes[T]) => {
+  _store[key] = val;
   const cbs = subs[key];
   if (cbs) {
     cbs.forEach((cb) => cb(val));
   }
-  _store[key] = val;
 };
 
 const store = {

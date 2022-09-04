@@ -29,13 +29,24 @@ class LobbyView extends HTMLView {
     this.store.subscribe("roomId", (id) => {
       this.$roomId.querySelector("span")!.innerText = id;
     });
+    this.store.subscribe("players", (players) => {
+      console.log("here");
+      this.showPlayersInLobby();
+    });
     this.eventEmitter.addEventListener(
       LobbyEvents.SELF_JOINED_LOBBY,
       (event) => {
         // @ts-ignore
         const { players } = event.detail;
         this.store.set("players", players); // could be problems with deep copying, etc. but let's see if that is actually an issue
-        this.showPlayersInLobby();
+      }
+    );
+    this.eventEmitter.addEventListener(
+      LobbyEvents.PLAYER_JOINED_LOBBY,
+      (event) => {
+        // @ts-ignore
+        const { playerInfo } = event.detail;
+        this.store.set("players", [...this.store.get("players"), playerInfo]);
       }
     );
   }
