@@ -59,13 +59,14 @@ class NewGameView extends HTMLView {
   }
 
   private async createGame() {
+    const name = this.$nameInput.querySelector("input")!.value;
     try {
       await this.hostPeerManager.waitForId();
       const ownPeerId = await this.ownPeerManager.waitForId();
       const { room_id: roomId } = await createRoom(ownPeerId);
       this.store.set("roomId", roomId);
       await this.eventSourceManager.startListening(roomId);
-      await joinRoom(roomId, ownPeerId);
+      await joinRoom(roomId, { ownPeerId, name });
       this._eventEmitter.emit(PreGameEvents.CREATE_GAME_SUCCESS, { roomId });
     } catch (e) {
       this._eventEmitter.emit(PreGameEvents.CREATE_GAME_FAIL, {

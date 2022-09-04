@@ -61,9 +61,10 @@ class JoinGameView extends HTMLView {
       (acc, curr) => (acc += curr.value),
       ""
     );
+    const name = this.$nameInput.querySelector("input")!.value;
     try {
       const ownPeerId = await this._ownPeerManager.waitForId();
-      await joinRoom(roomId, ownPeerId);
+      await joinRoom(roomId, { ownPeerId, name });
       this._eventEmitter.emit(PreGameEvents.JOIN_GAME_SUCCESS);
     } catch (e) {
       this._eventEmitter.emit(PreGameEvents.JOIN_GAME_FAIL, {

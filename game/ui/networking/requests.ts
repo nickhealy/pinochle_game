@@ -1,4 +1,7 @@
-export const joinRoom = async (roomId: string, ownPeerId: string) => {
+export const joinRoom = async (
+  roomId: string,
+  { ownPeerId, name }: { ownPeerId: string; name: string }
+) => {
   const res = await fetch(`/rooms/${roomId}/join`, {
     method: "POST",
     redirect: "follow",
@@ -6,6 +9,7 @@ export const joinRoom = async (roomId: string, ownPeerId: string) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
+      name,
       peer_id: ownPeerId,
     }),
   });

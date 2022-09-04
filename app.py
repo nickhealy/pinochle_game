@@ -58,8 +58,9 @@ def hello_world():
 def join_room(room_id):
     req_data = request.json
     peer_id = req_data.get('peer_id')
+    name = req_data.get('name')
     if peer_id is not None:
-        data = json.dumps({"event": 'player_join_request', 'peer_id': peer_id})
+        data = json.dumps({"event": 'player_join_request', 'peer_id': peer_id, 'name': name})
         msg = format_sse(data)
         announcer.announce(room_id, msg=msg)
         return {}, 200

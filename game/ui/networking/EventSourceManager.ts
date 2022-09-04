@@ -40,13 +40,13 @@ class EventSourceManager {
       throw new Error("EventSource not initialized");
     }
     this._eventSource.onmessage = (ev) => {
-      const { event, peer_id: peerId } = JSON.parse(ev.data);
+      const { event, peer_id: peerId, name } = JSON.parse(ev.data);
       switch (event) {
         case "player_join_request":
           this.lobby.send({
             type: "PLAYER_JOIN_REQUEST",
             connection_info: peerId,
-            name: "Nick",
+            name,
           });
           break;
         default:
