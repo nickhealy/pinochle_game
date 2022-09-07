@@ -7,6 +7,7 @@ import HostPeerManager from "./networking/HostPeerManager";
 import EventEmitter from "./events/EventEmitter";
 import { LobbyEvents, PreGameEvents } from "./events/events";
 import LobbyView from "./scenes/lobby/LobbyView";
+import GameScene from "./scenes/game/Game.scene";
 
 @injectable()
 class Game {
@@ -16,6 +17,7 @@ class Game {
   private ownPeerManager: OwnPeerManager;
   private hostPeerManager: HostPeerManager;
   private eventEmitter: EventEmitter;
+  private gameScene: GameScene;
   constructor(
     // @inject<Manager>(TYPES.Manager) manager: Manager,
     @inject<OwnPeerManager>(TYPES.OwnPeerManager)
@@ -24,13 +26,15 @@ class Game {
     hostPeerManager: HostPeerManager,
     @inject<PreGameScene>(TYPES.PreGameScene) preGameScene: PreGameScene,
     @inject<LobbyView>(TYPES.LobbyView) lobbyView: LobbyView,
-    @inject<EventEmitter>(TYPES.EventEmitter) eventEmitter: EventEmitter
+    @inject<EventEmitter>(TYPES.EventEmitter) eventEmitter: EventEmitter,
+    @inject<GameScene>(TYPES.GameScene) gameScene: GameScene
   ) {
     this.ownPeerManager = ownPeerManager;
     this.hostPeerManager = hostPeerManager;
     this.preGameScene = preGameScene;
     this.lobbyView = lobbyView;
     this.eventEmitter = eventEmitter;
+    this.gameScene = gameScene;
   }
 
   public launch() {
@@ -48,6 +52,8 @@ class Game {
     // not the best place for this atm, but it should be ok
     this.eventEmitter.addEventListener(LobbyEvents.START_GAME, () => {
       this.lobbyView.destroy();
+      // this.bidView.render();
+      this.gameScene.render();
     });
   }
 }

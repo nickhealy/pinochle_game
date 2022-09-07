@@ -25,4 +25,12 @@ export enum LobbyEvents {
   GAME_STARTED = "game_started",
 }
 
-export type AllEvents = PreGameEvents | WebRTCEvents | LobbyEvents;
+export enum GameplayEvents {
+  OWN_CARDS_RECEIVED = "own_cards_received",
+}
+
+export type AllEvents =
+  | PreGameEvents
+  | WebRTCEvents
+  | LobbyEvents
+  | GameplayEvents;

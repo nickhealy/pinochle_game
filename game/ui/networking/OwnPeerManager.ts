@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import Peer, { DataConnection } from "peerjs";
 import EventEmitter from "../events/EventEmitter";
-import { LobbyEvents, WebRTCEvents } from "../events/events";
+import { GameplayEvents, LobbyEvents, WebRTCEvents } from "../events/events";
 import TYPES from "../../inversify-types";
 import WebRTCManager from "./WebRTCManager";
 import { StoreType } from "../store";
@@ -92,6 +92,12 @@ class OwnPeerManager extends WebRTCManager {
         case "lobby.game_start":
           this._eventEmitter.emit(LobbyEvents.GAME_STARTED);
           break;
+        case "gameplay.pre_play.round_start":
+          console.log("round starting");
+          break;
+        case "gameplay.player_cards":
+          this.store.set("ownHand", data.hand);
+          this._eventEmitter.emit(GameplayEvents.OWN_CARDS_RECEIVED);
         default:
           console.error("received unknown webrtc event : ", type);
       }

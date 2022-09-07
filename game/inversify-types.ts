@@ -14,6 +14,8 @@ const TYPES = {
   EventSourceManager: Symbol.for("event-source-manager"),
   LobbyView: Symbol.for("lobby-view"),
   Lobby: Symbol.for("lobby"),
+  GameScene: Symbol.for("game-scene"),
+  OwnHand: Symbol.for("own-hand"),
 };
 
 export default TYPES;
