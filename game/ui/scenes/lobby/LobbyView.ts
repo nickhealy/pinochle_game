@@ -3,22 +3,27 @@ import TYPES from "../../../inversify-types";
 import EventEmitter from "../../events/EventEmitter";
 import { LobbyEvents } from "../../events/events";
 import HTMLView from "../../HTMLContentLayer/HTMLView";
+import OwnPeerManager from "../../networking/OwnPeerManager";
 import { StoreType } from "../../store";
+import WebRTCSansIOClient from "../../networking/WebRTCSansIOClient";
 
 @injectable()
 class LobbyView extends HTMLView {
   eventEmitter: EventEmitter;
   store: StoreType;
+  ownPeerManager: OwnPeerManager;
   $container: HTMLElement;
   $roomId: HTMLElement;
   $players: Array<HTMLElement>;
   $startGameBtn: HTMLButtonElement;
   constructor(
     @inject<StoreType>(TYPES.Store) store: StoreType,
-    @inject<EventEmitter>(TYPES.EventEmitter) eventEmitter: EventEmitter
+    @inject<EventEmitter>(TYPES.EventEmitter) eventEmitter: EventEmitter,
+    @inject<OwnPeerManager>(TYPES.OwnPeerManager) ownPeerManager: OwnPeerManager
   ) {
     super();
     this.store = store;
+    this.ownPeerManager = ownPeerManager;
     this.eventEmitter = eventEmitter;
     this.$container = document.getElementById("lobby-container") as HTMLElement;
     this.$roomId = this.$container.querySelector("#room-id") as HTMLElement;
@@ -28,6 +33,7 @@ class LobbyView extends HTMLView {
     ) as HTMLButtonElement;
 
     this.initializeSubscriptions();
+    this.addEventListeners();
   }
   initializeSubscriptions() {
     this.store.subscribe("roomId", (id) => {
@@ -57,12 +63,23 @@ class LobbyView extends HTMLView {
       () => {
         if (this.store.get("isHost")) {
           this.$startGameBtn.innerText = "Start Game";
+          this.$startGameBtn.removeAttribute("disabled");
         } else {
           this.$startGameBtn.innerText = "Waiting for Host to Start";
         }
       }
     );
+    this.eventEmitter.addEventListener(LobbyEvents.START_GAME, () => {
+      console.log("pressed game start");
+      this.ownPeerManager.send(WebRTCSansIOClient.startGame());
+    });
   }
+  addEventListeners() {
+    this.$startGameBtn.addEventListener("click", () =>
+      this.eventEmitter.emit(LobbyEvents.START_GAME)
+    );
+  }
+
   showPlayersInLobby() {
     const players = this.store.get("players");
     players.forEach((player, idx) => {

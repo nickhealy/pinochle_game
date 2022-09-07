@@ -86,6 +86,12 @@ class OwnPeerManager extends WebRTCManager {
         case "lobby.all_players_connected":
           this._eventEmitter.emit(LobbyEvents.ALL_PLAYERS_CONNECTED);
           break;
+        case "lobby.player_teams":
+          this.store.set("teams", data.teams);
+          break;
+        case "lobby.game_start":
+          this._eventEmitter.emit(LobbyEvents.GAME_STARTED);
+          break;
         default:
           console.error("received unknown webrtc event : ", type);
       }

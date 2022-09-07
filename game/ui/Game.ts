@@ -45,6 +45,10 @@ class Game {
       this.preGameScene.destroy();
       this.lobbyView.render();
     });
+    // not the best place for this atm, but it should be ok
+    this.eventEmitter.addEventListener(LobbyEvents.START_GAME, () => {
+      this.lobbyView.destroy();
+    });
   }
 }
 

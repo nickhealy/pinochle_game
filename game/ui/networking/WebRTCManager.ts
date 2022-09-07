@@ -1,5 +1,7 @@
 import { injectable } from "inversify";
 import Peer, { DataConnection } from "peerjs";
+import { LobbyEvents as OutgoingLobbyEvents } from "../../backend/ConnectionSupervisor/events";
+import { IncomingGameplayEvents as OutgoingGameplayEvents } from "../../backend/gameplay/events";
 
 export enum WebRTCManagerStates {
   INITIAL = "initial",
@@ -21,6 +23,18 @@ abstract class WebRTCManager {
 
   get state() {
     return this._state;
+  }
+
+  send(data: {
+    event: OutgoingLobbyEvents | OutgoingGameplayEvents;
+    data: Record<string, any>;
+  }) {
+    if (!this._connection) {
+      throw new Error(
+        "Cannot send webrtc message -- no connection is registered"
+      );
+    }
+    this._connection.send(JSON.stringify(data));
   }
 
   protected set state(nextState: WebRTCManagerStates) {

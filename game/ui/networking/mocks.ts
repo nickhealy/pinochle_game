@@ -52,7 +52,6 @@ class MockPlayer {
     this.name = name;
     this.isHost = isHost;
     this.peer = new Peer();
-    debugger;
   }
   joinRoom() {
     console.log("mock player ", this.name, " joining room");

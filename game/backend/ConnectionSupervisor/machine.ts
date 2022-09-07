@@ -4,7 +4,12 @@ import ConnectionWorkerMachine from "../ConnectionWorker/machine";
 import GameMachine from "../gameplay/machine";
 import { createLobbyUpdate, parseSupervisorEvent } from "./eventHelpers";
 import { getWorkerId } from "./eventHelpers";
-import { addPlayerIds, removePlayerIds, sendToPlayers, shuffleConnectedWorkerKeys } from "./lobbyHelpers";
+import {
+  addPlayerIds,
+  removePlayerIds,
+  sendToPlayers,
+  shuffleConnectedWorkerKeys,
+} from "./lobbyHelpers";
 import {
   ConnectionSupervisorContext,
   ConnectionSupervisorEvents,
@@ -128,7 +133,9 @@ const ConnectionSupervisorMachine = createMachine(
                 ctx.connected_workers[ctx.workers_x_player_ids[target]]
             )
           : Object.values(ctx.connected_workers);
-        return targetWorkers.map((wkr) => send(addPlayerIds(evt, ctx), { to: () => wkr }));
+        return targetWorkers.map((wkr) =>
+          send(addPlayerIds(evt, ctx), { to: () => wkr })
+        );
       }),
       announceNewPlayer: pure((ctx, evt) => {
         const workerKey = evt.worker_key;
@@ -221,9 +228,12 @@ const ConnectionSupervisorMachine = createMachine(
       clearWorker: () => {
         // see https://githubhot.com/repo/davidkpiano/xstate/issues/2531
       },
-      forwardToGameplayMachine: send((ctx, evt) => removePlayerIds(evt.event, ctx), {
-        to: "gameplay_machine",
-      }),
+      forwardToGameplayMachine: send(
+        (ctx, evt) => removePlayerIds(evt.event, ctx),
+        {
+          to: "gameplay_machine",
+        }
+      ),
       createTeams: assign((ctx) => {
         const connectedWorkers = Object.keys(ctx.connected_workers);
         return {
