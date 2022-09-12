@@ -8,6 +8,9 @@ import EventEmitter from "./events/EventEmitter";
 import { LobbyEvents, PreGameEvents } from "./events/events";
 import LobbyView from "./scenes/lobby/LobbyView";
 import GameScene from "./scenes/game/Game.scene";
+import { StoreType } from "./store";
+import main from "../inversify.config";
+import OwnHand from "./scenes/game/OwnHand";
 
 @injectable()
 class Game {
@@ -39,6 +42,7 @@ class Game {
 
   public launch() {
     this.initListeners();
+    this.initUIDevTools();
     this.preGameScene.init();
     this.ownPeerManager.init();
     this.hostPeerManager.init();
@@ -55,6 +59,14 @@ class Game {
       // this.bidView.render();
       this.gameScene.render();
     });
+  }
+
+  private initUIDevTools() {
+    // @ts-ignore
+    globalThis.devOwnHand = () => {
+      this.preGameScene.destroy();
+      main.get<OwnHand>(TYPES.OwnHand);
+    };
   }
 }
 
