@@ -65,7 +65,9 @@ class Game {
     // @ts-ignore
     globalThis.devOwnHand = () => {
       this.preGameScene.destroy();
-      main.get<OwnHand>(TYPES.OwnHand);
+      // @ts-ignore this is necessary for devving
+      this.gameScene._container.classList.remove("hidden");
+      main.get<OwnHand>(TYPES.OwnHand).render();
     };
   }
 }

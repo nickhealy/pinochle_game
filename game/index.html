@@ -106,9 +106,16 @@
             height: 50%;
         }
 
+        .own-card {
+            position: absolute;
+            height: 115px;
+            width: 90px;
+            top: 0
+        }
+
         /* specifc component stylings */
 
-        #own-hand-canvas {
+        #gameplay-container {
             height: 100%;
             width: 100%;
         }
@@ -161,16 +168,6 @@
             background: url('/green_bg_large.png');
         }
 
-        #game-container canvas {
-            height: '100%';
-            width: '100%';
-            position: absolute;
-            z-index: 1;
-            left: 0;
-            top: 0
-        }
-
-
         /* lobby */
 
         #lobby-container h3 {
@@ -191,6 +188,16 @@
             margin-bottom: 20px;
         }
 
+        #own-card-container {
+            bottom: 0;
+            right: 0;
+            left: 0;
+            margin: auto;
+            position: absolute;
+            width: 60%;
+            height: 115px;
+            background-color: aquamarine;
+        }
 
         .player {
             width: 50%;
@@ -207,7 +214,6 @@
         <h2>Online Pinochle Game</h2>
         <div id="game-container">
             <div id="error" class="hidden"></div>
-            <canvas id="own-hand-canvas"></canvas>
             <div id="html-layer">
                 <!-- PREGAME ELEMENTS -->
 
@@ -272,6 +278,30 @@
                         </div>
                     </div>
                     <button id="start-game" class='button' disabled>Waiting for players...</button>
+                </div>
+
+                <!-- GAME -->
+                <div id="gameplay-container" class="hidden">
+                    <div id="own-card-container">
+                        <img class="own-card"></img>
+                        <img class="own-card"></img>
+                        <img class="own-card"></img>
+                        <img class="own-card"></img>
+                        <img class="own-card"></img>
+                        <img class="own-card"></img>
+                        <img class="own-card"></img>
+                        <img class="own-card"></img>
+                        <img class="own-card"></img>
+                        <img class="own-card"></img>
+                        <img class="own-card"></img>
+                        <img class="own-card"></img>
+                    </div>
+                    <div id="play-area">
+                        <div class="card-space" id="own-play-area"></div>
+                        <div class="card-space" id="west-play-area"></div>
+                        <div class="card-space" id="north-play-area"></div>
+                        <div class="card-space" id="east-play-area"></div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -4,3 +4,6 @@ import TYPES from "./inversify-types";
 
 const game = main.get<Game>(TYPES.Game);
 game.launch();
+
+// @ts-ignore
+globalThis.devOwnHand();
