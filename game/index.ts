@@ -6,4 +6,4 @@ const game = main.get<Game>(TYPES.Game);
 game.launch();
 
 // @ts-ignore
-globalThis.devOwnHand();
+// globalThis.devOwnHand();

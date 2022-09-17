@@ -19,7 +19,7 @@ const MOCK_OWN_HAND = [
   "10S",
 ];
 
-const CARD_OFFSET = 25;
+const CARD_OFFSET = 35;
 
 @injectable()
 class OwnHand {
@@ -45,7 +45,7 @@ class OwnHand {
       GameplayEvents.OWN_CARDS_RECEIVED,
       () => {
         console.log("OWN CARDS : ", this._store.get("ownHand"));
-        this.createOwnHand();
+        this.showOnTable();
       }
     );
   }
@@ -77,7 +77,7 @@ class OwnHand {
     });
   }
 
-  private createOwnHand() {
+  private init() {
     this._addOwnCardListeners();
     this._renderOwnHand();
   }
@@ -85,6 +85,16 @@ class OwnHand {
   private _renderOwnHand() {
     this.layoutOwnHand();
     this.addCardImages();
+  }
+
+  private showOnTable() {
+    this.init();
+
+    // this._$container.animate([{ transform: "translateY(-115px)" }], {
+    //   duration: 250,
+    // });
+
+    this._$container.style.bottom = "25px";
   }
 
   private layoutOwnHand() {

@@ -108,9 +108,9 @@
 
         .own-card {
             position: absolute;
-            height: 115px;
-            width: 90px;
-            top: 0
+            height: 130px;
+            width: 95px;
+            top: 0;
         }
 
         /* specifc component stylings */
@@ -165,6 +165,7 @@
             height: 75%;
             width: 100%;
             position: relative;
+            overflow: hidden;
             background: url('/green_bg_large.png');
         }
 
@@ -189,14 +190,17 @@
         }
 
         #own-card-container {
-            bottom: 0;
+            bottom: -500px;
             right: 0;
             left: 0;
             margin: auto;
             position: absolute;
             width: 60%;
             height: 115px;
-            background-color: aquamarine;
+
+
+            /* testing animation */
+            transition: all .5s ease-out;
         }
 
         .player {
