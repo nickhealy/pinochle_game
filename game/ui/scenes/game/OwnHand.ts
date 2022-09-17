@@ -19,14 +19,13 @@ const MOCK_OWN_HAND = [
   "10S",
 ];
 
-const CARD_OFFSET = 20;
+const CARD_OFFSET = 25;
 
 @injectable()
 class OwnHand {
   _store: StoreType;
   _eventEmitter: EventEmitter;
   _$container: HTMLDivElement;
-  _$ownCards: Array<HTMLImageElement>;
 
   constructor(
     @inject<StoreType>(TYPES.Store) store: StoreType,
@@ -37,9 +36,6 @@ class OwnHand {
     this._$container = document.getElementById(
       "own-card-container"
     ) as HTMLDivElement;
-    this._$ownCards = Array.from(
-      this._$container.querySelectorAll(".own-card")
-    );
     this.addEventListeners();
     this.initDevTools();
   }
@@ -49,9 +45,13 @@ class OwnHand {
       GameplayEvents.OWN_CARDS_RECEIVED,
       () => {
         console.log("OWN CARDS : ", this._store.get("ownHand"));
-        this.showOwnHand();
+        this.createOwnHand();
       }
     );
+  }
+
+  private get _$ownCards(): Array<HTMLImageElement> {
+    return Array.from(this._$container.querySelectorAll(".own-card"));
   }
 
   private getCardCoords() {
@@ -61,10 +61,8 @@ class OwnHand {
     const numCards = this._$ownCards.length;
     const targetWidth = CARD_OFFSET * (numCards - 1) + 90; // numCards - 1 cards show indices, face card shows whole card
     const midWayX = this._$container.offsetWidth / 2;
-    console.log({ midWayX });
     const leftWidth = targetWidth / 2;
     const leftStart = Math.floor(midWayX - leftWidth);
-    debugger;
     for (let i = 0; i < numCards; i++) {
       coords.push(leftStart + i * CARD_OFFSET);
     }
@@ -79,12 +77,38 @@ class OwnHand {
     });
   }
 
-  private showOwnHand() {
+  private createOwnHand() {
+    this._addOwnCardListeners();
+    this._renderOwnHand();
+  }
+
+  private _renderOwnHand() {
+    this.layoutOwnHand();
+    this.addCardImages();
+  }
+
+  private layoutOwnHand() {
     const startingCardPositions = this.getCardCoords();
     this._$ownCards.forEach((card, idx) => {
       card.style.left = `${startingCardPositions[idx]}px`;
     });
-    this.addCardImages();
+  }
+
+  private _addOwnCardListeners() {
+    this._$ownCards.forEach((card, idx) => {
+      card.removeEventListener("click", () => {
+        this.handleOwnCardClick(card, idx);
+      });
+      card.addEventListener("click", () => {
+        this.handleOwnCardClick(card, idx);
+      });
+    });
+  }
+
+  private handleOwnCardClick(card: HTMLDivElement, idx: number) {
+    console.log("clicked card at idx : ", idx);
+    this._$container.removeChild(card); // this is temporary
+    this.layoutOwnHand();
   }
 
   private initDevTools() {
