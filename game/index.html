@@ -42,6 +42,7 @@
             --card-height: 130px;
             --card-width: 95px;
             --card-border-radius: 5px;
+            --offscreen-start-pos: -200px;
         }
 
         /* utility classes */
@@ -254,37 +255,59 @@
         }
 
         #own-card-container {
-            bottom: -500px;
+            bottom: var(--offscreen-start-pos);
             right: 0;
             left: 0;
             margin: auto;
             position: absolute;
             width: 60%;
-            height: 115px;
+            height: var(--card-height);
 
 
             /* testing animation */
             transition: all .5s ease-out;
         }
 
-        #west-hand-container {
+        .opponent-hand-container {
             position: absolute;
+
+            transition: all .5s ease-out;
+        }
+
+        #west-hand-container,
+        #east-hand-container {
+            margin: auto;
             width: var(--card-height);
             height: 80%;
             /* background-color: pink; */
-            margin: auto;
             top: 0;
             bottom: 0;
-            left: -200px;
 
             /* testing animation */
-            transition: all .5s ease-out;
         }
 
-        #west-hand-container>.card {
+        #west-hand-container {
+            left: var(--offscreen-start-pos);
+        }
+
+        #east-hand-container {
+            right: var(--offscreen-start-pos)
+        }
+
+        #west-hand-container>.card,
+        #east-hand-container>.card {
             top: 0;
             transform-origin: 0% 0%;
             transform: rotate(-90deg) translateX(-100%);
+        }
+
+        #north-hand-container {
+            margin: auto;
+            width: 80%;
+            height: var(--card-height);
+            left: 0;
+            right: 0;
+            top: var(--offscreen-start-pos);
         }
 
         .player {
@@ -391,9 +414,9 @@
                         <div class="card-space" id="east-card-space"></div>
                     </div>
 
-                    <div id="west-hand-container"></div>
-                    <div id="north-hand-container"></div>
-                    <div id="east-hand-container"></div>
+                    <div id="west-hand-container" class="opponent-hand-container"></div>
+                    <div id="north-hand-container" class="opponent-hand-container"></div>
+                    <div id="east-hand-container" class="opponent-hand-container"></div>
                 </div>
             </div>
         </div>

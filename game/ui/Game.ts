@@ -5,12 +5,9 @@ import PreGameScene from "./scenes/preGame/PreGame.scene";
 import OwnPeerManager from "./networking/OwnPeerManager";
 import HostPeerManager from "./networking/HostPeerManager";
 import EventEmitter from "./events/EventEmitter";
-import { LobbyEvents, PreGameEvents } from "./events/events";
+import { LobbyEvents } from "./events/events";
 import LobbyView from "./scenes/lobby/LobbyView";
 import GameScene from "./scenes/game/Game.scene";
-import { StoreType } from "./store";
-import main from "../inversify.config";
-import OwnHand from "./scenes/game/OwnHand";
 
 @injectable()
 class Game {
