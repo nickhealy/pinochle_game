@@ -17,6 +17,7 @@ import LobbyView from "./ui/scenes/lobby/LobbyView";
 import lobby, { Lobby } from "./lobby";
 import OwnHand from "./ui/scenes/game/OwnHand";
 import GameScene from "./ui/scenes/game/Game.scene";
+import OtherHand from "./ui/scenes/game/OtherHand";
 
 const main = new Container({ defaultScope: "Singleton" });
 main.bind<Game>(TYPES.Game).to(Game);
@@ -46,6 +47,7 @@ main.bind<StoreType>(TYPES.Store).toConstantValue(store);
 main.bind<LobbyView>(TYPES.LobbyView).to(LobbyView);
 main.bind<Lobby>(TYPES.Lobby).toConstantValue(lobby);
 main.bind<OwnHand>(TYPES.OwnHand).to(OwnHand).inSingletonScope();
+main.bind<OtherHand>(TYPES.OtherHandWest).to(OtherHand).inSingletonScope();
 main.bind<GameScene>(TYPES.GameScene).to(GameScene);
 
 export default main;

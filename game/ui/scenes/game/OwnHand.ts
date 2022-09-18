@@ -19,7 +19,7 @@ const MOCK_OWN_HAND = [
   "10S",
 ];
 
-const CARD_OFFSET = 35;
+export const CARD_OFFSET = 35;
 
 @injectable()
 class OwnHand {
@@ -44,7 +44,6 @@ class OwnHand {
     this._eventEmitter.addEventListener(
       GameplayEvents.OWN_CARDS_RECEIVED,
       () => {
-        console.log("OWN CARDS : ", this._store.get("ownHand"));
         this.showOnTable();
       }
     );
@@ -59,7 +58,7 @@ class OwnHand {
     // add x positions for each card from starting position
     const coords: Array<number> = [];
     const numCards = this._$ownCards.length;
-    const targetWidth = CARD_OFFSET * (numCards - 1) + 90; // numCards - 1 cards show indices, face card shows whole card
+    const targetWidth = CARD_OFFSET * (numCards - 1) + 95; // numCards - 1 cards show indices, face card shows whole card
     const midWayX = this._$container.offsetWidth / 2;
     const leftWidth = targetWidth / 2;
     const leftStart = Math.floor(midWayX - leftWidth);
@@ -112,7 +111,6 @@ class OwnHand {
   }
 
   private handleOwnCardClick(card: HTMLDivElement, idx: number) {
-    console.log("clicked card at idx : ", idx);
     this._$container.removeChild(card); // this is temporary
     this.layoutOwnHand();
   }
@@ -128,10 +126,6 @@ class OwnHand {
   render() {
     this._$container.classList.remove("hidden");
   }
-
-  // deal animation -- cards pop up
-
-  draw() {}
 }
 
 export default OwnHand;

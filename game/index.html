@@ -112,11 +112,14 @@
             height: 50%;
         }
 
-        .own-card {
+        .card {
             position: absolute;
             height: var(--card-height);
             width: var(--card-width);
-            border-radius: var(--card-border-radius);
+            border-radius: var(--card-border-radius)
+        }
+
+        .own-card {
             top: 0;
         }
 
@@ -129,6 +132,8 @@
         }
 
         .card-space {
+            height: var(--card-height);
+            width: var(--card-width);
             border: 2px solid white;
             position: absolute;
             border-radius: var(--card-border-radius);
@@ -136,8 +141,6 @@
 
         #own-card-space,
         #north-card-space {
-            height: var(--card-height);
-            width: var(--card-width);
             margin-left: auto;
             margin-right: auto;
             left: 0;
@@ -146,8 +149,6 @@
 
         #west-card-space,
         #east-card-space {
-            height: var(--card-width);
-            width: var(--card-height);
             margin-top: auto;
             margin-bottom: auto;
             top: 0;
@@ -170,6 +171,8 @@
         #east-card-space {
             right: 0;
         }
+
+        /*  */
 
 
         /* specifc component stylings */
@@ -264,6 +267,26 @@
             transition: all .5s ease-out;
         }
 
+        #west-hand-container {
+            position: absolute;
+            width: var(--card-height);
+            height: 80%;
+            /* background-color: pink; */
+            margin: auto;
+            top: 0;
+            bottom: 0;
+            left: -200px;
+
+            /* testing animation */
+            transition: all .5s ease-out;
+        }
+
+        #west-hand-container>.card {
+            top: 0;
+            transform-origin: 0% 0%;
+            transform: rotate(-90deg) translateX(-100%);
+        }
+
         .player {
             width: 50%;
             padding: 10px;
@@ -348,18 +371,18 @@
                 <!-- GAME -->
                 <div id="gameplay-container" class="hidden">
                     <div id="own-card-container">
-                        <img class="own-card"></img>
-                        <img class="own-card"></img>
-                        <img class="own-card"></img>
-                        <img class="own-card"></img>
-                        <img class="own-card"></img>
-                        <img class="own-card"></img>
-                        <img class="own-card"></img>
-                        <img class="own-card"></img>
-                        <img class="own-card"></img>
-                        <img class="own-card"></img>
-                        <img class="own-card"></img>
-                        <img class="own-card"></img>
+                        <img class="card own-card"></img>
+                        <img class="card own-card"></img>
+                        <img class="card own-card"></img>
+                        <img class="card own-card"></img>
+                        <img class="card own-card"></img>
+                        <img class="card own-card"></img>
+                        <img class="card own-card"></img>
+                        <img class="card own-card"></img>
+                        <img class="card own-card"></img>
+                        <img class="card own-card"></img>
+                        <img class="card own-card"></img>
+                        <img class="card own-card"></img>
                     </div>
                     <div id="play-area">
                         <div class="card-space" id="own-card-space"></div>
@@ -367,6 +390,10 @@
                         <div class="card-space" id="north-card-space"></div>
                         <div class="card-space" id="east-card-space"></div>
                     </div>
+
+                    <div id="west-hand-container"></div>
+                    <div id="north-hand-container"></div>
+                    <div id="east-hand-container"></div>
                 </div>
             </div>
         </div>

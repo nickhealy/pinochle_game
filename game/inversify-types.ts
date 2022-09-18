@@ -16,6 +16,7 @@ const TYPES = {
   Lobby: Symbol.for("lobby"),
   GameScene: Symbol.for("game-scene"),
   OwnHand: Symbol.for("own-hand"),
+  OtherHandWest: Symbol.for("other-hand-west"),
 };
 
 export default TYPES;
