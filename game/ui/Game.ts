@@ -54,7 +54,7 @@ class Game {
       this.lobbyView.render();
     });
     // not the best place for this atm, but it should be ok
-    this.eventEmitter.addEventListener(LobbyEvents.START_GAME, () => {
+    this.eventEmitter.addEventListener(LobbyEvents.ROUND_START, () => {
       this.lobbyView.destroy();
       // this.bidView.render();
       this.gameScene.render();

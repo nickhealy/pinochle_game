@@ -90,10 +90,10 @@ class OwnPeerManager extends WebRTCManager {
           this.store.set("teams", data.teams);
           break;
         case "lobby.game_start":
-          this._eventEmitter.emit(LobbyEvents.GAME_STARTED);
+          this._eventEmitter.emit(LobbyEvents.GAME_START);
           break;
         case "gameplay.pre_play.round_start":
-          console.log("round starting");
+          this._eventEmitter.emit(LobbyEvents.ROUND_START);
           break;
         case "gameplay.player_cards":
           this.store.set("ownHand", data.hand);

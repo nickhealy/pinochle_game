@@ -22,7 +22,8 @@ export enum LobbyEvents {
   PLAYER_JOINED_LOBBY = "player_joined_lobby",
   ALL_PLAYERS_CONNECTED = "all_players_connected",
   START_GAME = "start_game",
-  GAME_STARTED = "game_started",
+  GAME_START = "game_start",
+  ROUND_START = "round_start",
 }
 
 export enum GameplayEvents {
