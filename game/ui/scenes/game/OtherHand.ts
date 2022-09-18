@@ -25,12 +25,10 @@ class OtherHand {
   _getCardCoords() {
     const coords: Array<number> = [];
     const numCards = this._$container.querySelectorAll(".card").length;
-
     const targetWidth = CARD_OFFSET * (numCards - 1) + 95;
     const midWay = this._$container.offsetHeight / 2;
     const topWidth = targetWidth / 2;
     const start = Math.floor(midWay - topWidth);
-    debugger;
     for (let i = 0; i < numCards; i++) {
       coords.push(start + i * CARD_OFFSET);
     }
@@ -38,7 +36,6 @@ class OtherHand {
   }
   layoutCards() {
     const coords = this._getCardCoords();
-    console.log({ coords });
     this.$cards.forEach((card, idx) => (card.style.top = `${coords[idx]}px`));
   }
   renderCards() {

@@ -94,7 +94,31 @@ const createRegistry = () => {
   return registry;
 };
 
+const SUIT_WEIGHTS: Record<Suit, 1 | 2 | 3 | 4> = {
+  clubs: 1,
+  hearts: 2,
+  spades: 3,
+  diamonds: 4,
+};
+
 const registry = createRegistry();
+const getCardFromKey = (key: CardKeys) => registry[key];
+
+const _sortBySuitThenValue = (left: CardKeys, right: CardKeys) => {
+  const lCard = getCardFromKey(left);
+  const rCard = getCardFromKey(right);
+  if (SUIT_WEIGHTS[lCard.suit] > SUIT_WEIGHTS[rCard.suit]) {
+    return 1;
+  }
+  if (SUIT_WEIGHTS[lCard.suit] < SUIT_WEIGHTS[rCard.suit]) {
+    return -1;
+  }
+  if (lCard.value < rCard.value) {
+    return 1;
+  }
+
+  return -1;
+};
 
 export default {
   getNewHands: () => {
@@ -105,9 +129,9 @@ export default {
     ] as CardKeys[];
     const shuffledKeys = shuffle(keys);
     while (shuffledKeys.length) {
-      hands.push(shuffledKeys.splice(0, 12));
+      hands.push(shuffledKeys.splice(0, 12).sort(_sortBySuitThenValue));
     }
     return hands;
   },
-  getCardFromKey: (key: CardKeys) => registry[key],
+  getCardFromKey,
 };
