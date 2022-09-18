@@ -20,12 +20,15 @@ const MOCK_OWN_HAND = [
 ];
 
 export const CARD_OFFSET = 35;
+export const OFFSET_BOTTOM = 15;
 
 @injectable()
 class OwnHand {
   _store: StoreType;
   _eventEmitter: EventEmitter;
-  _$container: HTMLDivElement;
+  _$gameplayContainer: HTMLDivElement;
+  $ownCards: Array<HTMLImageElement> = [];
+  $playSpace: HTMLDivElement;
 
   constructor(
     @inject<StoreType>(TYPES.Store) store: StoreType,
@@ -33,8 +36,11 @@ class OwnHand {
   ) {
     this._store = store;
     this._eventEmitter = eventEmitter;
-    this._$container = document.getElementById(
-      "own-card-container"
+    this._$gameplayContainer = document.getElementById(
+      "gameplay-container"
+    ) as HTMLDivElement;
+    this.$playSpace = document.getElementById(
+      "own-card-space"
     ) as HTMLDivElement;
     this.addEventListeners();
     this.initDevTools();
@@ -49,17 +55,13 @@ class OwnHand {
     );
   }
 
-  private get _$ownCards(): Array<HTMLImageElement> {
-    return Array.from(this._$container.querySelectorAll(".own-card"));
-  }
-
   private getCardCoords() {
     // calculate position of first card so that hand can be centered
     // add x positions for each card from starting position
     const coords: Array<number> = [];
-    const numCards = this._$ownCards.length;
+    const numCards = this.$ownCards.length;
     const targetWidth = CARD_OFFSET * (numCards - 1) + 95; // numCards - 1 cards show indices, face card shows whole card
-    const midWayX = this._$container.offsetWidth / 2;
+    const midWayX = this._$gameplayContainer.offsetWidth / 2;
     const leftWidth = targetWidth / 2;
     const leftStart = Math.floor(midWayX - leftWidth);
     for (let i = 0; i < numCards; i++) {
@@ -68,12 +70,17 @@ class OwnHand {
     return coords;
   }
 
-  private addCardImages() {
+  private createCards() {
     this._store.get("ownHand").forEach((card, idx) => {
-      this._$ownCards[idx].src = `/cards/${card}.png`;
-      this._$ownCards[idx].style.backgroundSize = "100%";
-      this._$ownCards[idx].style.backgroundRepeat = "no-repeat";
+      const cardEl = document.createElement("img");
+      cardEl.src = `/cards/${card}.png`;
+      cardEl.style.backgroundSize = "100%";
+      cardEl.style.backgroundRepeat = "no-repeat";
+      cardEl.classList.add("card", "own-card");
+      this._$gameplayContainer.appendChild(cardEl);
+      this.$ownCards.push(cardEl);
     });
+    return this.$ownCards;
   }
 
   private init() {
@@ -82,25 +89,27 @@ class OwnHand {
   }
 
   private _renderOwnHand() {
+    this.createCards();
     this.layoutOwnHand();
-    this.addCardImages();
   }
 
   private showOnTable() {
     this.init();
 
-    this._$container.style.bottom = "25px";
+    this.$ownCards.forEach((card) => {
+      card.style.bottom = `${OFFSET_BOTTOM}px`;
+    });
   }
 
   private layoutOwnHand() {
     const startingCardPositions = this.getCardCoords();
-    this._$ownCards.forEach((card, idx) => {
+    this.$ownCards.forEach((card, idx) => {
       card.style.left = `${startingCardPositions[idx]}px`;
     });
   }
 
   private _addOwnCardListeners() {
-    this._$ownCards.forEach((card, idx) => {
+    this.$ownCards.forEach((card, idx) => {
       card.removeEventListener("click", () => {
         this.handleOwnCardClick(card, idx);
       });
@@ -111,7 +120,9 @@ class OwnHand {
   }
 
   private handleOwnCardClick(card: HTMLDivElement, idx: number) {
-    this._$container.removeChild(card); // this is temporary
+    this.$playSpace.appendChild(card); // this is temporary
+    card.style.top = "0";
+    card.style.left = "0";
     this.layoutOwnHand();
   }
 
@@ -124,7 +135,7 @@ class OwnHand {
   }
 
   render() {
-    this._$container.classList.remove("hidden");
+    this._$gameplayContainer.classList.remove("hidden");
   }
 }
 

@@ -117,25 +117,29 @@
             position: absolute;
             height: var(--card-height);
             width: var(--card-width);
-            border-radius: var(--card-border-radius)
+            border-radius: var(--card-border-radius);
+
+            /* testing animation */
+            /* transition: all .5s ease-out; */
+
         }
 
         .own-card {
-            top: 0;
+            bottom: var(--offscreen-start-pos);
+            transition: bottom .5s ease-out;
         }
 
         #play-area {
             position: relative;
-            width: 375px;
-            height: 375px;
+            width: 335px;
+            height: 335px;
             margin: auto auto;
-            /* background-color: pink; */
         }
 
         .card-space {
             height: var(--card-height);
             width: var(--card-width);
-            border: 2px solid white;
+            /* border: 2px solid white; */
             position: absolute;
             border-radius: var(--card-border-radius);
         }
@@ -252,20 +256,6 @@
             color: white;
             width: 100%;
             margin-bottom: 20px;
-        }
-
-        #own-card-container {
-            bottom: var(--offscreen-start-pos);
-            right: 0;
-            left: 0;
-            margin: auto;
-            position: absolute;
-            width: 60%;
-            height: var(--card-height);
-
-
-            /* testing animation */
-            transition: all .5s ease-out;
         }
 
         .opponent-hand-container {
@@ -393,21 +383,7 @@
 
                 <!-- GAME -->
                 <div id="gameplay-container" class="hidden">
-                    <div id="own-card-container">
-                        <img class="card own-card"></img>
-                        <img class="card own-card"></img>
-                        <img class="card own-card"></img>
-                        <img class="card own-card"></img>
-                        <img class="card own-card"></img>
-                        <img class="card own-card"></img>
-                        <img class="card own-card"></img>
-                        <img class="card own-card"></img>
-                        <img class="card own-card"></img>
-                        <img class="card own-card"></img>
-                        <img class="card own-card"></img>
-                        <img class="card own-card"></img>
-                    </div>
-                    <div id="play-area" class="hidden">
+                    <div id="play-area">
                         <div class="card-space" id="own-card-space"></div>
                         <div class="card-space" id="west-card-space"></div>
                         <div class="card-space" id="north-card-space"></div>
