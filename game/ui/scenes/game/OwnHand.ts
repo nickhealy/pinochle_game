@@ -90,10 +90,6 @@ class OwnHand {
   private showOnTable() {
     this.init();
 
-    // this._$container.animate([{ transform: "translateY(-115px)" }], {
-    //   duration: 250,
-    // });
-
     this._$container.style.bottom = "25px";
   }
 

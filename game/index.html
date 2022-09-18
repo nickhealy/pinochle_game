@@ -38,6 +38,12 @@
             align-items: center;
         }
 
+        :root {
+            --card-height: 130px;
+            --card-width: 95px;
+            --card-border-radius: 5px;
+        }
+
         /* utility classes */
 
         .hidden {
@@ -108,16 +114,71 @@
 
         .own-card {
             position: absolute;
-            height: 130px;
-            width: 95px;
+            height: var(--card-height);
+            width: var(--card-width);
+            border-radius: var(--card-border-radius);
             top: 0;
         }
+
+        #play-area {
+            position: relative;
+            width: 375px;
+            height: 375px;
+            margin: auto auto;
+            /* background-color: pink; */
+        }
+
+        .card-space {
+            border: 2px solid white;
+            position: absolute;
+            border-radius: var(--card-border-radius);
+        }
+
+        #own-card-space,
+        #north-card-space {
+            height: var(--card-height);
+            width: var(--card-width);
+            margin-left: auto;
+            margin-right: auto;
+            left: 0;
+            right: 0;
+        }
+
+        #west-card-space,
+        #east-card-space {
+            height: var(--card-width);
+            width: var(--card-height);
+            margin-top: auto;
+            margin-bottom: auto;
+            top: 0;
+            bottom: 0;
+        }
+
+        #own-card-space {
+            bottom: 30px;
+        }
+
+        #north-card-space {
+            top: 30px;
+        }
+
+        #west-card-space {
+            left: 0;
+        }
+
+
+        #east-card-space {
+            right: 0;
+        }
+
 
         /* specifc component stylings */
 
         #gameplay-container {
             height: 100%;
             width: 100%;
+            display: flex;
+
         }
 
         #error {
@@ -162,7 +223,7 @@
         }
 
         #game-container {
-            height: 75%;
+            height: 85%;
             width: 100%;
             position: relative;
             overflow: hidden;
@@ -301,10 +362,10 @@
                         <img class="own-card"></img>
                     </div>
                     <div id="play-area">
-                        <div class="card-space" id="own-play-area"></div>
-                        <div class="card-space" id="west-play-area"></div>
-                        <div class="card-space" id="north-play-area"></div>
-                        <div class="card-space" id="east-play-area"></div>
+                        <div class="card-space" id="own-card-space"></div>
+                        <div class="card-space" id="west-card-space"></div>
+                        <div class="card-space" id="north-card-space"></div>
+                        <div class="card-space" id="east-card-space"></div>
                     </div>
                 </div>
             </div>
