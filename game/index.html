@@ -118,15 +118,27 @@
             height: var(--card-height);
             width: var(--card-width);
             border-radius: var(--card-border-radius);
-
-            /* testing animation */
-            /* transition: all .5s ease-out; */
-
+            transition: top, left .25s ease-out;
         }
 
         .own-card {
             bottom: var(--offscreen-start-pos);
-            transition: bottom .5s ease-out;
+        }
+
+        .slide-in {
+            animation-fill-mode: forwards;
+            animation-duration: 500ms;
+            animation-timing-function: ease-in;
+        }
+
+        .own-card.slide-in {
+            animation-name: own-card-slide-in;
+        }
+
+        @keyframes own-card-slide-in {
+            to {
+                bottom: 15px
+            }
         }
 
         #play-area {
@@ -139,7 +151,7 @@
         .card-space {
             height: var(--card-height);
             width: var(--card-width);
-            /* border: 2px solid white; */
+            border: 2px solid white;
             position: absolute;
             border-radius: var(--card-border-radius);
         }

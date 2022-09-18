@@ -76,7 +76,10 @@ class OwnHand {
       cardEl.src = `/cards/${card}.png`;
       cardEl.style.backgroundSize = "100%";
       cardEl.style.backgroundRepeat = "no-repeat";
-      cardEl.classList.add("card", "own-card");
+      cardEl.classList.add("card", "own-card", "deal-animation");
+
+      this._addOwnCardListeners(cardEl, idx);
+
       this._$gameplayContainer.appendChild(cardEl);
       this.$ownCards.push(cardEl);
     });
@@ -84,7 +87,6 @@ class OwnHand {
   }
 
   private init() {
-    this._addOwnCardListeners();
     this._renderOwnHand();
   }
 
@@ -97,7 +99,7 @@ class OwnHand {
     this.init();
 
     this.$ownCards.forEach((card) => {
-      card.style.bottom = `${OFFSET_BOTTOM}px`;
+      card.classList.add("slide-in");
     });
   }
 
@@ -108,22 +110,26 @@ class OwnHand {
     });
   }
 
-  private _addOwnCardListeners() {
-    this.$ownCards.forEach((card, idx) => {
-      card.removeEventListener("click", () => {
-        this.handleOwnCardClick(card, idx);
-      });
-      card.addEventListener("click", () => {
-        this.handleOwnCardClick(card, idx);
-      });
+  private _addOwnCardListeners(cardEl: HTMLImageElement, idx: number) {
+    cardEl.removeEventListener("click", () => {
+      this.handleOwnCardClick(cardEl, idx);
+    });
+    cardEl.addEventListener("click", () => {
+      this.handleOwnCardClick(cardEl, idx);
     });
   }
 
   private handleOwnCardClick(card: HTMLDivElement, idx: number) {
-    this.$playSpace.appendChild(card); // this is temporary
-    card.style.top = "0";
-    card.style.left = "0";
-    this.layoutOwnHand();
+    const { top: playSpaceTopFromVp, left: playSpaceLeftFromVP } =
+      this.$playSpace.getBoundingClientRect();
+    const { top: boardTopFromVp, left: boardLeftFromVp } =
+      this._$gameplayContainer.getBoundingClientRect();
+    const ownPlaySpaceTopFromBoard = playSpaceTopFromVp - boardTopFromVp;
+    const ownPlaySpaceLeftFromBoard = playSpaceLeftFromVP - boardLeftFromVp;
+    card.style.removeProperty("bottom");
+    card.style.top = `${ownPlaySpaceTopFromBoard}px`;
+    card.style.left = `${ownPlaySpaceLeftFromBoard}px`;
+    // this.layoutOwnHand();
   }
 
   private initDevTools() {
