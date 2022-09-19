@@ -43,6 +43,8 @@
             --card-width: 95px;
             --card-border-radius: 5px;
             --offscreen-start-pos: -200px;
+            --playerInfoOffsetFromHand: 15px;
+            --playerInfoOffsetTotal: calc((var(--card-height) / 2) + var(--playerInfoOffsetFromHand))
         }
 
         /* utility classes */
@@ -114,7 +116,7 @@
         }
 
         .card {
-            transition: all .25s;
+            transition: all .25s ease-out;
             position: absolute;
             height: var(--card-height);
             width: var(--card-width);
@@ -232,7 +234,44 @@
             right: 0;
         }
 
-        /*  */
+        .player-info {
+            color: white;
+        }
+
+        #west-player-info {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            padding-left: var(--playerInfoOffsetTotal)
+        }
+
+        #north-player-info {
+            position: absolute;
+            width: 100%;
+            padding-top: var(--playerInfoOffsetTotal);
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #east-player-info {
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            padding-right: var(--playerInfoOffsetTotal)
+        }
 
 
         /* specifc component stylings */
@@ -312,8 +351,6 @@
             width: 100%;
             margin-bottom: 20px;
         }
-
-
 
         .player {
             width: 50%;
@@ -398,9 +435,15 @@
 
                 <!-- GAME -->
                 <div id="gameplay-container" class="hidden">
-                    <div id="west-player-info" class="player-info"></div>
-                    <div id="north-player-info" class="player-info"></div>
-                    <div id="east-player-info" class="player-info"></div>
+                    <div id="west-player-info" class="player-info">
+                        <h5></h5>
+                    </div>
+                    <div id="north-player-info" class="player-info">
+                        <h5></h5>
+                    </div>
+                    <div id="east-player-info" class="player-info">
+                        <h5></h5>
+                    </div>
                     <div id="play-area">
                         <div class="card-space" id="own-card-space"></div>
                         <div class="card-space" id="west-card-space"></div>
