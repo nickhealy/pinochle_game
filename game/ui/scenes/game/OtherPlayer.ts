@@ -3,7 +3,7 @@ import { inject, injectable } from "inversify";
 import TYPES from "../../../inversify-types";
 import main from "../../../inversify.config";
 import EventEmitter from "../../events/EventEmitter";
-import { LobbyEvents } from "../../events/events";
+import { GameplayEvents, LobbyEvents } from "../../events/events";
 import { StoreType } from "../../store";
 import OtherHand, { OpponentPosition } from "./OtherHand";
 
@@ -23,6 +23,8 @@ class OtherPlayer {
     this.hand = new OtherHand(position); // i could use inversify here, but not really important
     this._eventEmitter = ee;
     this._store = store;
+
+    this.initializeSubscriptions();
   }
   render() {
     this.hand.render();
@@ -48,7 +50,31 @@ class OtherPlayer {
     }
   }
 
-  initializeSubscriptions() {}
+  removeTurnIndicator() {
+    const turnIndicatorEl = this._$infoContainer.querySelector("i");
+    turnIndicatorEl?.classList.add("hidden");
+  }
+
+  showTurnIndicator() {
+    const turnIndicatorEl = this._$infoContainer.querySelector("i");
+    turnIndicatorEl?.classList.remove("hidden");
+  }
+
+  initializeSubscriptions() {
+    this._eventEmitter.addEventListener(
+      GameplayEvents.AWAITING_BID,
+      (event) => {
+        // @ts-ignore using typescript was a mistake
+        const { player } = event.detail;
+        debugger;
+        if (player !== this.id) {
+          this.removeTurnIndicator();
+        } else {
+          this.showTurnIndicator();
+        }
+      }
+    );
+  }
 }
 
 export default OtherPlayer;

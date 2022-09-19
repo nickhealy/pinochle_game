@@ -101,6 +101,11 @@ class OwnPeerManager extends WebRTCManager {
           this.store.set("ownHand", data.hand);
           this._eventEmitter.emit(GameplayEvents.OWN_CARDS_RECEIVED);
           break;
+        case "gameplay.bid.awaiting_bid":
+          this._eventEmitter.emit(GameplayEvents.AWAITING_BID, {
+            player: data.player,
+          });
+          break;
         default:
           console.error("received unknown webrtc event : ", type, { data });
       }
