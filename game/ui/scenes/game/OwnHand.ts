@@ -76,7 +76,7 @@ class OwnHand {
       cardEl.src = `/cards/${card}.png`;
       cardEl.style.backgroundSize = "100%";
       cardEl.style.backgroundRepeat = "no-repeat";
-      cardEl.classList.add("card", "own-card", "deal-animation");
+      cardEl.classList.add("card", "own-card");
 
       this._addOwnCardListeners(cardEl, idx);
 
@@ -119,17 +119,25 @@ class OwnHand {
     });
   }
 
-  private handleOwnCardClick(card: HTMLDivElement, idx: number) {
+  private playCardAnimation(card: HTMLImageElement) {
     const { top: playSpaceTopFromVp, left: playSpaceLeftFromVP } =
       this.$playSpace.getBoundingClientRect();
     const { top: boardTopFromVp, left: boardLeftFromVp } =
       this._$gameplayContainer.getBoundingClientRect();
     const ownPlaySpaceTopFromBoard = playSpaceTopFromVp - boardTopFromVp;
     const ownPlaySpaceLeftFromBoard = playSpaceLeftFromVP - boardLeftFromVp;
-    card.style.removeProperty("bottom");
     card.style.top = `${ownPlaySpaceTopFromBoard}px`;
     card.style.left = `${ownPlaySpaceLeftFromBoard}px`;
-    // this.layoutOwnHand();
+  }
+
+  private repositionOwnHand(removedCard: HTMLImageElement) {
+    this.$ownCards = this.$ownCards.filter((card) => card !== removedCard);
+    this.layoutOwnHand();
+  }
+
+  private handleOwnCardClick(card: HTMLImageElement, idx: number) {
+    this.playCardAnimation(card);
+    this.repositionOwnHand(card);
   }
 
   private initDevTools() {

@@ -118,15 +118,14 @@
             height: var(--card-height);
             width: var(--card-width);
             border-radius: var(--card-border-radius);
-            transition: top, left .25s ease-out;
         }
 
         .own-card {
-            bottom: var(--offscreen-start-pos);
+            transition: all .25s;
+            top: calc(100% - calc(15px + var(--card-height)))
         }
 
         .slide-in {
-            animation-fill-mode: forwards;
             animation-duration: 500ms;
             animation-timing-function: ease-in;
         }
@@ -136,8 +135,8 @@
         }
 
         @keyframes own-card-slide-in {
-            to {
-                bottom: 15px
+            from {
+                top: calc(100% - var(--offscreen-start-pos));
             }
         }
 
