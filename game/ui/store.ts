@@ -7,6 +7,7 @@ interface StoreValTypes {
   peerId: string | null;
   teams: Array<Array<string>>;
   ownHand: Array<string>;
+  ownId: string | null;
 }
 const _store: StoreValTypes = {
   roomId: null,
@@ -15,6 +16,7 @@ const _store: StoreValTypes = {
   peerId: null,
   teams: [],
   ownHand: [],
+  ownId: null,
 };
 
 const subscribe = <T extends keyof typeof _store>(

@@ -46,7 +46,8 @@ class LobbyView extends HTMLView {
       LobbyEvents.SELF_JOINED_LOBBY,
       (event) => {
         // @ts-ignore
-        const { players } = event.detail;
+        const { players, ownId } = event.detail;
+        this.store.set("ownId", ownId);
         this.store.set("players", players); // could be problems with deep copying, etc. but let's see if that is actually an issue
       }
     );

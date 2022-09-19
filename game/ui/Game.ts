@@ -8,6 +8,7 @@ import EventEmitter from "./events/EventEmitter";
 import { LobbyEvents } from "./events/events";
 import LobbyView from "./scenes/lobby/LobbyView";
 import GameScene from "./scenes/game/Game.scene";
+import store, { StoreType } from "./store";
 
 @injectable()
 class Game {
@@ -18,6 +19,7 @@ class Game {
   private hostPeerManager: HostPeerManager;
   private eventEmitter: EventEmitter;
   private gameScene: GameScene;
+  private _store: StoreType;
   constructor(
     // @inject<Manager>(TYPES.Manager) manager: Manager,
     @inject<OwnPeerManager>(TYPES.OwnPeerManager)
@@ -27,7 +29,8 @@ class Game {
     @inject<PreGameScene>(TYPES.PreGameScene) preGameScene: PreGameScene,
     @inject<LobbyView>(TYPES.LobbyView) lobbyView: LobbyView,
     @inject<EventEmitter>(TYPES.EventEmitter) eventEmitter: EventEmitter,
-    @inject<GameScene>(TYPES.GameScene) gameScene: GameScene
+    @inject<GameScene>(TYPES.GameScene) gameScene: GameScene,
+    @inject<StoreType>(TYPES.Store) store: StoreType
   ) {
     this.ownPeerManager = ownPeerManager;
     this.hostPeerManager = hostPeerManager;
@@ -35,6 +38,7 @@ class Game {
     this.lobbyView = lobbyView;
     this.eventEmitter = eventEmitter;
     this.gameScene = gameScene;
+    this._store = store;
   }
 
   public launch() {
@@ -65,6 +69,8 @@ class Game {
       // @ts-ignore this is necessary for devving
       this.gameScene.render();
     };
+    //@ts-ignore
+    globalThis.getFromStore = (key: string) => store.get(key);
   }
 }
 

@@ -76,6 +76,7 @@ class OwnPeerManager extends WebRTCManager {
         case "lobby.room_description":
           this._eventEmitter.emit(LobbyEvents.SELF_JOINED_LOBBY, {
             players: data.players,
+            ownId: data.own_id,
           });
           break;
         case "lobby.player_join":
@@ -87,6 +88,7 @@ class OwnPeerManager extends WebRTCManager {
           this._eventEmitter.emit(LobbyEvents.ALL_PLAYERS_CONNECTED);
           break;
         case "lobby.player_teams":
+          console.log(data.teams);
           this.store.set("teams", data.teams);
           break;
         case "lobby.game_start":
