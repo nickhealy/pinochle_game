@@ -114,6 +114,7 @@
         }
 
         .card {
+            transition: all .25s;
             position: absolute;
             height: var(--card-height);
             width: var(--card-width);
@@ -121,7 +122,6 @@
         }
 
         .own-card {
-            transition: all .25s;
             top: calc(100% - calc(15px + var(--card-height)))
         }
 
@@ -137,6 +137,52 @@
         @keyframes own-card-slide-in {
             from {
                 top: calc(100% - var(--offscreen-start-pos));
+            }
+        }
+
+        .west-opponent-card {
+            left: calc(var(--card-height) / 2 * -1);
+            transform-origin: 0% 0%;
+            transform: rotate(-90deg) translateX(-100%);
+        }
+
+        .west-opponent-card.slide-in {
+            animation-name: west-opponent-slide-in;
+        }
+
+        @keyframes west-opponent-slide-in {
+            from {
+                left: var(--offscreen-start-pos)
+            }
+        }
+
+        .north-opponent-card {
+            top: calc(var(--card-height) / 2 * -1);
+        }
+
+        .north-opponent-card.slide-in {
+            animation-name: north-opponent-slide-in;
+        }
+
+        @keyframes north-opponent-slide-in {
+            from {
+                top: var(--offscreen-start-pos)
+            }
+        }
+
+        .east-opponent-card {
+            left: calc(100% - (var(--card-height) / 2));
+            transform-origin: 0% 0%;
+            transform: rotate(-90deg) translateX(-100%);
+        }
+
+        .east-opponent-card.slide-in {
+            animation-name: east-opponent-slide-in;
+        }
+
+        @keyframes east-opponent-slide-in {
+            from {
+                left: calc(100% - var(--offscreen-start-pos))
             }
         }
 
@@ -269,47 +315,7 @@
             margin-bottom: 20px;
         }
 
-        .opponent-hand-container {
-            position: absolute;
 
-            transition: all .5s ease-out;
-        }
-
-        #west-hand-container,
-        #east-hand-container {
-            margin: auto;
-            width: var(--card-height);
-            height: 80%;
-            /* background-color: pink; */
-            top: 0;
-            bottom: 0;
-
-            /* testing animation */
-        }
-
-        #west-hand-container {
-            left: var(--offscreen-start-pos);
-        }
-
-        #east-hand-container {
-            right: var(--offscreen-start-pos)
-        }
-
-        #west-hand-container>.card,
-        #east-hand-container>.card {
-            top: 0;
-            transform-origin: 0% 0%;
-            transform: rotate(-90deg) translateX(-100%);
-        }
-
-        #north-hand-container {
-            margin: auto;
-            width: 80%;
-            height: var(--card-height);
-            left: 0;
-            right: 0;
-            top: var(--offscreen-start-pos);
-        }
 
         .player {
             width: 50%;
@@ -400,10 +406,6 @@
                         <div class="card-space" id="north-card-space"></div>
                         <div class="card-space" id="east-card-space"></div>
                     </div>
-
-                    <div id="west-hand-container" class="opponent-hand-container"></div>
-                    <div id="north-hand-container" class="opponent-hand-container"></div>
-                    <div id="east-hand-container" class="opponent-hand-container"></div>
                 </div>
             </div>
         </div>

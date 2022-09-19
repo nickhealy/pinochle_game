@@ -1,4 +1,5 @@
 import { Peer } from "peerjs";
+import { CardKeys } from "../../backend/gameplay/Deck";
 import TYPES from "../../inversify-types";
 import main from "../../inversify.config";
 import { StoreType } from "../store";
@@ -65,6 +66,8 @@ class MockPlayer {
       }),
     });
   }
+
+  playCard(card: CardKeys) {}
 }
 
 // @ts-ignore
