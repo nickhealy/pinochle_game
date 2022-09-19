@@ -1,4 +1,6 @@
+import "reflect-metadata";
 import { Container } from "inversify";
+import * as inversify from "inversify";
 import Game from "./ui/Game";
 import ViewManager from "./ui/HTMLContentLayer/HTMLViewManager";
 import PreGameScene from "./ui/scenes/preGame/PreGame.scene";
@@ -18,9 +20,10 @@ import lobby, { Lobby } from "./lobby";
 import OwnHand from "./ui/scenes/game/OwnHand";
 import GameScene from "./ui/scenes/game/Game.scene";
 import OtherHand, { OpponentPosition } from "./ui/scenes/game/OtherHand";
+import OtherPlayer from "./ui/scenes/game/OtherPlayer";
+import { FactoryType } from "inversify/lib/utils/factory_type";
 
 const main = new Container({ defaultScope: "Singleton" });
-main.bind<Game>(TYPES.Game).to(Game);
 main
   .bind<ErrorComponent>(TYPES.ErrorComponent)
   .to(ErrorComponent)
@@ -48,14 +51,18 @@ main.bind<LobbyView>(TYPES.LobbyView).to(LobbyView);
 main.bind<Lobby>(TYPES.Lobby).toConstantValue(lobby);
 main.bind<OwnHand>(TYPES.OwnHand).to(OwnHand).inSingletonScope();
 main
-  .bind<OtherHand>(TYPES.OtherHandWest)
-  .toConstantValue(new OtherHand(OpponentPosition.WEST));
-main
-  .bind<OtherHand>(TYPES.OtherHandEast)
-  .toConstantValue(new OtherHand(OpponentPosition.EAST));
-main
-  .bind<OtherHand>(TYPES.OtherHandNorth)
-  .toConstantValue(new OtherHand(OpponentPosition.NORTH));
+  .bind<inversify.interfaces.Factory<OtherPlayer>>(TYPES.OtherPlayerFactory)
+  .toFactory(() => {
+    return (position: OpponentPosition) => {
+      return new OtherPlayer(
+        position,
+        main.get(TYPES.Store),
+        main.get(TYPES.EventEmitter)
+      );
+    };
+  });
+
 main.bind<GameScene>(TYPES.GameScene).to(GameScene);
+main.bind<Game>(TYPES.Game).to(Game);
 
 export default main;

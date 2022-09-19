@@ -16,9 +16,12 @@ const TYPES = {
   Lobby: Symbol.for("lobby"),
   GameScene: Symbol.for("game-scene"),
   OwnHand: Symbol.for("own-hand"),
-  OtherHandWest: Symbol.for("other-hand-west"),
-  OtherHandNorth: Symbol.for("other-hand-north"),
-  OtherHandEast: Symbol.for("other-hand-east"),
+  OtherHand: Symbol.for("other-hand"),
+  OtherPlayer: Symbol.for("other-player"),
+  OtherPlayerFactory: Symbol.for("other-player-factory"),
+  OtherPlayerWest: Symbol.for("other-player-west"),
+  OtherPlayerNorth: Symbol.for("other-player-north"),
+  OtherPlayerEast: Symbol.for("other-player-east"),
 };
 
 export default TYPES;

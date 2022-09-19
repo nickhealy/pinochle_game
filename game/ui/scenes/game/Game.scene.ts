@@ -1,25 +1,27 @@
+import "reflect-metadata";
 import { inject, injectable } from "inversify";
+import * as inversify from "inversify";
 import TYPES from "../../../inversify-types";
-import OtherHand from "./OtherHand";
+import OtherPlayer from "./OtherPlayer";
 import OwnHand from "./OwnHand";
+import { OpponentPosition } from "./OtherHand";
 
 @injectable()
 class GameScene {
   private ownHand: OwnHand;
-  private otherHandWest: OtherHand;
-  private otherHandNorth: OtherHand;
-  private otherHandEast: OtherHand;
+  private otherPlayerWest: OtherPlayer;
+  private otherPlayerNorth: OtherPlayer;
+  private otherPlayerEast: OtherPlayer;
   private _container: HTMLDivElement;
   constructor(
     @inject<OwnHand>(TYPES.OwnHand) ownHand: OwnHand,
-    @inject<OtherHand>(TYPES.OtherHandWest) otherHandWest: OtherHand,
-    @inject<OtherHand>(TYPES.OtherHandNorth) otherHandNorth: OtherHand,
-    @inject<OtherHand>(TYPES.OtherHandEast) otherHandEast: OtherHand
+    @inject(TYPES.OtherPlayerFactory)
+    otherPlayerFactory: (position: OpponentPosition) => OtherPlayer
   ) {
     this.ownHand = ownHand;
-    this.otherHandWest = otherHandWest;
-    this.otherHandNorth = otherHandNorth;
-    this.otherHandEast = otherHandEast;
+    this.otherPlayerWest = otherPlayerFactory(OpponentPosition.WEST);
+    this.otherPlayerNorth = otherPlayerFactory(OpponentPosition.NORTH);
+    this.otherPlayerEast = otherPlayerFactory(OpponentPosition.EAST);
     this._container = document.getElementById(
       "gameplay-container"
     ) as HTMLDivElement;
@@ -28,9 +30,9 @@ class GameScene {
   render() {
     this._container.classList.remove("hidden");
     this.ownHand.render();
-    this.otherHandWest.render();
-    this.otherHandNorth.render();
-    this.otherHandEast.render();
+    this.otherPlayerWest.render();
+    this.otherPlayerNorth.render();
+    this.otherPlayerEast.render();
   }
 }
 

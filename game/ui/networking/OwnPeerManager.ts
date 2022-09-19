@@ -88,8 +88,8 @@ class OwnPeerManager extends WebRTCManager {
           this._eventEmitter.emit(LobbyEvents.ALL_PLAYERS_CONNECTED);
           break;
         case "lobby.player_teams":
-          console.log(data.teams);
           this.store.set("teams", data.teams);
+          this._eventEmitter.emit(LobbyEvents.TEAMS_RECEIVED);
           break;
         case "lobby.game_start":
           this._eventEmitter.emit(LobbyEvents.GAME_START);
@@ -102,7 +102,7 @@ class OwnPeerManager extends WebRTCManager {
           this._eventEmitter.emit(GameplayEvents.OWN_CARDS_RECEIVED);
           break;
         default:
-          console.error("received unknown webrtc event : ", type);
+          console.error("received unknown webrtc event : ", type, { data });
       }
     });
   }

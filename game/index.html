@@ -196,9 +196,7 @@
         .card-space {
             height: var(--card-height);
             width: var(--card-width);
-            border: 2px solid white;
             position: absolute;
-            border-radius: var(--card-border-radius);
         }
 
         #own-card-space,
@@ -400,6 +398,9 @@
 
                 <!-- GAME -->
                 <div id="gameplay-container" class="hidden">
+                    <div id="west-player-info" class="player-info"></div>
+                    <div id="north-player-info" class="player-info"></div>
+                    <div id="east-player-info" class="player-info"></div>
                     <div id="play-area">
                         <div class="card-space" id="own-card-space"></div>
                         <div class="card-space" id="west-card-space"></div>

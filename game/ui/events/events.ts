@@ -24,6 +24,7 @@ export enum LobbyEvents {
   START_GAME = "start_game",
   GAME_START = "game_start",
   ROUND_START = "round_start",
+  TEAMS_RECEIVED = "teams_received",
 }
 
 export enum GameplayEvents {
