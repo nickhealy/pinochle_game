@@ -357,6 +357,40 @@
             padding: 10px;
             /* background-color: green; */
         }
+
+        #bid-prompt {
+            margin: auto auto;
+            height: 60%;
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #bid-prompt>* {
+            margin-bottom: 10px;
+        }
+
+        #bid-prompt>div {
+            width: 45%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        #bid-prompt>div>button {
+            width: unset;
+        }
+
+        #bid-prompt>div :first-child,
+        #bid-prompt>div :last-child {
+            flex: 1
+        }
+
+        #bid-prompt>div :nth-child(2) {
+            flex: 3
+        }
     </style>
     <script src="https://kit.fontawesome.com/12f6611ba5.js" crossorigin="anonymous"></script>
 </head>
@@ -447,11 +481,20 @@
                         <i class="fa-sharp fa-solid fa-caret-right hidden"></i>
                         <h5></h5>
                     </div>
-                    <div id="play-area">
+                    <div id="play-area" class="hidden">
                         <div class="card-space" id="own-card-space"></div>
                         <div class="card-space" id="west-card-space"></div>
                         <div class="card-space" id="north-card-space"></div>
                         <div class="card-space" id="east-card-space"></div>
+                    </div>
+                    <div id="bid-prompt" class="prompt">
+                        <div>
+                            <button class="button">-</button>
+                            <button class="button">Bid: <span id="bid-val"></span></button>
+                            <button class="button">+</button>
+                        </div>
+                        <h4>or</h4>
+                        <button class="button">Pass</button>
                     </div>
                 </div>
             </div>
