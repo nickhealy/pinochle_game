@@ -22,6 +22,7 @@ import GameScene from "./ui/scenes/game/Game.scene";
 import OtherHand, { OpponentPosition } from "./ui/scenes/game/OtherHand";
 import OtherPlayer from "./ui/scenes/game/OtherPlayer";
 import { FactoryType } from "inversify/lib/utils/factory_type";
+import BidPrompt from "./ui/scenes/game/BidPrompt";
 
 const main = new Container({ defaultScope: "Singleton" });
 main
@@ -34,10 +35,7 @@ main.bind<JoinGameView>(TYPES.JoinGameView).to(JoinGameView);
 main.bind<NewGameView>(TYPES.NewGameView).to(NewGameView);
 main.bind<EventEmitter>(TYPES.EventEmitter).toConstantValue(new EventEmitter());
 main.bind<ViewManager>(TYPES.ViewManager).to(ViewManager);
-main
-  .bind<OwnPeerManager>(TYPES.OwnPeerManager)
-  .to(OwnPeerManager)
-  .inSingletonScope();
+main.bind<OwnPeerManager>(TYPES.OwnPeerManager).to(OwnPeerManager);
 main
   .bind<HostPeerManager>(TYPES.HostPeerManager)
   .to(HostPeerManager)
@@ -61,7 +59,7 @@ main
       );
     };
   });
-
+main.bind<BidPrompt>(TYPES.BidPrompt).to(BidPrompt).inSingletonScope();
 main.bind<GameScene>(TYPES.GameScene).to(GameScene);
 main.bind<Game>(TYPES.Game).to(Game);
 

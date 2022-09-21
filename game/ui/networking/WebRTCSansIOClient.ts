@@ -10,7 +10,10 @@ const _createOutgoingMessage = (
 });
 
 const startGame = () => _createOutgoingMessage(OutgoingLobbyEvents.START_GAME);
+const submitBid = (value: number) =>
+  _createOutgoingMessage(OutgoingGameplayEvents.BID, { value });
 
 export default {
   startGame,
+  submitBid,
 };

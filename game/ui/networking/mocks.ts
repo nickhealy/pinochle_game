@@ -1,8 +1,9 @@
-import { Peer } from "peerjs";
+import { DataConnection, Peer } from "peerjs";
 import { CardKeys } from "../../backend/gameplay/Deck";
 import TYPES from "../../inversify-types";
 import main from "../../inversify.config";
 import { StoreType } from "../store";
+import WebRTCSansIOClient from "./WebRTCSansIOClient";
 
 // @ts-ignore
 globalThis._useMocks = false;
@@ -49,10 +50,12 @@ class MockPlayer {
   isHost: boolean;
   name: string;
   peer: Peer;
+  conn: DataConnection | null = null;
   constructor(name: string, isHost: boolean = false) {
     this.name = name;
     this.isHost = isHost;
     this.peer = new Peer();
+    this.waitForConnection();
   }
   joinRoom() {
     console.log("mock player ", this.name, " joining room");
@@ -67,7 +70,25 @@ class MockPlayer {
     });
   }
 
-  playCard(card: CardKeys) {}
+  initializeListeners() {
+    if (!this.conn) {
+      console.error("NO connection, try again in a second");
+      return;
+    }
+  }
+
+  waitForConnection() {
+    this.peer.on("connection", (conn) => {
+      console.log(`${this.name} ready to play mock game`);
+      this.conn = conn;
+    });
+  }
+
+  bid(value: number) {
+    console.log(this);
+    console.log("sending -- ", this.conn);
+    this.conn?.send(JSON.stringify(WebRTCSansIOClient.submitBid(value)));
+  }
 }
 
 // @ts-ignore
@@ -75,19 +96,21 @@ globalThis.host = new MockPlayer("nick", true);
 // @ts-ignore
 globalThis.annabelle = new MockPlayer("annabelle");
 // @ts-ignore
-globalThis.scott = new MockPlayer("scott");
-// @ts-ignore
 globalThis.chris = new MockPlayer("chris");
+// @ts-ignore
+globalThis.scott = new MockPlayer("scott");
 
 // @ts-ignore
 globalThis.joinAllPlayers = () => {
+  // HACK ALERT -- THERE IS SOME SORT OF RACE CONDITION IN THE BE
+  // THAT GETS TRIGGERED WHEN PEOPLE TRY TO JOIN IN THE SAME EVENT LOOP
+
   // @ts-ignore
-  globalThis.annabelle.joinRoom();
+  setTimeout(globalThis.scott.joinRoom.bind(globalThis.scott), 0);
   // @ts-ignore
-  globalThis.scott.joinRoom();
+  setTimeout(globalThis.annabelle.joinRoom.bind(globalThis.annabelle), 500);
   // @ts-ignore
-  globalThis.chris.joinRoom();
-  // @ts-ignore
+  setTimeout(globalThis.chris.joinRoom.bind(globalThis.chris), 1000);
 };
 
 // const mockConnection = new MockConnection();

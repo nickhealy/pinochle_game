@@ -45,7 +45,6 @@ class EventSourceManager {
     if (!this._eventSource) {
       throw new Error("EventSource not initialized");
     }
-    console.log(this._eventSource);
     this._eventSource.onmessage = (ev) => {
       const { event, peer_id: peerId, name } = JSON.parse(ev.data);
       switch (event) {

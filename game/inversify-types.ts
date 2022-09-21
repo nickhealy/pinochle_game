@@ -19,9 +19,7 @@ const TYPES = {
   OtherHand: Symbol.for("other-hand"),
   OtherPlayer: Symbol.for("other-player"),
   OtherPlayerFactory: Symbol.for("other-player-factory"),
-  OtherPlayerWest: Symbol.for("other-player-west"),
-  OtherPlayerNorth: Symbol.for("other-player-north"),
-  OtherPlayerEast: Symbol.for("other-player-east"),
+  BidPrompt: Symbol.for("bid-prompt"),
 };
 
 export default TYPES;

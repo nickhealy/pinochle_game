@@ -66,7 +66,6 @@ class OtherPlayer {
       (event) => {
         // @ts-ignore using typescript was a mistake
         const { player } = event.detail;
-        debugger;
         if (player !== this.id) {
           this.removeTurnIndicator();
         } else {
