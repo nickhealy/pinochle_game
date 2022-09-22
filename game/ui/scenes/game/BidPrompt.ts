@@ -65,7 +65,7 @@ class BidPrompt {
     this._ee.addEventListener(GameplayEvents.PLAYER_BID, (event) => {
       // @ts-ignore lol
       const { bid } = event.detail;
-      this.bidVal = bid;
+      this.bidVal = bid + BID_INCREMENT;
     });
   }
 
