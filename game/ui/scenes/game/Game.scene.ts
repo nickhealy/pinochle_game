@@ -66,29 +66,13 @@ class GameScene {
       throw new Error("ownId is not defined");
     }
     const teams = this._store.get("teams");
-    // this hard coded for now, this could be a more sophisticated algorithm down the road if we want
-    // const [ownTeam, otherTeam] = teams[0].includes(this.ownId)
-    //   ? [teams[0], teams[1]]
-    //   : [teams[1], teams[0]];
-
-    // if (ownTeam[0] == this.ownId) {
-    //   northId = ownTeam[1];
-    // } else {
-    //   northId = ownTeam[0];
-    // }
-
-    // westId = otherTeam[0];
-    // eastId = otherTeam[1];
-    const [ownTeamIdx, otherTeamIdx] = teams[0].includes(this.ownId)
-      ? [0, 1]
-      : [1, 0];
 
     if (teams[0][0] == this.ownId) {
       northId = teams[0][1];
       westId = teams[1][0];
       eastId = teams[1][1];
     } else if (teams[0][1] == this.ownId) {
-      northId = teams[0][1];
+      northId = teams[0][0];
       westId = teams[1][1];
       eastId = teams[1][0];
     } else if (teams[1][0] == this.ownId) {
