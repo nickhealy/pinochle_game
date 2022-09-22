@@ -59,6 +59,7 @@ class BidPrompt {
     this.$increaseBidBtn.addEventListener("click", this.increaseBid.bind(this));
     this.$decreaseBidBtn.addEventListener("click", this.decreaseBid.bind(this));
     this.$submitBtn.addEventListener("click", this.submitBid.bind(this));
+    this.$passBtn.addEventListener("click", this.passBid.bind(this));
   }
 
   private addEventListeners() {
@@ -67,6 +68,10 @@ class BidPrompt {
       const { bid } = event.detail;
       this.bidVal = bid + BID_INCREMENT;
     });
+  }
+
+  private passBid() {
+    this._ownPeerManager.send(WebRTCSansIOClient.passBid());
   }
 
   private submitBid() {

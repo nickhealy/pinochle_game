@@ -85,9 +85,11 @@ class MockPlayer {
   }
 
   bid(value: number) {
-    console.log(this);
-    console.log("sending -- ", this.conn);
     this.conn?.send(JSON.stringify(WebRTCSansIOClient.submitBid(value)));
+  }
+
+  pass() {
+    this.conn?.send(JSON.stringify(WebRTCSansIOClient.passBid()));
   }
 }
 
