@@ -423,6 +423,26 @@
             width: 100px;
             cursor: pointer;
         }
+
+        #trump-container {
+            position: absolute;
+            color: white;
+            top: 0;
+            right: 0;
+            padding: 20px 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #trump-container>h5 {
+            margin-bottom: 10px;
+        }
+
+        #trump-container>img {
+            height: 40px;
+        }
     </style>
     <script src="https://kit.fontawesome.com/12f6611ba5.js" crossorigin="anonymous"></script>
 </head>
@@ -501,6 +521,10 @@
 
                 <!-- GAME -->
                 <div id="gameplay-container" class="hidden">
+                    <div id="trump-container" class="hidden">
+                        <h5>Trump</h5>
+                        <img />
+                    </div>
                     <div id="west-player-info" class="player-info">
                         <div>
                             <h5></h5>
@@ -539,10 +563,10 @@
                     <div id="trump-prompt" class="prompt hidden">
                         <h3>Select Trump</h3>
                         <div>
-                            <img id="clubs" src='/suits/clubs.png' />
-                            <img id="hearts" src='/suits/hearts.png' />
-                            <img id='spades' src='/suits/spades.png' />
-                            <img id="diamonds" src='/suits/diamonds.png' />
+                            <img id="clubs" suit='clubs' src='/suits/clubs.png' />
+                            <img id="hearts" suit='hearts' src='/suits/hearts.png' />
+                            <img id='spades' suit='spades' src='/suits/spades.png' />
+                            <img id="diamonds" suit='diamonds' src='/suits/diamonds.png' />
                         </div>
                     </div>
                 </div>

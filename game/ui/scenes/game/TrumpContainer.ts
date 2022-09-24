@@ -4,24 +4,25 @@ import EventEmitter from "../../events/EventEmitter";
 import { GameplayEvents } from "../../events/events";
 
 @injectable()
-class TrumpPrompt {
+class TrumpContainer {
   _$container: HTMLDivElement;
-  _ee: EventEmitter;
+  $trumpImg: HTMLImageElement;
+  ee: EventEmitter;
   constructor(@inject<EventEmitter>(TYPES.EventEmitter) ee: EventEmitter) {
     this._$container = document.getElementById(
-      "trump-prompt"
+      "trump-container"
     ) as HTMLDivElement;
-    this._ee = ee;
-    this.addClickListeners();
+    this.$trumpImg = this._$container.querySelector("img") as HTMLImageElement;
+    this.ee = ee;
+
+    this.addSubscriptions();
   }
-  addClickListeners() {
-    const btns = this._$container.querySelectorAll("img");
-    btns.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        this._ee.emit(GameplayEvents.TRUMP_CHOSEN, {
-          trump: btn.getAttribute("suit"),
-        });
-      });
+  addSubscriptions() {
+    this.ee.addEventListener(GameplayEvents.TRUMP_CHOSEN, (event) => {
+      // @ts-ignore
+      const { trump } = event.detail;
+      this.$trumpImg.src = `/suits/${trump}.png`;
+      this.render();
     });
   }
   render() {
@@ -32,4 +33,4 @@ class TrumpPrompt {
   }
 }
 
-export default TrumpPrompt;
+export default TrumpContainer;
