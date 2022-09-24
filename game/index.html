@@ -261,6 +261,8 @@
             align-items: center;
         }
 
+
+
         #east-player-info {
             position: absolute;
             top: 0;
@@ -273,6 +275,25 @@
             padding-right: var(--playerInfoOffsetTotal)
         }
 
+        .player-info>div {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .player-bid-val {
+            height: 1rem;
+        }
+
+
+        .player-bid-val.pass {
+            opacity: .5;
+        }
+
+        .turn-indicator {
+            margin: 15px;
+        }
 
         /* specifc component stylings */
 
@@ -470,16 +491,25 @@
                 <!-- GAME -->
                 <div id="gameplay-container" class="hidden">
                     <div id="west-player-info" class="player-info">
-                        <h5></h5>
-                        <i class="fa-sharp fa-solid fa-caret-left hidden"></i>
+                        <div>
+                            <h5></h5>
+                            <h5 class="player-bid-val"></h5>
+                        </div>
+                        <i class="fa-sharp fa-solid fa-caret-left hidden turn-indicator"></i>
                     </div>
                     <div id="north-player-info" class="player-info">
-                        <h5></h5>
-                        <i class="fa-sharp fa-solid fa-caret-up hidden"></i>
+                        <div>
+                            <h5></h5>
+                            <h5 class="player-bid-val"></h5>
+                        </div>
+                        <i class="fa-sharp fa-solid fa-caret-up hidden turn-indicator"></i>
                     </div>
                     <div id="east-player-info" class="player-info">
-                        <i class="fa-sharp fa-solid fa-caret-right hidden"></i>
-                        <h5></h5>
+                        <i class="fa-sharp fa-solid fa-caret-right hidden turn-indicator"></i>
+                        <div>
+                            <h5></h5>
+                            <h5 class="player-bid-val"></h5>
+                        </div>
                     </div>
                     <div id="play-area" class="hidden">
                         <div class="card-space" id="own-card-space"></div>

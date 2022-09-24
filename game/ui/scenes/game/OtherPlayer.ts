@@ -10,16 +10,18 @@ import OtherHand, { OpponentPosition } from "./OtherHand";
 @injectable()
 class OtherPlayer {
   private _$infoContainer: HTMLDivElement;
+  private $bidVal: HTMLElement;
   private _eventEmitter: EventEmitter;
-  private _position: OpponentPosition | null = null;
   private _store: StoreType;
   private id: string | null = null;
   private hand: OtherHand;
   constructor(position: OpponentPosition, store: StoreType, ee: EventEmitter) {
-    this._position = position;
     this._$infoContainer = document.getElementById(
       `${position}-player-info`
     ) as HTMLDivElement;
+    this.$bidVal = this._$infoContainer.querySelector(
+      ".player-bid-val"
+    ) as HTMLElement;
     this.hand = new OtherHand(position); // i could use inversify here, but not really important
     this._eventEmitter = ee;
     this._store = store;
@@ -60,6 +62,15 @@ class OtherPlayer {
     turnIndicatorEl?.classList.remove("hidden");
   }
 
+  showPlayerBid(bid: number) {
+    this.$bidVal.innerText = `${bid}`;
+  }
+
+  showPlayerPass() {
+    this.$bidVal.innerText = "PASS";
+    this.$bidVal.classList.add("pass");
+  }
+
   initializeSubscriptions() {
     this._eventEmitter.addEventListener(
       GameplayEvents.AWAITING_BID,
@@ -73,6 +84,20 @@ class OtherPlayer {
         }
       }
     );
+    this._eventEmitter.addEventListener(GameplayEvents.PLAYER_BID, (event) => {
+      // @ts-ignore using typescript was a mistake
+      const { player, bid } = event.detail;
+      if (player === this.id) {
+        this.showPlayerBid(bid);
+      }
+    });
+    this._eventEmitter.addEventListener(GameplayEvents.PASS_BID, (event) => {
+      // @ts-ignore using typescript was a mistake
+      const { player } = event.detail;
+      if (player === this.id) {
+        this.showPlayerPass();
+      }
+    });
   }
 }
 
