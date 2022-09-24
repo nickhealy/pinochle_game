@@ -7,6 +7,7 @@ import { StoreType } from "../../store";
 import EventEmitter from "../../events/EventEmitter";
 import { GameplayEvents, LobbyEvents } from "../../events/events";
 import BidPrompt from "./BidPrompt";
+import TrumpPrompt from "./TrumpPrompt";
 
 @injectable()
 class GameScene {
@@ -20,9 +21,11 @@ class GameScene {
   private _ee: EventEmitter;
   private ownId: string | null = null;
   private bidPrompt: BidPrompt;
+  private trumpPrompt: TrumpPrompt;
   constructor(
     @inject<OwnHand>(TYPES.OwnHand) ownHand: OwnHand,
     @inject<BidPrompt>(TYPES.BidPrompt) bidPrompt: BidPrompt,
+    @inject<TrumpPrompt>(TYPES.TrumpPrompt) trumpPrompt: TrumpPrompt,
     @inject(TYPES.OtherPlayerFactory)
     otherPlayerFactory: (position: OpponentPosition) => OtherPlayer,
     @inject(TYPES.Store) store: StoreType,
@@ -30,6 +33,7 @@ class GameScene {
   ) {
     this.ownHand = ownHand;
     this.bidPrompt = bidPrompt;
+    this.trumpPrompt = trumpPrompt;
     this.otherPlayerWest = otherPlayerFactory(OpponentPosition.WEST);
     this.otherPlayerNorth = otherPlayerFactory(OpponentPosition.NORTH);
     this.otherPlayerEast = otherPlayerFactory(OpponentPosition.EAST);
@@ -56,6 +60,21 @@ class GameScene {
         this.bidPrompt.hide();
       } else {
         this.bidPrompt.render();
+      }
+    });
+    this._ee.addEventListener(GameplayEvents.BID_WINNER, (event) => {
+      console.log("hiding bid");
+      // will also show bid winner
+      this.bidPrompt.hide();
+    });
+    this._ee.addEventListener(GameplayEvents.TRUMP_CHOOSING, (event) => {
+      console.log("trump choosing");
+      // @ts-ignore lol
+      const { player } = event.detail;
+      if (player !== this.ownId) {
+        this.trumpPrompt.hide();
+      } else {
+        this.trumpPrompt.render();
       }
     });
   }

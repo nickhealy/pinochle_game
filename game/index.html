@@ -379,7 +379,7 @@
             /* background-color: green; */
         }
 
-        #bid-prompt {
+        .prompt {
             margin: auto auto;
             height: 60%;
             width: 50%;
@@ -411,6 +411,17 @@
 
         #bid-prompt>div :nth-child(2) {
             flex: 3
+        }
+
+        #trump-prompt h3 {
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        #trump-prompt img {
+            height: 100px;
+            width: 100px;
+            cursor: pointer;
         }
     </style>
     <script src="https://kit.fontawesome.com/12f6611ba5.js" crossorigin="anonymous"></script>
@@ -524,6 +535,15 @@
                             <button id='inc-bid' class="button">+</button>
                         </div>
                         <button id='pass-bid' class="button">Pass</button>
+                    </div>
+                    <div id="trump-prompt" class="prompt hidden">
+                        <h3>Select Trump</h3>
+                        <div>
+                            <img id="clubs" src='/suits/clubs.png' />
+                            <img id="hearts" src='/suits/hearts.png' />
+                            <img id='spades' src='/suits/spades.png' />
+                            <img id="diamonds" src='/suits/diamonds.png' />
+                        </div>
                     </div>
                 </div>
             </div>

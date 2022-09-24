@@ -84,6 +84,18 @@ class OtherPlayer {
         }
       }
     );
+    this._eventEmitter.addEventListener(
+      GameplayEvents.TRUMP_CHOOSING,
+      (event) => {
+        // @ts-ignore using typescript was a mistake
+        const { player } = event.detail;
+        if (player !== this.id) {
+          this.removeTurnIndicator();
+        } else {
+          this.showTurnIndicator();
+        }
+      }
+    );
     this._eventEmitter.addEventListener(GameplayEvents.PLAYER_BID, (event) => {
       // @ts-ignore using typescript was a mistake
       const { player, bid } = event.detail;

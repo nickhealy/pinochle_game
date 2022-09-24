@@ -20,6 +20,7 @@ const TYPES = {
   OtherPlayer: Symbol.for("other-player"),
   OtherPlayerFactory: Symbol.for("other-player-factory"),
   BidPrompt: Symbol.for("bid-prompt"),
+  TrumpPrompt: Symbol.for("trump-prompt"),
 };
 
 export default TYPES;

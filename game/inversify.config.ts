@@ -23,6 +23,7 @@ import OtherHand, { OpponentPosition } from "./ui/scenes/game/OtherHand";
 import OtherPlayer from "./ui/scenes/game/OtherPlayer";
 import { FactoryType } from "inversify/lib/utils/factory_type";
 import BidPrompt from "./ui/scenes/game/BidPrompt";
+import TrumpPrompt from "./ui/scenes/game/TrumpPrompt";
 
 const main = new Container({ defaultScope: "Singleton" });
 main
@@ -60,6 +61,7 @@ main
     };
   });
 main.bind<BidPrompt>(TYPES.BidPrompt).to(BidPrompt).inSingletonScope();
+main.bind<TrumpPrompt>(TYPES.TrumpPrompt).to(TrumpPrompt).inSingletonScope();
 main.bind<GameScene>(TYPES.GameScene).to(GameScene);
 main.bind<Game>(TYPES.Game).to(Game);
 
