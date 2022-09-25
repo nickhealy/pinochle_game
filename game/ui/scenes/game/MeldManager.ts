@@ -44,7 +44,8 @@ class MeldManager {
   private _$gameplayContainer: HTMLDivElement;
   private _meldCoords: Array<{ top: number; left: number; zIndex: number }> =
     [];
-  private $submitMeldBtn: HTMLButtonElement;
+  private $addMeldBtn: HTMLButtonElement;
+  private $submitMeldsBtn: HTMLButtonElement;
   private store: StoreType;
   private ee: EventEmitter;
   private io: OwnPeerManager;
@@ -57,14 +58,16 @@ class MeldManager {
     this.ee = ee;
     this.io = io;
     this.store = store;
-    this.$submitMeldBtn = document.getElementById(
-      "submit-meld"
+    this.$addMeldBtn = document.getElementById("add-meld") as HTMLButtonElement;
+    this.$submitMeldsBtn = document.getElementById(
+      "submit-melds"
     ) as HTMLButtonElement;
     this._$gameplayContainer = document.getElementById(
       "gameplay-container"
     ) as HTMLDivElement;
 
     this.addClickListeners();
+    this.addSubscriptions();
   }
 
   private doesMeldSuitMatchTrump(meld: Array<CardKeys>) {
@@ -93,26 +96,34 @@ class MeldManager {
     return meld;
   }
 
-  private addClickListeners() {
-    this.$submitMeldBtn.addEventListener("click", () => {
-      const meldType = this.getCurrentMeldType();
-      const ownHandKeys = this.store.get("ownHand");
-      const currMeldKeys = this._currMeldIdxs.map((idx) => ownHandKeys[idx]);
+  private addMeld() {
+    const meldType = this.getCurrentMeldType();
+    const ownHandKeys = this.store.get("ownHand");
+    const currMeldKeys = this._currMeldIdxs.map((idx) => ownHandKeys[idx]);
 
-      if (!meldType) {
-        console.error("Not a valid meld");
-        return;
-      }
+    if (!meldType) {
+      console.error("Not a valid meld");
+      return;
+    }
 
-      this.ee.emit(GameplayEvents.SUBMIT_MELD, {
-        type: meldType,
-        cards: currMeldKeys,
-      });
-      this.io.send(WebRTCSansIOClient.submitMeld(currMeldKeys, meldType));
-
-      this.moveCardsToMeldPositions();
-      this.$submitMeldBtn.disabled = true;
+    this.ee.emit(GameplayEvents.ADD_MELD, {
+      type: meldType,
+      cards: currMeldKeys,
     });
+    this.io.send(WebRTCSansIOClient.addMeld(currMeldKeys, meldType));
+
+    this.moveCardsToMeldPositions();
+    this.$addMeldBtn.disabled = true;
+  }
+
+  private submitMelds() {
+    this.ee.emit(GameplayEvents.SUBMIT_MELDS);
+    this.io.send(WebRTCSansIOClient.submitMelds());
+  }
+
+  private addClickListeners() {
+    this.$addMeldBtn.addEventListener("click", this.addMeld.bind(this));
+    this.$submitMeldsBtn.addEventListener("click", this.submitMelds.bind(this));
   }
 
   private moveCardsToMeldPositions() {
@@ -154,9 +165,9 @@ class MeldManager {
 
   public checkForValidMeld() {
     if (this.getCurrentMeldType() === null) {
-      this.$submitMeldBtn.disabled = true;
+      this.$addMeldBtn.disabled = true;
     } else {
-      this.$submitMeldBtn.disabled = false;
+      this.$addMeldBtn.disabled = false;
     }
   }
 
@@ -170,6 +181,13 @@ class MeldManager {
     this._currMeldIdxs.push(idx);
     this.checkForValidMeld();
     return true;
+  }
+
+  addSubscriptions() {
+    this.ee.addEventListener(GameplayEvents.AWAITING_MELDS, () => {
+      this.$addMeldBtn.classList.remove("hidden");
+      this.$submitMeldsBtn.classList.remove("hidden");
+    });
   }
 }
 

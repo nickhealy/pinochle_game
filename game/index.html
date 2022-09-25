@@ -449,12 +449,20 @@
             height: 40px;
         }
 
-        #submit-meld {
-            width: fit-content;
+        #add-meld,
+        #submit-melds {
+            width: 150px;
             height: fit-content;
-            bottom: 50px;
             position: absolute;
-            right: 180px;
+            right: 135px;
+        }
+
+        #add-meld {
+            bottom: 50px;
+        }
+
+        #submit-melds {
+            bottom: 10px
         }
     </style>
     <script src="https://kit.fontawesome.com/12f6611ba5.js" crossorigin="anonymous"></script>
@@ -582,7 +590,8 @@
                             <img id="diamonds" suit='diamonds' src='/suits/diamonds.png' />
                         </div>
                     </div>
-                    <button id='submit-meld' class="button" disabled>Add Meld</button>
+                    <button id='add-meld' class="button hidden" disabled>Add Meld</button>
+                    <button id="submit-melds" class="button hidden">Submit Melds</button>
                 </div>
             </div>
         </div>

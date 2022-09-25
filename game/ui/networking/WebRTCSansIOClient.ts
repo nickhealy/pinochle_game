@@ -17,13 +17,16 @@ const submitBid = (value: number) =>
 const passBid = () => _createOutgoingMessage(OutgoingGameplayEvents.FOLD);
 const chooseTrump = (trump: Suit) =>
   _createOutgoingMessage(OutgoingGameplayEvents.TRUMP_CHOSEN, { trump });
-const submitMeld = (cards: Array<CardKeys>, type: MeldType) =>
+const addMeld = (cards: Array<CardKeys>, type: MeldType) =>
   _createOutgoingMessage(OutgoingGameplayEvents.ADD_MELD, { cards, type });
+const submitMelds = () =>
+  _createOutgoingMessage(OutgoingGameplayEvents.COMMIT_MELDS);
 
 export default {
   startGame,
   submitBid,
   passBid,
   chooseTrump,
-  submitMeld,
+  addMeld,
+  submitMelds,
 };

@@ -36,7 +36,8 @@ export enum GameplayEvents {
   TRUMP_CHOOSING = "trump_choosing",
   TRUMP_CHOSEN = "trump_chosen",
   AWAITING_MELDS = "awaiting_melds",
-  SUBMIT_MELD = "submit_meld",
+  ADD_MELD = "add_meld",
+  SUBMIT_MELDS = "submit_melds",
 }
 
 export type AllEvents =
