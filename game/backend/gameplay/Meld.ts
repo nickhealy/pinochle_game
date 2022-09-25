@@ -1,6 +1,6 @@
 import { CardKeys, Suit } from "./Deck";
 
-type MeldType =
+export type MeldType =
   | "marriage"
   | "royal-marriage"
   | "trump-nine"

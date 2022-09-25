@@ -25,6 +25,7 @@ import { FactoryType } from "inversify/lib/utils/factory_type";
 import BidPrompt from "./ui/scenes/game/BidPrompt";
 import TrumpPrompt from "./ui/scenes/game/TrumpPrompt";
 import TrumpContainer from "./ui/scenes/game/TrumpContainer";
+import MeldManager from "./ui/scenes/game/MeldManager";
 
 const main = new Container({ defaultScope: "Singleton" });
 main
@@ -67,6 +68,7 @@ main
   .bind<TrumpContainer>(TYPES.TrumpContainer)
   .to(TrumpContainer)
   .inSingletonScope();
+main.bind<MeldManager>(TYPES.MeldManager).to(MeldManager).inSingletonScope();
 main.bind<GameScene>(TYPES.GameScene).to(GameScene);
 main.bind<Game>(TYPES.Game).to(Game);
 

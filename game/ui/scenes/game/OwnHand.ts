@@ -1,10 +1,12 @@
 import { inject, injectable } from "inversify";
+import { Card, CardKeys } from "../../../backend/gameplay/Deck";
 import TYPES from "../../../inversify-types";
 import EventEmitter from "../../events/EventEmitter";
 import { GameplayEvents } from "../../events/events";
 import { StoreType } from "../../store";
+import MeldManager from "./MeldManager";
 
-const MOCK_OWN_HAND = [
+const MOCK_OWN_HAND: Array<CardKeys> = [
   "KH",
   "QC",
   "JS",
@@ -21,17 +23,24 @@ const MOCK_OWN_HAND = [
 
 export const CARD_OFFSET = 35;
 export const OFFSET_BOTTOM = 15;
+export const CARD_MOVE_UP_OFFSET = 30;
+export const CARD_HEIGHT = 130;
+export const CARD_Z_INDEX = 10;
+
+const CARD_KEY_ATTR = "card-key";
 
 @injectable()
 class OwnHand {
   _store: StoreType;
   _eventEmitter: EventEmitter;
   _$gameplayContainer: HTMLDivElement;
+  meldManager: MeldManager;
   $ownCards: Array<HTMLImageElement> = [];
   $playSpace: HTMLDivElement;
 
   constructor(
     @inject<StoreType>(TYPES.Store) store: StoreType,
+    @inject<MeldManager>(TYPES.MeldManager) meldManager: MeldManager,
     @inject<EventEmitter>(TYPES.EventEmitter) eventEmitter: EventEmitter
   ) {
     this._store = store;
@@ -42,6 +51,7 @@ class OwnHand {
     this.$playSpace = document.getElementById(
       "own-card-space"
     ) as HTMLDivElement;
+    this.meldManager = meldManager;
     this.addEventListeners();
     this.initDevTools();
   }
@@ -53,6 +63,10 @@ class OwnHand {
         this.showOnTable();
       }
     );
+    this._eventEmitter.addEventListener(GameplayEvents.AWAITING_MELDS, () => {
+      this.meldManager.registerHand(this.$ownCards);
+      this.addTrumpPhaseListeners();
+    });
   }
 
   private getCardCoords() {
@@ -77,9 +91,7 @@ class OwnHand {
       cardEl.style.backgroundSize = "100%";
       cardEl.style.backgroundRepeat = "no-repeat";
       cardEl.classList.add("card", "own-card");
-
-      this._addOwnCardListeners(cardEl, idx);
-
+      cardEl.setAttribute(CARD_KEY_ATTR, card);
       this._$gameplayContainer.appendChild(cardEl);
       this.$ownCards.push(cardEl);
     });
@@ -110,7 +122,31 @@ class OwnHand {
     });
   }
 
-  private _addOwnCardListeners(cardEl: HTMLImageElement, idx: number) {
+  private addTrumpPhaseListeners() {
+    this.$ownCards.forEach((card, idx) =>
+      this.addTrumpPhaseListener(card, idx)
+    );
+  }
+
+  private addTrumpPhaseListener(cardEl: HTMLImageElement, idx: number) {
+    cardEl.addEventListener("click", () => {
+      if (this.meldManager.addToCurrentMeld(idx)) {
+        this.moveCardUp(cardEl);
+      } else {
+        this.moveCardDown(cardEl);
+      }
+    });
+  }
+
+  private moveCardUp(cardEl: HTMLImageElement) {
+    cardEl.style.top = `${cardEl.offsetTop - CARD_MOVE_UP_OFFSET}px`;
+  }
+
+  private moveCardDown(cardEl: HTMLImageElement) {
+    cardEl.style.top = `${cardEl.offsetTop + CARD_MOVE_UP_OFFSET}px`;
+  }
+
+  private addPlayPhaseListener(cardEl: HTMLImageElement, idx: number) {
     cardEl.removeEventListener("click", () => {
       this.handleOwnCardClick(cardEl, idx);
     });

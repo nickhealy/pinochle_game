@@ -1,3 +1,5 @@
+import { CardKeys, Suit } from "../backend/gameplay/Deck";
+
 const subs: Record<string | symbol, Array<(...args: any[]) => void>> = {};
 
 interface StoreValTypes {
@@ -6,8 +8,9 @@ interface StoreValTypes {
   players: Array<{ id: string; name: string }>;
   peerId: string | null;
   teams: Array<Array<string>>;
-  ownHand: Array<string>;
+  ownHand: Array<CardKeys>;
   ownId: string | null;
+  trump: Suit | null;
 }
 const _store: StoreValTypes = {
   roomId: null,
@@ -17,6 +20,7 @@ const _store: StoreValTypes = {
   teams: [],
   ownHand: [],
   ownId: null,
+  trump: null,
 };
 
 const subscribe = <T extends keyof typeof _store>(

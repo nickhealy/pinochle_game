@@ -70,6 +70,10 @@
             margin-bottom: 5px;
         }
 
+        .button:disabled {
+            opacity: 0.5;
+        }
+
         .input {
             display: flex;
             flex-direction: column;
@@ -121,6 +125,7 @@
             height: var(--card-height);
             width: var(--card-width);
             border-radius: var(--card-border-radius);
+            z-index: 10;
         }
 
         .own-card {
@@ -443,6 +448,14 @@
         #trump-container>img {
             height: 40px;
         }
+
+        #submit-meld {
+            width: fit-content;
+            height: fit-content;
+            bottom: 50px;
+            position: absolute;
+            right: 180px;
+        }
     </style>
     <script src="https://kit.fontawesome.com/12f6611ba5.js" crossorigin="anonymous"></script>
 </head>
@@ -569,6 +582,7 @@
                             <img id="diamonds" suit='diamonds' src='/suits/diamonds.png' />
                         </div>
                     </div>
+                    <button id='submit-meld' class="button" disabled>Add Meld</button>
                 </div>
             </div>
         </div>

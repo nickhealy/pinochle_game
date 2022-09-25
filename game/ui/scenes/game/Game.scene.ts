@@ -68,12 +68,10 @@ class GameScene {
       }
     });
     this._ee.addEventListener(GameplayEvents.BID_WINNER, (event) => {
-      console.log("hiding bid");
       // will also show bid winner
       this.bidPrompt.hide();
     });
     this._ee.addEventListener(GameplayEvents.TRUMP_CHOOSING, (event) => {
-      console.log("trump choosing");
       // @ts-ignore lol
       const { player } = event.detail;
       if (player !== this.ownId) {
@@ -81,6 +79,9 @@ class GameScene {
       } else {
         this.trumpPrompt.render();
       }
+    });
+    this._ee.addEventListener(GameplayEvents.AWAITING_MELDS, () => {
+      this.trumpPrompt.hide();
     });
   }
 
