@@ -75,12 +75,17 @@ class MockPlayer {
       console.error("NO connection, try again in a second");
       return;
     }
+    this.conn.on("data", (data) => {
+      console.log(`${this.name} received :`);
+      console.dir(data);
+    });
   }
 
   waitForConnection() {
     this.peer.on("connection", (conn) => {
       console.log(`${this.name} ready to play mock game`);
       this.conn = conn;
+      this.initializeListeners();
     });
   }
 
@@ -110,9 +115,9 @@ globalThis.joinAllPlayers = () => {
   // @ts-ignore
   setTimeout(globalThis.scott.joinRoom.bind(globalThis.scott), 0);
   // @ts-ignore
-  setTimeout(globalThis.annabelle.joinRoom.bind(globalThis.annabelle), 500);
+  setTimeout(globalThis.annabelle.joinRoom.bind(globalThis.annabelle), 1000);
   // @ts-ignore
-  setTimeout(globalThis.chris.joinRoom.bind(globalThis.chris), 1000);
+  setTimeout(globalThis.chris.joinRoom.bind(globalThis.chris), 1500);
 };
 
 // const mockConnection = new MockConnection();

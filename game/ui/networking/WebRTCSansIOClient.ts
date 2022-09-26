@@ -18,7 +18,9 @@ const passBid = () => _createOutgoingMessage(OutgoingGameplayEvents.FOLD);
 const chooseTrump = (trump: Suit) =>
   _createOutgoingMessage(OutgoingGameplayEvents.TRUMP_CHOSEN, { trump });
 const addMeld = (cards: Array<CardKeys>, type: MeldType) =>
-  _createOutgoingMessage(OutgoingGameplayEvents.ADD_MELD, { cards, type });
+  _createOutgoingMessage(OutgoingGameplayEvents.ADD_MELD, {
+    meld: { type, cards },
+  });
 const submitMelds = () =>
   _createOutgoingMessage(OutgoingGameplayEvents.COMMIT_MELDS);
 

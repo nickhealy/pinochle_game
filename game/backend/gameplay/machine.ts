@@ -452,7 +452,6 @@ const GameMachine = createMachine(
         },
         round: (ctx, evt) => {
           const { player, meld } = evt;
-          debugger;
           return {
             points: ctx.round.points.map((points, idx) => {
               return idx === getPlayerTeam(player)

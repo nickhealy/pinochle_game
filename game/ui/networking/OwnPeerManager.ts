@@ -71,7 +71,6 @@ class OwnPeerManager extends WebRTCManager {
       // init game play listeners
       //@ts-ignore
       const { type, data } = JSON.parse(ev);
-
       switch (type) {
         case "lobby.room_description":
           this._eventEmitter.emit(LobbyEvents.SELF_JOINED_LOBBY, {
