@@ -84,7 +84,7 @@ const ConnectionWorkerMachine = createMachine(
               }
               cb(
                 createIncomingAction(
-                  ctx.connection_metadata,
+                  ctx.worker_key!,
                   parsedMessage.event,
                   parsedMessage.data
                 )

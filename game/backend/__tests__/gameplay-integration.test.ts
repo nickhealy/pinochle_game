@@ -394,7 +394,6 @@ describe("integration test", () => {
         JSON.stringify({
           event: "gameplay.pre_play.player_add_meld",
           data: {
-            player: player0.id,
             meld: {
               type: "royal-marriage",
               cards: ["KS", "QS"],
@@ -443,7 +442,6 @@ describe("integration test", () => {
         JSON.stringify({
           event: "gameplay.pre_play.player_add_meld",
           data: {
-            player: player1.id,
             meld: {
               type: "marriage",
               cards: ["KC", "QC"],
@@ -491,7 +489,6 @@ describe("integration test", () => {
         JSON.stringify({
           event: "gameplay.pre_play.player_add_meld",
           data: {
-            player: player2.id,
             meld: {
               type: "trump-nine",
               cards: ["9S"],
@@ -560,7 +557,6 @@ describe("integration test", () => {
         JSON.stringify({
           event: "gameplay.pre_play.player_add_meld",
           data: {
-            player: player0.id,
             meld: {
               type: "pinochle",
               cards: ["QS", "JD"],
@@ -607,19 +603,15 @@ describe("integration test", () => {
       player0.send(
         JSON.stringify({
           event: "gameplay.pre_play.player_commit_melds",
-          data: {
-            player: player0.id,
-          },
+          data: {},
         })
       );
 
       // player1 commits melds at same time
-      player0.send(
+      player1.send(
         JSON.stringify({
           event: "gameplay.pre_play.player_commit_melds",
-          data: {
-            player: player1.id,
-          },
+          data: {},
         })
       );
 
@@ -648,7 +640,6 @@ describe("integration test", () => {
         JSON.stringify({
           event: "gameplay.pre_play.player_add_meld",
           data: {
-            player: player3.id,
             meld: {
               type: "trump-nine",
               cards: ["9S"],
@@ -694,9 +685,7 @@ describe("integration test", () => {
       player3.send(
         JSON.stringify({
           event: "gameplay.pre_play.player_commit_melds",
-          data: {
-            player: player3.id,
-          },
+          data: {},
         })
       );
 
@@ -736,7 +725,7 @@ describe("integration test", () => {
       player0.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "AC", player: player0.id },
+          data: { card: "AC" },
         })
       );
 
@@ -769,7 +758,7 @@ describe("integration test", () => {
       player1.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "QC", player: player1.id },
+          data: { card: "QC" },
         })
       );
 
@@ -802,7 +791,7 @@ describe("integration test", () => {
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "QC", player: player2.id },
+          data: { card: "QC" },
         })
       );
 
@@ -835,7 +824,7 @@ describe("integration test", () => {
       player3.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "9C", player: player3.id },
+          data: { card: "9C" },
         })
       );
 
@@ -904,7 +893,7 @@ describe("integration test", () => {
       player0.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "QH", player: player0.id },
+          data: { card: "QH" },
         })
       );
 
@@ -937,7 +926,7 @@ describe("integration test", () => {
       player1.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "AH", player: player1.id },
+          data: { card: "AH" },
         })
       );
 
@@ -970,7 +959,7 @@ describe("integration test", () => {
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "QH", player: player2.id },
+          data: { card: "QH" },
         })
       );
 
@@ -1003,7 +992,7 @@ describe("integration test", () => {
       player3.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "10H", player: player3.id },
+          data: { card: "10H" },
         })
       );
 
@@ -1071,7 +1060,7 @@ describe("integration test", () => {
       player1.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "AS", player: player1.id },
+          data: { card: "AS" },
         })
       );
 
@@ -1104,7 +1093,7 @@ describe("integration test", () => {
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "9S", player: player2.id },
+          data: { card: "9S" },
         })
       );
 
@@ -1137,7 +1126,7 @@ describe("integration test", () => {
       player3.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "KS", player: player3.id },
+          data: { card: "KS" },
         })
       );
 
@@ -1170,7 +1159,7 @@ describe("integration test", () => {
       player0.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "QS", player: player0.id },
+          data: { card: "QS" },
         })
       );
 
@@ -1238,7 +1227,7 @@ describe("integration test", () => {
       player1.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "QD", player: player1.id },
+          data: { card: "QD" },
         })
       );
 
@@ -1271,7 +1260,7 @@ describe("integration test", () => {
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "9D", player: player2.id },
+          data: { card: "9D" },
         })
       );
 
@@ -1304,7 +1293,7 @@ describe("integration test", () => {
       player3.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "AD", player: player3.id },
+          data: { card: "AD" },
         })
       );
 
@@ -1337,7 +1326,7 @@ describe("integration test", () => {
       player0.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "JD", player: player0.id },
+          data: { card: "JD" },
         })
       );
 
@@ -1405,7 +1394,7 @@ describe("integration test", () => {
       player3.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "AD", player: player3.id },
+          data: { card: "AD" },
         })
       );
 
@@ -1438,7 +1427,7 @@ describe("integration test", () => {
       player0.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "KD", player: player0.id },
+          data: { card: "KD" },
         })
       );
 
@@ -1471,7 +1460,7 @@ describe("integration test", () => {
       player1.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "10D", player: player1.id },
+          data: { card: "10D" },
         })
       );
 
@@ -1504,7 +1493,7 @@ describe("integration test", () => {
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "JD", player: player2.id },
+          data: { card: "JD" },
         })
       );
 
@@ -1572,7 +1561,7 @@ describe("integration test", () => {
       player3.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "KH", player: player3.id },
+          data: { card: "KH" },
         })
       );
 
@@ -1605,7 +1594,7 @@ describe("integration test", () => {
       player0.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "JH", player: player0.id },
+          data: { card: "JH" },
         })
       );
 
@@ -1638,7 +1627,7 @@ describe("integration test", () => {
       player1.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "9H", player: player1.id },
+          data: { card: "9H" },
         })
       );
 
@@ -1671,7 +1660,7 @@ describe("integration test", () => {
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "10H", player: player2.id },
+          data: { card: "10H" },
         })
       );
 
@@ -1739,7 +1728,7 @@ describe("integration test", () => {
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "QD", player: player2.id },
+          data: { card: "QD" },
         })
       );
 
@@ -1972,7 +1961,7 @@ describe("integration test", () => {
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "AC", player: player2.id },
+          data: { card: "AC" },
         })
       );
 
@@ -2172,7 +2161,7 @@ describe("integration test", () => {
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "AH", player: player2.id },
+          data: { card: "AH" },
         })
       );
 
@@ -2306,7 +2295,7 @@ describe("integration test", () => {
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "10D", player: player2.id },
+          data: { card: "10D" },
         })
       );
 
@@ -2506,7 +2495,7 @@ describe("integration test", () => {
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "KH", player: player2.id },
+          data: { card: "KH" },
         })
       );
 
@@ -2607,7 +2596,7 @@ describe("integration test", () => {
       player2.send(
         JSON.stringify({
           event: "gameplay.play.player_play_card",
-          data: { card: "JC", player: player2.id },
+          data: { card: "JC" },
         })
       );
 
