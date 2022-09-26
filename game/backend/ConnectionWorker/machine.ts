@@ -4,7 +4,6 @@ import { sendParent } from "xstate/lib/actions";
 import main from "../../inversify.config";
 import TYPES from "../../inversify-types";
 import HostPeerManager from "../../ui/networking/HostPeerManager";
-import { getWebRTCClient } from "../networking/webrtc";
 import { createIncomingAction } from "./eventHelpers";
 import {
   ConnectionWorkerContext,
@@ -42,10 +41,10 @@ const ConnectionWorkerMachine = createMachine(
       connecting: {
         invoke: {
           id: "getWebRTCClient",
-          src: async (ctx) =>
-            await main
-              .get<HostPeerManager>(TYPES.HostPeerManager)
-              .connect(ctx.connection_metadata), // awkward, but works for now
+          src: async (ctx) => {
+            const manager = main.get<HostPeerManager>(TYPES.HostPeerManager);
+            return await manager.connect(ctx.connection_metadata); // awkward, but works for now
+          },
           onDone: {
             actions: ["sendSelfConnected"],
           },
