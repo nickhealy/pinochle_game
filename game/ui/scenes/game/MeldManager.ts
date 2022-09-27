@@ -36,6 +36,8 @@ const SUITS_BY_KEY: Record<string, Suit> = {
   H: "hearts",
 };
 
+export const MELD_OFFSET = 10;
+
 @injectable()
 class MeldManager {
   private _$ownCards: Array<HTMLImageElement> = [];
@@ -150,7 +152,7 @@ class MeldManager {
     const handHeight = this._$ownCards[0].offsetTop;
     for (let i = 0; i < 12; i++) {
       coords.push({
-        top: handHeight - (CARD_HEIGHT + 10),
+        top: handHeight - (CARD_HEIGHT + MELD_OFFSET),
         left: leftStart + i * CARD_OFFSET,
         zIndex: CARD_Z_INDEX / 2 + i, // we want the bottom cards to still be higher
       });

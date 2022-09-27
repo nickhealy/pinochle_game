@@ -110,6 +110,14 @@ class OtherPlayer {
         this.showPlayerPass();
       }
     });
+
+    this._eventEmitter.addEventListener(GameplayEvents.MELD_ADDED, (event) => {
+      // @ts-ignore using typescript was a mistake
+      const { player, meld } = event.detail;
+      if (player === this.id) {
+        this.hand.showMeld(meld.cards);
+      }
+    });
   }
 }
 

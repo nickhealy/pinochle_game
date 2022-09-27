@@ -1,5 +1,7 @@
 import { injectable } from "inversify";
 import { CardKeys } from "../../../backend/gameplay/Deck";
+import { MELD_OFFSET } from "./MeldManager";
+import { CARD_HEIGHT } from "./OwnHand";
 
 const CARD_OFFSET = 15;
 
@@ -15,6 +17,8 @@ class OtherHand {
   private $cards: Array<HTMLImageElement>;
   private $playSpace: HTMLDivElement;
   private _position: OpponentPosition;
+  private cardsInMelds: number = 0;
+
   constructor(opponentPosition: OpponentPosition) {
     this._position = opponentPosition;
     this.$playSpace = document.getElementById(
@@ -71,6 +75,25 @@ class OtherHand {
       this._$gameplayContainer.append(card);
       card.classList.add("slide-in");
     });
+  }
+
+  showMeld(cards: Array<CardKeys>) {
+    debugger;
+    const offset = CARD_HEIGHT / 2 + MELD_OFFSET;
+    let lastMeldCardIdx = this.cardsInMelds;
+    this.cardsInMelds += cards.length;
+    while (lastMeldCardIdx < this.cardsInMelds) {
+      const $cardEl = this.$cards[lastMeldCardIdx];
+      if (this._position == OpponentPosition.WEST) {
+        $cardEl.style.left = `${offset}px`;
+      } else if (this._position == OpponentPosition.NORTH) {
+        $cardEl.style.top = `${offset}px`;
+      } else if (this._position == OpponentPosition.EAST) {
+        $cardEl.style.left = `calc(100% - ${offset}px)`;
+      }
+      this.turnFaceup($cardEl, cards[lastMeldCardIdx]);
+      lastMeldCardIdx++;
+    }
   }
 
   private turnFaceup(cardEl: HTMLImageElement, cardKey: CardKeys) {
