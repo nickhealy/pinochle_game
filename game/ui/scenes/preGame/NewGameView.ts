@@ -79,7 +79,7 @@ class NewGameView extends HTMLView {
     //@ts-ignore this is so messy but this is how we are doing it now
     if (globalThis._useMocks) {
       //@ts-ignore
-      globalThis.host.joinRoom();
+      globalThis.host.join();
     }
   }
 

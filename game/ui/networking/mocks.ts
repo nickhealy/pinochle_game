@@ -1,5 +1,6 @@
 import { DataConnection, Peer } from "peerjs";
 import { CardKeys } from "../../backend/gameplay/Deck";
+import { MeldType } from "../../backend/gameplay/Meld";
 import TYPES from "../../inversify-types";
 import main from "../../inversify.config";
 import { StoreType } from "../store";
@@ -51,13 +52,14 @@ class MockPlayer {
   name: string;
   peer: Peer;
   conn: DataConnection | null = null;
+  cards: Array<CardKeys> = [];
   constructor(name: string, isHost: boolean = false) {
     this.name = name;
     this.isHost = isHost;
     this.peer = new Peer();
     this.waitForConnection();
   }
-  joinRoom() {
+  join() {
     console.log("mock player ", this.name, " joining room");
     mockEV.onmessage({
       data: JSON.stringify({
@@ -75,10 +77,27 @@ class MockPlayer {
       console.error("NO connection, try again in a second");
       return;
     }
-    this.conn.on("data", (data) => {
+    this.conn.on("data", (ev) => {
+      //@ts-ignore
+      const { type, data } = JSON.parse(ev);
       console.log(`${this.name} received :`);
-      console.dir(data);
+      console.dir(ev);
+
+      switch (type) {
+        case "gameplay.player_cards":
+          this.cards = data.hand;
+          break;
+        default:
+      }
     });
+  }
+
+  hand() {
+    console.dir(this.cards);
+  }
+
+  addMeld(type: MeldType, cards: Array<CardKeys>) {
+    this.conn?.send(JSON.stringify(WebRTCSansIOClient.addMeld(cards, type)));
   }
 
   waitForConnection() {
@@ -113,11 +132,11 @@ globalThis.joinAllPlayers = () => {
   // THAT GETS TRIGGERED WHEN PEOPLE TRY TO JOIN IN THE SAME EVENT LOOP
 
   // @ts-ignore
-  setTimeout(globalThis.scott.joinRoom.bind(globalThis.scott), 0);
+  setTimeout(globalThis.scott.join.bind(globalThis.scott), 0);
   // @ts-ignore
-  setTimeout(globalThis.annabelle.joinRoom.bind(globalThis.annabelle), 1000);
+  setTimeout(globalThis.annabelle.join.bind(globalThis.annabelle), 1000);
   // @ts-ignore
-  setTimeout(globalThis.chris.joinRoom.bind(globalThis.chris), 1500);
+  setTimeout(globalThis.chris.join.bind(globalThis.chris), 1500);
 };
 
 // const mockConnection = new MockConnection();
