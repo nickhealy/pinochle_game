@@ -1,9 +1,12 @@
 import { injectable } from "inversify";
 import { CardKeys } from "../../../backend/gameplay/Deck";
 import { MELD_OFFSET } from "./MeldManager";
-import { CARD_HEIGHT } from "./OwnHand";
+import { CARD_HEIGHT, CARD_OFFSET as OWN_CARD_OFFSET } from "./OwnHand";
 
 const CARD_OFFSET = 15;
+const CARD_OFFSET_MELD = OWN_CARD_OFFSET;
+const CARD_END_SPACER = -(CARD_HEIGHT / 2);
+const CARD_END_SPACER_MELD = CARD_END_SPACER + CARD_HEIGHT + MELD_OFFSET;
 
 export enum OpponentPosition {
   NORTH = "north",
@@ -39,10 +42,10 @@ class OtherHand {
     }
     return cards;
   }
-  _getCardCoords() {
-    const coords: Array<number> = [];
+  _getCardCoords(sideOffset = CARD_OFFSET, endOffset = CARD_END_SPACER) {
+    const coords: Array<{ end: number; side: number }> = [];
     const numCards = this.$cards.length;
-    const targetWidth = CARD_OFFSET * (numCards - 1) + 95;
+    const targetWidth = sideOffset * (numCards - 1) + 95;
     const midWay =
       this._$gameplayContainer[
         this._position == OpponentPosition.NORTH
@@ -52,7 +55,7 @@ class OtherHand {
     const topWidth = targetWidth / 2;
     const start = Math.floor(midWay - topWidth);
     for (let i = 0; i < numCards; i++) {
-      coords.push(start + i * CARD_OFFSET);
+      coords.push({ side: start + i * sideOffset, end: endOffset });
     }
     return coords;
   }
@@ -63,9 +66,9 @@ class OtherHand {
         this._position == OpponentPosition.WEST ||
         this._position == OpponentPosition.EAST
       ) {
-        card.style.top = `${coords[idx]}px`;
+        card.style.top = `${coords[idx].side}px`;
       } else if (this._position == OpponentPosition.NORTH) {
-        card.style.left = `${coords[idx]}px`;
+        card.style.left = `${coords[idx].side}px`;
       }
     });
   }
@@ -78,21 +81,27 @@ class OtherHand {
   }
 
   showMeld(cards: Array<CardKeys>) {
-    debugger;
-    const offset = CARD_HEIGHT / 2 + MELD_OFFSET;
+    const coords = this._getCardCoords(CARD_OFFSET_MELD, CARD_END_SPACER_MELD);
+    let i = 0;
     let lastMeldCardIdx = this.cardsInMelds;
     this.cardsInMelds += cards.length;
+
     while (lastMeldCardIdx < this.cardsInMelds) {
+      const { end: endOffset, side: sideOffset } = coords[lastMeldCardIdx];
       const $cardEl = this.$cards[lastMeldCardIdx];
       if (this._position == OpponentPosition.WEST) {
-        $cardEl.style.left = `${offset}px`;
+        $cardEl.style.top = `${sideOffset}px`;
+        $cardEl.style.left = `${endOffset}px`;
       } else if (this._position == OpponentPosition.NORTH) {
-        $cardEl.style.top = `${offset}px`;
+        $cardEl.style.top = `${endOffset}px`;
+        $cardEl.style.left = `${sideOffset}px`;
       } else if (this._position == OpponentPosition.EAST) {
-        $cardEl.style.left = `calc(100% - ${offset}px)`;
+        $cardEl.style.top = `${sideOffset}`;
+        $cardEl.style.left = `calc(100% - ${endOffset}px)`;
       }
-      this.turnFaceup($cardEl, cards[lastMeldCardIdx]);
+      this.turnFaceup($cardEl, cards[i]);
       lastMeldCardIdx++;
+      i++;
     }
   }
 
