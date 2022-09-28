@@ -6,7 +6,7 @@ import { CARD_HEIGHT, CARD_OFFSET as OWN_CARD_OFFSET } from "./OwnHand";
 const CARD_OFFSET = 15;
 const CARD_OFFSET_MELD = OWN_CARD_OFFSET;
 const CARD_END_SPACER = -(CARD_HEIGHT / 2);
-const CARD_END_SPACER_MELD = CARD_END_SPACER + CARD_HEIGHT + MELD_OFFSET;
+const CARD_END_SPACER_MELD = CARD_HEIGHT / 2 + MELD_OFFSET;
 
 export enum OpponentPosition {
   NORTH = "north",
@@ -96,8 +96,8 @@ class OtherHand {
         $cardEl.style.top = `${endOffset}px`;
         $cardEl.style.left = `${sideOffset}px`;
       } else if (this._position == OpponentPosition.EAST) {
-        $cardEl.style.top = `${sideOffset}`;
-        $cardEl.style.left = `calc(100% - ${endOffset}px)`;
+        $cardEl.style.top = `${sideOffset}px`;
+        $cardEl.style.left = `calc(100% - ${endOffset + CARD_HEIGHT}px)`; // todo figure out why this is correct
       }
       this.turnFaceup($cardEl, cards[i]);
       lastMeldCardIdx++;
