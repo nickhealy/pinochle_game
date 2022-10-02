@@ -14,10 +14,11 @@ class OtherPlayer {
   private $bidVal: HTMLElement;
   private _eventEmitter: EventEmitter;
   private _store: StoreType;
-  private id: string | null = null;
+  private _position: OpponentPosition;
   private hand: OtherHand;
   private meldTally: MeldTally;
   constructor(position: OpponentPosition, store: StoreType, ee: EventEmitter) {
+    this._position = position;
     this._$infoContainer = document.getElementById(
       `${position}-player-info`
     ) as HTMLDivElement;
@@ -25,7 +26,7 @@ class OtherPlayer {
       ".player-bid-val"
     ) as HTMLElement;
     this.hand = new OtherHand(position); // i could use inversify here, but not really important
-    this.meldTally = new MeldTally(position, ee);
+    this.meldTally = new MeldTally(position, ee, store);
     this._eventEmitter = ee;
     this._store = store;
 
@@ -35,19 +36,14 @@ class OtherPlayer {
     this.hand.render();
   }
 
-  assignId(id: string) {
-    this.id = id;
-    this.showPlayerInfo();
-    // there could be listener for id assignment, but it is simpler for now
-    // to do this directly
-    this.meldTally.assignId(id);
+  get id() {
+    return this._store.get("playerIdsByPosition")[this._position];
   }
 
   private showPlayerInfo() {
     const data = this._store
       .get("players")
       .find((player) => player.id === this.id); // this should be rewritten to be dict lookup
-
     if (!data) {
       throw new Error(`Player data does not exist. Id : ${this.id}`);
     }
@@ -128,6 +124,11 @@ class OtherPlayer {
         this.hand.showMeld(meld.cards);
       }
     });
+
+    this._store.subscribe(
+      "playerIdsByPosition",
+      this.showPlayerInfo.bind(this)
+    );
   }
 }
 

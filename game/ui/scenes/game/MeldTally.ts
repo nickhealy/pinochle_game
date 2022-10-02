@@ -1,6 +1,6 @@
 import { MeldType, POINTS_BY_MELD_TYPE } from "../../../backend/gameplay/Meld";
 import EventEmitter from "../../events/EventEmitter";
-import { GameplayEvents } from "../../events/events";
+import { GameplayEvents, LobbyEvents } from "../../events/events";
 import { StoreType } from "../../store";
 import { OpponentPosition } from "./OtherHand";
 
@@ -19,16 +19,22 @@ const MELD_TYPE_TO_NAMES: Record<MeldType, string> = {
 class MeldTally {
   $_container: HTMLDivElement;
   ee: EventEmitter;
-  id: string | null = null;
+  _position: OpponentPosition;
+  store: StoreType;
   melds: Array<{ type: MeldType; points: number }> = [];
-  constructor(position: OpponentPosition, ee: EventEmitter) {
+  constructor(position: OpponentPosition, ee: EventEmitter, store: StoreType) {
+    this._position = position;
     this.$_container = document.getElementById(
       `meld-tally-${position}`
     ) as HTMLDivElement;
 
     this.ee = ee;
-
+    this.store = store;
     this.initListeners();
+  }
+
+  get id() {
+    return this.store.get("playerIdsByPosition")[this._position];
   }
 
   initListeners() {
@@ -64,16 +70,21 @@ class MeldTally {
         this.render();
       }
     });
-  }
 
-  addName() {}
-
-  assignId(id: string) {
-    this.id = id;
+    this.store.subscribe("playerIdsByPosition", (ids) => {
+      const id = ids[this._position];
+      const players = this.store.get("players");
+      const player = players.find((player) => player.id === id);
+      if (player) {
+        const $nameEl = this.$_container.querySelector(
+          ".meld-tally-name"
+        ) as HTMLHeadingElement;
+        $nameEl.innerText = player.name;
+      }
+    });
   }
 
   render() {
-    debugger;
     this.$_container.classList.remove("hidden");
   }
 }

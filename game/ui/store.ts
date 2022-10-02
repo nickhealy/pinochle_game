@@ -1,4 +1,5 @@
 import { CardKeys, Suit } from "../backend/gameplay/Deck";
+import { OpponentPosition } from "./scenes/game/OtherHand";
 
 const subs: Record<string | symbol, Array<(...args: any[]) => void>> = {};
 
@@ -7,6 +8,7 @@ interface StoreValTypes {
   isHost: boolean;
   players: Array<{ id: string; name: string }>;
   peerId: string | null;
+  playerIdsByPosition: Record<OpponentPosition, string | null>;
   teams: Array<Array<string>>;
   ownHand: Array<CardKeys>;
   ownId: string | null;
@@ -21,6 +23,7 @@ const _store: StoreValTypes = {
   ownHand: [],
   ownId: null,
   trump: null,
+  playerIdsByPosition: { north: null, west: null, east: null },
 };
 
 const subscribe = <T extends keyof typeof _store>(

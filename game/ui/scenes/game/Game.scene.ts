@@ -110,9 +110,11 @@ class GameScene {
       eastId = teams[0][1];
     }
 
-    this.otherPlayerWest.assignId(westId);
-    this.otherPlayerNorth.assignId(northId);
-    this.otherPlayerEast.assignId(eastId);
+    this._store.set("playerIdsByPosition", {
+      north: northId,
+      west: westId,
+      east: eastId,
+    });
   }
 
   render() {
