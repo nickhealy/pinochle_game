@@ -1,3 +1,4 @@
+import { CardKeys } from "../../../backend/gameplay/Deck";
 import { MeldType, POINTS_BY_MELD_TYPE } from "../../../backend/gameplay/Meld";
 import EventEmitter from "../../events/EventEmitter";
 import { GameplayEvents, LobbyEvents } from "../../events/events";
@@ -19,10 +20,14 @@ const MELD_TYPE_TO_NAMES: Record<MeldType, string> = {
 class MeldTally {
   $_container: HTMLDivElement;
   ee: EventEmitter;
-  _position: OpponentPosition;
+  _position: OpponentPosition | "own";
   store: StoreType;
   melds: Array<{ type: MeldType; points: number }> = [];
-  constructor(position: OpponentPosition, ee: EventEmitter, store: StoreType) {
+  constructor(
+    position: OpponentPosition | "own",
+    ee: EventEmitter,
+    store: StoreType
+  ) {
     this._position = position;
     this.$_container = document.getElementById(
       `meld-tally-${position}`
@@ -34,19 +39,36 @@ class MeldTally {
   }
 
   get id() {
-    return this.store.get("playerIdsByPosition")[this._position];
+    return this._position === "own"
+      ? this.store.get("ownId")
+      : this.store.get("playerIdsByPosition")[this._position];
+  }
+
+  private _addMeld(meld: { type: MeldType; cards: Array<CardKeys> }) {
+    this.melds.push({
+      type: meld.type,
+      points: POINTS_BY_MELD_TYPE[meld.type as MeldType],
+    });
   }
 
   initListeners() {
+    if (this._position === "own") {
+      this.ee.addEventListener(GameplayEvents.ADD_MELD, (e) => {
+        // @ts-ignore
+        const meld = e.detail;
+        this._addMeld(meld);
+      });
+      this.ee.addEventListener(
+        GameplayEvents.SUBMIT_MELDS,
+        this.showMeldTallyData.bind(this)
+      );
+    }
+
     this.ee.addEventListener(GameplayEvents.MELD_ADDED, (e) => {
       // @ts-ignore
       const { player, meld } = e.detail;
-
       if (player === this.id) {
-        this.melds.push({
-          type: meld.type,
-          points: POINTS_BY_MELD_TYPE[meld.type as MeldType],
-        });
+        this._addMeld(meld);
       }
     });
 
@@ -54,25 +76,14 @@ class MeldTally {
       // @ts-ignore
       const { player } = e.detail;
       if (player == this.id) {
-        let totalPoints = 0;
-        const $meldItemContainer = this.$_container.querySelector("ul");
-        const $meldTallyTotal = this.$_container.querySelector(
-          ".meld-tally-total"
-        ) as HTMLHeadingElement;
-
-        this.melds.forEach(({ type, points }) => {
-          const $meldItem = document.createElement("li");
-          $meldItem.innerHTML = `${MELD_TYPE_TO_NAMES[type]}<span>${points}</span>`;
-          $meldItemContainer?.appendChild($meldItem);
-          totalPoints += points;
-        });
-        $meldTallyTotal.innerText = `${totalPoints}`;
-        this.render();
+        this.showMeldTallyData();
       }
     });
 
     this.store.subscribe("playerIdsByPosition", (ids) => {
-      const id = ids[this._position];
+      const id =
+        (this._position === "own" && this.store.get("ownId")) ||
+        ids[this._position];
       const players = this.store.get("players");
       const player = players.find((player) => player.id === id);
       if (player) {
@@ -82,6 +93,23 @@ class MeldTally {
         $nameEl.innerText = player.name;
       }
     });
+  }
+
+  showMeldTallyData() {
+    let totalPoints = 0;
+    const $meldItemContainer = this.$_container.querySelector("ul");
+    const $meldTallyTotal = this.$_container.querySelector(
+      ".meld-tally-total"
+    ) as HTMLHeadingElement;
+
+    this.melds.forEach(({ type, points }) => {
+      const $meldItem = document.createElement("li");
+      $meldItem.innerHTML = `${MELD_TYPE_TO_NAMES[type]}<span>${points}</span>`;
+      $meldItemContainer?.appendChild($meldItem);
+      totalPoints += points;
+    });
+    $meldTallyTotal.innerText = `${totalPoints}`;
+    this.render();
   }
 
   render() {

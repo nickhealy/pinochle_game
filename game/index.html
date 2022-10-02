@@ -55,7 +55,10 @@
             --card-border-radius: 5px;
             --offscreen-start-pos: -200px;
             --playerInfoOffsetFromHand: 15px;
-            --playerInfoOffsetTotal: calc((var(--card-height) / 2) + var(--playerInfoOffsetFromHand))
+            --playerInfoOffsetTotal: calc((var(--card-height) / 2) + var(--playerInfoOffsetFromHand));
+            --meldTallyDimensionShort: 130px;
+            --meldTallyDimensionLong: 200px;
+            --meldTallyOffset: 30px;
         }
 
         /* utility classes */
@@ -477,21 +480,53 @@
         }
 
         .meld-tally {
-            width: 130px;
-            height: 200px;
             z-index: 20;
             background: url('/green_bg_large.png');
             position: absolute;
-            top: 25%;
             border: 1px white solid;
-            left: 30px;
             border-radius: 5px;
             box-shadow: 5px 5px 15px 0px #000000;
             color: white;
             display: flex;
             flex-direction: column;
             padding: 10px;
+            height: max-content;
+            max-height: 230px;
+            overflow: scroll;
         }
+
+        #meld-tally-east,
+        #meld-tally-west {
+            width: var(--meldTallyDimensionShort);
+            height: var(--meldTallyDimensionLong);
+            top: 25%;
+        }
+
+        #meld-tally-west {
+            left: var(--meldTallyOffset);
+        }
+
+        #meld-tally-east {
+            left: calc(100% - (var(--meldTallyDimensionShort) + 125px));
+            /* magic number */
+        }
+
+        #meld-tally-north,
+        #meld-tally-own {
+            height: var(--meldTallyDimensionShort);
+            width: var(--meldTallyDimensionLong);
+            left: calc(50% - (var(--meldTallyDimensionLong) / 2));
+        }
+
+        #meld-tally-north {
+            top: 120px;
+        }
+
+        #meld-tally-own {
+            top: calc(100% - (var(--meldTallyDimensionShort) + var(--meldTallyOffset) + 80px));
+            /* magic number */
+        }
+
 
         .meld-tally-name {
             text-align: center;
@@ -649,6 +684,12 @@
                         <h4 class="meld-tally-total"></h4>
                     </div>
                     <div class="meld-tally hidden" id="meld-tally-east">
+                        <h4 class="meld-tally-name"></h4>
+                        <ul>
+                        </ul>
+                        <h4 class="meld-tally-total"></h4>
+                    </div>
+                    <div class="meld-tally hidden" id="meld-tally-own">
                         <h4 class="meld-tally-name"></h4>
                         <ul>
                         </ul>

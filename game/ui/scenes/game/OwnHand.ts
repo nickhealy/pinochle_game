@@ -5,6 +5,7 @@ import EventEmitter from "../../events/EventEmitter";
 import { GameplayEvents } from "../../events/events";
 import { StoreType } from "../../store";
 import MeldManager from "./MeldManager";
+import MeldTally from "./MeldTally";
 
 const MOCK_OWN_HAND: Array<CardKeys> = [
   "KH",
@@ -35,6 +36,7 @@ class OwnHand {
   _eventEmitter: EventEmitter;
   _$gameplayContainer: HTMLDivElement;
   meldManager: MeldManager;
+  meldTally: MeldTally;
   $ownCards: Array<HTMLImageElement> = [];
   $playSpace: HTMLDivElement;
 
@@ -52,6 +54,7 @@ class OwnHand {
       "own-card-space"
     ) as HTMLDivElement;
     this.meldManager = meldManager;
+    this.meldTally = new MeldTally("own", eventEmitter, store);
     this.addEventListeners();
     this.initDevTools();
   }
