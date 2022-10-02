@@ -38,6 +38,17 @@
             align-items: center;
         }
 
+        ul {
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
         :root {
             --card-height: 130px;
             --card-width: 95px;
@@ -464,6 +475,41 @@
         #submit-melds {
             bottom: 10px
         }
+
+        .meld-tally {
+            width: 130px;
+            height: 200px;
+            z-index: 20;
+            background: url('/green_bg_large.png');
+            position: absolute;
+            top: 25%;
+            border: 1px white solid;
+            left: 30px;
+            border-radius: 5px;
+            box-shadow: 5px 5px 15px 0px #000000;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+
+        .meld-tally-name {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .meld-tally li {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .meld-tally-total {
+            margin-top: auto;
+            border-top: 1px white solid;
+            width: 100%;
+            text-align: end;
+        }
     </style>
     <script src="https://kit.fontawesome.com/12f6611ba5.js" crossorigin="anonymous"></script>
 </head>
@@ -589,6 +635,12 @@
                             <img id='spades' suit='spades' src='/suits/spades.png' />
                             <img id="diamonds" suit='diamonds' src='/suits/diamonds.png' />
                         </div>
+                    </div>
+                    <div class="meld-tally hidden" id="meld-tally-west">
+                        <h4 class="meld-tally-name"></h4>
+                        <ul>
+                        </ul>
+                        <h4 class="meld-tally-total"></h4>
                     </div>
                     <button id='add-meld' class="button hidden" disabled>Add Meld</button>
                     <button id="submit-melds" class="button hidden">Submit Melds</button>

@@ -16,7 +16,7 @@ export interface Meld {
   cards: CardKeys[];
 }
 
-const POINTS_BY_MELD_TYPE: Record<MeldType, number> = {
+export const POINTS_BY_MELD_TYPE: Record<MeldType, number> = {
   marriage: 20,
   "royal-marriage": 40,
   "trump-nine": 10,

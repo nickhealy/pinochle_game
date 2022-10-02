@@ -39,6 +39,7 @@ export enum GameplayEvents {
   ADD_MELD = "add_meld",
   SUBMIT_MELDS = "submit_melds",
   MELD_ADDED = "meld_added",
+  MELDS_COMMITTED = "melds_committed",
 }
 
 export type AllEvents =

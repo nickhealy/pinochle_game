@@ -56,7 +56,11 @@ class MockPlayer {
   constructor(name: string, isHost: boolean = false) {
     this.name = name;
     this.isHost = isHost;
-    this.peer = new Peer();
+    this.peer = new Peer(this.name, {
+      host: "localhost",
+      port: 9000,
+      path: "/pinochle",
+    });
     this.waitForConnection();
   }
   join() {
@@ -98,6 +102,10 @@ class MockPlayer {
 
   addMeld(type: MeldType, cards: Array<CardKeys>) {
     this.conn?.send(JSON.stringify(WebRTCSansIOClient.addMeld(cards, type)));
+  }
+
+  commitMelds() {
+    this.conn?.send(JSON.stringify(WebRTCSansIOClient.submitMelds()));
   }
 
   waitForConnection() {

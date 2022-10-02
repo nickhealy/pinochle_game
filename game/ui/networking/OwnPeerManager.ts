@@ -35,7 +35,11 @@ class OwnPeerManager extends WebRTCManager {
   }
 
   private initOwnPeer() {
-    this._ownPeer = new Peer();
+    this._ownPeer = new Peer("own-peer", {
+      host: "localhost",
+      port: 9000,
+      path: "/pinochle",
+    });
     this._ownPeer.on("open", (id) => {
       this._eventEmitter.emit(WebRTCEvents.OWN_PEER_OPENED, { ownPeerId: id });
     });
@@ -133,6 +137,11 @@ class OwnPeerManager extends WebRTCManager {
           this._eventEmitter.emit(GameplayEvents.MELD_ADDED, {
             player: data.player,
             meld: data.meld,
+          });
+          break;
+        case "gameplay.pre_play.player_melds_committed":
+          this._eventEmitter.emit(GameplayEvents.MELDS_COMMITTED, {
+            player: data.player,
           });
           break;
         default:

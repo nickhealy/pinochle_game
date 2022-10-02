@@ -6,6 +6,7 @@ import EventEmitter from "../../events/EventEmitter";
 import { GameplayEvents, LobbyEvents } from "../../events/events";
 import { StoreType } from "../../store";
 import OtherHand, { OpponentPosition } from "./OtherHand";
+import MeldTally from "./MeldTally";
 
 @injectable()
 class OtherPlayer {
@@ -15,6 +16,7 @@ class OtherPlayer {
   private _store: StoreType;
   private id: string | null = null;
   private hand: OtherHand;
+  private meldTally: MeldTally;
   constructor(position: OpponentPosition, store: StoreType, ee: EventEmitter) {
     this._$infoContainer = document.getElementById(
       `${position}-player-info`
@@ -23,6 +25,7 @@ class OtherPlayer {
       ".player-bid-val"
     ) as HTMLElement;
     this.hand = new OtherHand(position); // i could use inversify here, but not really important
+    this.meldTally = new MeldTally(position, ee);
     this._eventEmitter = ee;
     this._store = store;
 
@@ -35,6 +38,9 @@ class OtherPlayer {
   assignId(id: string) {
     this.id = id;
     this.showPlayerInfo();
+    // there could be listener for id assignment, but it is simpler for now
+    // to do this directly
+    this.meldTally.assignId(id);
   }
 
   private showPlayerInfo() {
@@ -109,6 +115,10 @@ class OtherPlayer {
       if (player === this.id) {
         this.showPlayerPass();
       }
+    });
+
+    this._eventEmitter.addEventListener(GameplayEvents.AWAITING_MELDS, () => {
+      this._$infoContainer.classList.add("hidden");
     });
 
     this._eventEmitter.addEventListener(GameplayEvents.MELD_ADDED, (event) => {

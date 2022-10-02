@@ -21,7 +21,11 @@ class HostPeerManager extends WebRTCManager {
     this.initHostPeer();
   }
   private initHostPeer() {
-    this._hostPeer = new Peer();
+    this._hostPeer = new Peer("host", {
+      host: "localhost",
+      port: 9000,
+      path: "/pinochle",
+    });
     this._hostPeer.on("open", (id) => {
       this._eventEmitter.emit(WebRTCEvents.HOST_PEER_OPENED, {
         hostPeerId: id,
