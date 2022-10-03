@@ -1,0 +1,95 @@
+import { inject, injectable } from "inversify";
+import TYPES from "../../../inversify-types";
+import EventEmitter from "../../events/EventEmitter";
+import { GameplayEvents, LobbyEvents } from "../../events/events";
+import { StoreType } from "../../store";
+
+const ROUND_BID_VAL_SELECTOR = "#bid>.round-score-value";
+
+@injectable()
+class Score {
+  _$container: HTMLDivElement;
+  ee: EventEmitter;
+  store: StoreType;
+  bids: Array<number> = [0, 0];
+  constructor(
+    @inject(TYPES.EventEmitter) ee: EventEmitter,
+    @inject(TYPES.Store) store: StoreType
+  ) {
+    this._$container = document.getElementById(
+      "score-container"
+    ) as HTMLDivElement;
+    this.ee = ee;
+    this.store = store;
+
+    this.initializeListeners();
+  }
+
+  _getTeamIdx(playerId: string) {
+    const teams = this.store.get("teams");
+    return teams.findIndex((team) => team.includes(playerId));
+  }
+
+  _tallyTeamBid(playerId: string, bid: number) {
+    this.bids[this._getTeamIdx(playerId)] += bid;
+  }
+
+  initializeListeners() {
+    this.ee.addEventListener(LobbyEvents.ROUND_START, this.render.bind(this));
+    this.ee.addEventListener(
+      LobbyEvents.TEAMS_RECEIVED,
+      this.populateTeams.bind(this)
+    );
+    this.ee.addEventListener(GameplayEvents.OWN_BID, (e) => {
+      // @ts-ignore
+      const { bid } = e.detail;
+      const ownId = this.store.get("ownId");
+      if (ownId) {
+        this._tallyTeamBid(ownId, bid);
+      }
+    });
+    this.ee.addEventListener(GameplayEvents.PLAYER_BID, (e) => {
+      // @ts-ignore
+      const { bid, player } = e.detail;
+      this._tallyTeamBid(player, bid);
+    });
+    this.ee.addEventListener(GameplayEvents.BID_WINNER, (e) => {
+      // @ts-ignore
+      const { player } = e.detail;
+      const $bidEls = Array.from(
+        this._$container.querySelectorAll(ROUND_BID_VAL_SELECTOR)
+      );
+      const winnerTeamIdx = this._getTeamIdx(player);
+      $bidEls[winnerTeamIdx].innerHTML = `${this.bids[winnerTeamIdx]}`;
+    });
+  }
+
+  _getPlayerName(id: string) {
+    const players = this.store.get("players");
+    const player = players.find((player) => player.id == id);
+    return (player && player.name) || "";
+  }
+
+  populateTeams() {
+    const [[player0, player2], [player1, player3]] = this.store.get("teams");
+    const playerIds = [player0, player2, player1, player3];
+    Array.from(this._$container.querySelectorAll(".player-score-name")).forEach(
+      ($name, idx) => ($name.innerHTML = this._getPlayerName(playerIds[idx]))
+    );
+  }
+
+  zeroOutScore() {
+    const $bidEls = Array.from(
+      this._$container.querySelectorAll(ROUND_BID_VAL_SELECTOR)
+    );
+    $bidEls.forEach(($el) => ($el.innerHTML = "--"));
+  }
+
+  render() {
+    this.zeroOutScore();
+    this.populateTeams();
+    this._$container.classList.remove("hidden");
+  }
+}
+
+export default Score;

@@ -77,6 +77,7 @@ class BidPrompt {
   private submitBid() {
     // hack for UI
     // this.$submitBtn.classList.add("disabled");
+    this._ee.emit(GameplayEvents.OWN_BID, { bid: this.bidVal });
     this._ownPeerManager.send(WebRTCSansIOClient.submitBid(this.bidVal));
   }
 

@@ -26,6 +26,7 @@ import BidPrompt from "./ui/scenes/game/BidPrompt";
 import TrumpPrompt from "./ui/scenes/game/TrumpPrompt";
 import TrumpContainer from "./ui/scenes/game/TrumpContainer";
 import MeldManager from "./ui/scenes/game/MeldManager";
+import Score from "./ui/scenes/game/Score";
 
 const main = new Container({ defaultScope: "Singleton" });
 main
@@ -69,6 +70,7 @@ main
   .to(TrumpContainer)
   .inSingletonScope();
 main.bind<MeldManager>(TYPES.MeldManager).to(MeldManager).inSingletonScope();
+main.bind<Score>(TYPES.Score).to(Score).inSingletonScope();
 main.bind<GameScene>(TYPES.GameScene).to(GameScene);
 main.bind<Game>(TYPES.Game).to(Game);
 

@@ -9,6 +9,7 @@ import { GameplayEvents, LobbyEvents } from "../../events/events";
 import BidPrompt from "./BidPrompt";
 import TrumpPrompt from "./TrumpPrompt";
 import TrumpContainer from "./TrumpContainer";
+import Score from "./Score";
 
 @injectable()
 class GameScene {
@@ -24,12 +25,14 @@ class GameScene {
   private bidPrompt: BidPrompt;
   private trumpPrompt: TrumpPrompt;
   private trumpContainer: TrumpContainer;
+  private score: Score;
   constructor(
     @inject<OwnHand>(TYPES.OwnHand) ownHand: OwnHand,
     @inject<BidPrompt>(TYPES.BidPrompt) bidPrompt: BidPrompt,
     @inject<TrumpPrompt>(TYPES.TrumpPrompt) trumpPrompt: TrumpPrompt,
     @inject<TrumpContainer>(TYPES.TrumpContainer)
     trumpContainer: TrumpContainer,
+    @inject(TYPES.Score) score: Score,
     @inject(TYPES.OtherPlayerFactory)
     otherPlayerFactory: (position: OpponentPosition) => OtherPlayer,
     @inject(TYPES.Store) store: StoreType,
@@ -39,6 +42,7 @@ class GameScene {
     this.bidPrompt = bidPrompt;
     this.trumpPrompt = trumpPrompt;
     this.trumpContainer = trumpContainer;
+    this.score = score;
     this.otherPlayerWest = otherPlayerFactory(OpponentPosition.WEST);
     this.otherPlayerNorth = otherPlayerFactory(OpponentPosition.NORTH);
     this.otherPlayerEast = otherPlayerFactory(OpponentPosition.EAST);

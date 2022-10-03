@@ -22,6 +22,7 @@
         h3,
         h4,
         h5,
+        h6,
         p,
         i {
             margin: 0;
@@ -545,6 +546,48 @@
             width: 100%;
             text-align: end;
         }
+
+        #score-container {
+            height: 150px;
+            width: 150px;
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            border: 1px solid white;
+            border-radius: 5px;
+        }
+
+        #game-score {
+            display: flex;
+        }
+
+        .team-score {
+            padding: 5px 10px;
+            font-size: 1.25rem;
+            text-align: center;
+        }
+
+        #round-score>div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+            width: 100%;
+            border-top: 1px solid white;
+        }
+
+        .round-score-value {
+            width: 33%;
+            text-align: center;
+        }
+
+        .score-label {
+            width: 33%;
+            text-align: center;
+        }
     </style>
     <script src="https://kit.fontawesome.com/12f6611ba5.js" crossorigin="anonymous"></script>
 </head>
@@ -695,11 +738,35 @@
                         </ul>
                         <h4 class="meld-tally-total"></h4>
                     </div>
+                    <div id='score-container' class="hidden">
+                        <div id='game-score'>
+                            <div class='team-score' id='team-1-score'>
+                                <h6><span class="player-score-name"></span> & <span class='player-score-name'></span>
+                                </h6>
+                                <h6>0</h6>
+                            </div>
+                            <div class='team-score' id='team-2-score'>
+                                <h6><span class="player-score-name"></span> & <span class='player-score-name'></span>
+                                </h6>
+                                <h6>0</h6>
+                            </div>
+                        </div>
+                        <div id='round-score'>
+                            <div id='bid'><span class='round-score-value team-1'></span><span
+                                    class='score-label'>Bid</span><span class='round-score-value team-2'></span></div>
+                            <div id='meld'><span class='round-score-value team-1'></span><span
+                                    class='score-label'>Meld</span><span class='round-score-value team-2'></span></div>
+                            <div id='play'><span class='round-score-value team-1'></span><span
+                                    class='score-label'>Play</span><span class='round-score-value team-2'></span></div>
+                        </div>
+                    </div>
                     <button id='add-meld' class="button hidden" disabled>Add Meld</button>
                     <button id="submit-melds" class="button hidden">Submit Melds</button>
                 </div>
             </div>
         </div>
+    </div>
+    </div>
     </div>
 </body>
 

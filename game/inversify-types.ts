@@ -23,6 +23,7 @@ const TYPES = {
   TrumpPrompt: Symbol.for("trump-prompt"),
   TrumpContainer: Symbol.for("trump-container"),
   MeldManager: Symbol.for("meld-manager"),
+  Score: Symbol.for("score"),
 };
 
 export default TYPES;

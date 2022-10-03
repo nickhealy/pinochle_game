@@ -31,6 +31,7 @@ export enum GameplayEvents {
   OWN_CARDS_RECEIVED = "own_cards_received",
   AWAITING_BID = "awaiting_bid",
   PLAYER_BID = "player_bid",
+  OWN_BID = "own_bid",
   PASS_BID = "pass_bid",
   BID_WINNER = "bid_winner",
   TRUMP_CHOOSING = "trump_choosing",
