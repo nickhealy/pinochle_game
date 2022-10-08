@@ -56,11 +56,7 @@ class MockPlayer {
   constructor(name: string, isHost: boolean = false) {
     this.name = name;
     this.isHost = isHost;
-    this.peer = new Peer(this.name, {
-      host: "localhost",
-      port: 9000,
-      path: "/pinochle",
-    });
+    this.peer = new Peer();
     this.waitForConnection();
   }
   join() {
