@@ -81,10 +81,11 @@ class MeldManager {
   private getCurrentMeldType() {
     const ownHandKeys = this.store.get("ownHand");
     const currMeldKeys = this._currMeldIdxs
-      .sort()
-      .map((idx) => ownHandKeys[idx]);
+      .map((idx) => ownHandKeys[idx])
+      .sort();
     const meldKey = currMeldKeys.join("_");
     const meld = MELDS_BY_KEYS[meldKey];
+    debugger;
     if (!meld) {
       return null;
     }

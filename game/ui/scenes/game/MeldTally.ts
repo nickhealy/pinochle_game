@@ -13,7 +13,7 @@ const MELD_TYPE_TO_NAMES: Record<MeldType, string> = {
   "four-K": "4 Kings",
   marriage: "Marriage",
   "royal-marriage": "Royal",
-  pinochle: "pinochle",
+  pinochle: "Pinochle",
   "trump-nine": "9 of Trump",
 };
 
