@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import { CardKeys, Suit } from "../../../backend/gameplay/Deck";
-import { MeldType } from "../../../backend/gameplay/Meld";
+import { MeldType, POINTS_BY_MELD_TYPE } from "../../../backend/gameplay/Meld";
 import TYPES from "../../../inversify-types";
 import EventEmitter from "../../events/EventEmitter";
 import { GameplayEvents } from "../../events/events";
@@ -109,10 +109,10 @@ class MeldManager {
       console.error("Not a valid meld");
       return;
     }
-
     this.ee.emit(GameplayEvents.ADD_MELD, {
       type: meldType,
       cards: currMeldKeys,
+      points: POINTS_BY_MELD_TYPE[meldType],
     });
     this.io.send(WebRTCSansIOClient.addMeld(currMeldKeys, meldType));
 

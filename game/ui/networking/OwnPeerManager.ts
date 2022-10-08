@@ -5,6 +5,7 @@ import { GameplayEvents, LobbyEvents, WebRTCEvents } from "../events/events";
 import TYPES from "../../inversify-types";
 import WebRTCManager from "./WebRTCManager";
 import { StoreType } from "../store";
+import { MOCK_OWN_HAND } from "../scenes/game/OwnHand";
 
 enum WebRTCManagerStates {
   INITIAL = "initial",
@@ -101,7 +102,7 @@ class OwnPeerManager extends WebRTCManager {
           this._eventEmitter.emit(LobbyEvents.ROUND_START);
           break;
         case "gameplay.player_cards":
-          this.store.set("ownHand", data.hand);
+          this.store.set("ownHand", MOCK_OWN_HAND);
           this._eventEmitter.emit(GameplayEvents.OWN_CARDS_RECEIVED);
           break;
         case "gameplay.bid.awaiting_bid":
@@ -137,6 +138,7 @@ class OwnPeerManager extends WebRTCManager {
           this._eventEmitter.emit(GameplayEvents.MELD_ADDED, {
             player: data.player,
             meld: data.meld,
+            points: data.points,
           });
           break;
         case "gameplay.pre_play.player_melds_committed":

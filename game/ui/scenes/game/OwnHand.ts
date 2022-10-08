@@ -7,9 +7,9 @@ import { StoreType } from "../../store";
 import MeldManager from "./MeldManager";
 import MeldTally from "./MeldTally";
 
-const MOCK_OWN_HAND: Array<CardKeys> = [
+export const MOCK_OWN_HAND: Array<CardKeys> = [
   "KH",
-  "QC",
+  "QS",
   "JS",
   "JD",
   "9H",

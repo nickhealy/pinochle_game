@@ -12,6 +12,7 @@ class Score {
   ee: EventEmitter;
   store: StoreType;
   bids: Array<number> = [0, 0];
+  _meldPoints: Array<number> = [0, 0];
   constructor(
     @inject(TYPES.EventEmitter) ee: EventEmitter,
     @inject(TYPES.Store) store: StoreType
@@ -23,6 +24,13 @@ class Score {
     this.store = store;
 
     this.initializeListeners();
+  }
+
+  _updateMeldPoints(newMelds: Array<number>) {
+    this._meldPoints = newMelds;
+    Array.from(
+      this._$container.querySelectorAll("#meld > .round-score-value")
+    ).forEach(($el, idx) => ($el.innerHTML = `${this._meldPoints[idx]}`));
   }
 
   _getTeamIdx(playerId: string) {
@@ -61,6 +69,23 @@ class Score {
       );
       const winnerTeamIdx = this._getTeamIdx(player);
       $bidEls[winnerTeamIdx].innerHTML = `${this.bids[winnerTeamIdx]}`;
+    });
+    this.ee.addEventListener(GameplayEvents.MELD_ADDED, (e) => {
+      // @ts-ignore
+      const { points } = e.detail;
+      this._updateMeldPoints([points[0][0], points[1][0]]); // first entry of each idx is meld points
+    });
+    this.ee.addEventListener(GameplayEvents.ADD_MELD, (e) => {
+      const {
+        points,
+        // @ts-ignore
+      } = e.detail;
+      const ownId = this.store.get("ownId");
+      if (ownId) {
+        const newMeldPoints = this._meldPoints;
+        newMeldPoints[this._getTeamIdx(ownId)] += points;
+        this._updateMeldPoints(newMeldPoints);
+      }
     });
   }
 

@@ -6,6 +6,7 @@
   "scripts": {
     "test": "jest",
     "dev": "webpack serve --config ./webpack.config.js",
+    "serve-peer": "peerjs --port 9000 --key peerjs --path /pinochle",
     "machine-types": "xstate",
     "build": "webpack build --config ./webpack.config.js",
     "clean": "rimraf ./dist"
