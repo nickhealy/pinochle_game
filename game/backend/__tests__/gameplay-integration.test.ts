@@ -699,6 +699,18 @@ describe("integration test", () => {
         player: player3.id,
       });
 
+      await player0.waitForMessage("gameplay.pre_play.awaiting_play_start");
+      await player1.waitForMessage("gameplay.pre_play.awaiting_play_start");
+      await player2.waitForMessage("gameplay.pre_play.awaiting_play_start");
+      await player3.waitForMessage("gameplay.pre_play.awaiting_play_start");
+
+      player3.send(
+        JSON.stringify({
+          event: "gameplay.pre_play.player_play_start",
+          data: {},
+        })
+      );
+
       await player0.waitForMessage("gameplay.play.play_start");
       await player1.waitForMessage("gameplay.play.play_start");
       await player2.waitForMessage("gameplay.play.play_start");

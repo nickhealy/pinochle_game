@@ -199,8 +199,19 @@ const GameMachine = createMachine(
                       log(`awaiting fourth meld`, "[gameplay]"),
                     on: {
                       COMMIT_MELDS: {
-                        target: "#playMachine",
+                        target: "awaiting_start",
                         actions: "sendCommitMelds",
+                      },
+                    },
+                  },
+                  awaiting_start: {
+                    entry: [
+                      (ctx, evt) => log(`ready to start`, "[gameplay]"),
+                      "sendAwaitingPlayStart",
+                    ],
+                    on: {
+                      START_PLAY: {
+                        target: "#playMachine",
                       },
                     },
                   },
@@ -477,6 +488,9 @@ const GameMachine = createMachine(
           allButPlayer(evt.player),
           { player: evt.player }
         )
+      ),
+      sendAwaitingPlayStart: sendParent(() =>
+        createGameplayUpdate("gameplay.pre_play.awaiting_play_start")
       ),
       sendPlayStart: sendParent((ctx, evt) =>
         createGameplayUpdate("gameplay.play.play_start", null)

@@ -18,5 +18,6 @@ export enum IncomingGameplayEvents {
   TRUMP_CHOSEN = "gameplay.pre_play.trump_chosen",
   ADD_MELD = "gameplay.pre_play.player_add_meld",
   COMMIT_MELDS = "gameplay.pre_play.player_commit_melds",
+  START_PLAY = "gameplay.pre_play.player_play_start",
   PLAY_CARD = "gameplay.play.player_play_card",
 }

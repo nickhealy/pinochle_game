@@ -75,6 +75,8 @@ const processIncomingGameEvent = (
         type: "COMMIT_MELDS",
         player: e.data.player,
       });
+    case IncomingGameplayEvents.START_PLAY:
+      return createIncomingGameplayEvent({ type: "START_PLAY" });
     case IncomingGameplayEvents.PLAY_CARD:
       return createIncomingGameplayEvent({
         type: "PLAY_CARD",

@@ -61,6 +61,9 @@ export type PrePlayEvents =
   | {
       type: "COMMIT_MELDS";
       player: number;
+    }
+  | {
+      type: "START_PLAY";
     };
 
 export type GameControlEvents = { type: "START_GAME" } | { type: "NEW_GAME" };
