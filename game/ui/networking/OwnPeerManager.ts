@@ -146,6 +146,9 @@ class OwnPeerManager extends WebRTCManager {
             player: data.player,
           });
           break;
+        case "gameplay.pre_play.awaiting_play_start":
+          this._eventEmitter.emit(GameplayEvents.AWAITING_PLAY_START);
+          break;
         default:
           console.error("received unknown webrtc event : ", type, { data });
       }

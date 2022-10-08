@@ -27,6 +27,7 @@ import TrumpPrompt from "./ui/scenes/game/TrumpPrompt";
 import TrumpContainer from "./ui/scenes/game/TrumpContainer";
 import MeldManager from "./ui/scenes/game/MeldManager";
 import Score from "./ui/scenes/game/Score";
+import StartGameBtn from "./ui/scenes/game/StartGameBtn";
 
 const main = new Container({ defaultScope: "Singleton" });
 main
@@ -71,6 +72,7 @@ main
   .inSingletonScope();
 main.bind<MeldManager>(TYPES.MeldManager).to(MeldManager).inSingletonScope();
 main.bind<Score>(TYPES.Score).to(Score).inSingletonScope();
+main.bind<StartGameBtn>(TYPES.StartGameBtn).to(StartGameBtn).inSingletonScope();
 main.bind<GameScene>(TYPES.GameScene).to(GameScene);
 main.bind<Game>(TYPES.Game).to(Game);
 

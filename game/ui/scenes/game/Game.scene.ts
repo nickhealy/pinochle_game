@@ -10,6 +10,7 @@ import BidPrompt from "./BidPrompt";
 import TrumpPrompt from "./TrumpPrompt";
 import TrumpContainer from "./TrumpContainer";
 import Score from "./Score";
+import StartGameBtn from "./StartGameBtn";
 
 @injectable()
 class GameScene {
@@ -18,6 +19,7 @@ class GameScene {
   private otherPlayerWest: OtherPlayer;
   private otherPlayerNorth: OtherPlayer;
   private otherPlayerEast: OtherPlayer;
+  private $startGameBtn: StartGameBtn;
   private _container: HTMLDivElement;
   private _store: StoreType;
   private _ee: EventEmitter;
@@ -33,6 +35,7 @@ class GameScene {
     @inject<TrumpContainer>(TYPES.TrumpContainer)
     trumpContainer: TrumpContainer,
     @inject(TYPES.Score) score: Score,
+    @inject(TYPES.StartGameBtn) startGameBtn: StartGameBtn,
     @inject(TYPES.OtherPlayerFactory)
     otherPlayerFactory: (position: OpponentPosition) => OtherPlayer,
     @inject(TYPES.Store) store: StoreType,
@@ -42,6 +45,7 @@ class GameScene {
     this.bidPrompt = bidPrompt;
     this.trumpPrompt = trumpPrompt;
     this.trumpContainer = trumpContainer;
+    this.$startGameBtn = startGameBtn;
     this.score = score;
     this.otherPlayerWest = otherPlayerFactory(OpponentPosition.WEST);
     this.otherPlayerNorth = otherPlayerFactory(OpponentPosition.NORTH);

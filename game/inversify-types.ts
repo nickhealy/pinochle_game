@@ -24,6 +24,7 @@ const TYPES = {
   TrumpContainer: Symbol.for("trump-container"),
   MeldManager: Symbol.for("meld-manager"),
   Score: Symbol.for("score"),
+  StartGameBtn: Symbol.for("start-game-btn"),
 };
 
 export default TYPES;

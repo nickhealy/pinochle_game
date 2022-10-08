@@ -23,6 +23,8 @@ const addMeld = (cards: Array<CardKeys>, type: MeldType) =>
   });
 const submitMelds = () =>
   _createOutgoingMessage(OutgoingGameplayEvents.COMMIT_MELDS);
+const startPlay = () =>
+  _createOutgoingMessage(OutgoingGameplayEvents.START_PLAY);
 
 export default {
   startGame,
@@ -31,4 +33,5 @@ export default {
   chooseTrump,
   addMeld,
   submitMelds,
+  startPlay,
 };
