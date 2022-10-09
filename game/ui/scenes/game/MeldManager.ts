@@ -7,7 +7,12 @@ import { GameplayEvents } from "../../events/events";
 import OwnPeerManager from "../../networking/OwnPeerManager";
 import WebRTCSansIOClient from "../../networking/WebRTCSansIOClient";
 import { StoreType } from "../../store";
-import { CARD_HEIGHT, CARD_OFFSET, CARD_Z_INDEX } from "./OwnHand";
+import {
+  CARD_HEIGHT,
+  CARD_MOVE_UP_OFFSET,
+  CARD_OFFSET,
+  CARD_Z_INDEX,
+} from "./OwnHand";
 
 const MELDS_BY_KEYS: Record<string, MeldType> = {
   AC_AD_AH_AS: "four-A",
@@ -68,7 +73,6 @@ class MeldManager {
       "gameplay-container"
     ) as HTMLDivElement;
 
-    this.addClickListeners();
     this.addSubscriptions();
   }
 
@@ -129,6 +133,26 @@ class MeldManager {
   private addClickListeners() {
     this.$addMeldBtn.addEventListener("click", this.addMeld.bind(this));
     this.$submitMeldsBtn.addEventListener("click", this.submitMelds.bind(this));
+
+    this._$ownCards.forEach(this.handleCardClick.bind(this));
+  }
+
+  private handleCardClick(cardEl: HTMLImageElement, idx: number) {
+    cardEl.addEventListener("click", () => {
+      if (this.addToCurrentMeld(idx)) {
+        this.moveCardUp(cardEl);
+      } else {
+        this.moveCardDown(cardEl);
+      }
+    });
+  }
+
+  private moveCardUp(cardEl: HTMLImageElement) {
+    cardEl.style.top = `${cardEl.offsetTop - CARD_MOVE_UP_OFFSET}px`;
+  }
+
+  private moveCardDown(cardEl: HTMLImageElement) {
+    cardEl.style.top = `${cardEl.offsetTop + CARD_MOVE_UP_OFFSET}px`;
   }
 
   private moveCardsToMeldPositions() {
@@ -166,6 +190,8 @@ class MeldManager {
   public registerHand(cards: Array<HTMLImageElement>) {
     this._$ownCards = cards;
     this._meldCoords = this.getMeldCoords();
+
+    this.addClickListeners();
   }
 
   public checkForValidMeld() {

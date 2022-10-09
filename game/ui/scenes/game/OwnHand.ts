@@ -8,14 +8,14 @@ import MeldManager from "./MeldManager";
 import MeldTally from "./MeldTally";
 
 export const MOCK_OWN_HAND: Array<CardKeys> = [
-  "KH",
+  "KS",
   "QS",
   "JS",
   "JD",
   "9H",
   "AS",
   "9H",
-  "JS",
+  "JH",
   "AD",
   "JC",
   "9C",
@@ -68,7 +68,6 @@ class OwnHand {
     );
     this._eventEmitter.addEventListener(GameplayEvents.AWAITING_MELDS, () => {
       this.meldManager.registerHand(this.$ownCards);
-      this.addTrumpPhaseListeners();
     });
   }
 
@@ -123,30 +122,6 @@ class OwnHand {
     this.$ownCards.forEach((card, idx) => {
       card.style.left = `${startingCardPositions[idx]}px`;
     });
-  }
-
-  private addTrumpPhaseListeners() {
-    this.$ownCards.forEach((card, idx) =>
-      this.addTrumpPhaseListener(card, idx)
-    );
-  }
-
-  private addTrumpPhaseListener(cardEl: HTMLImageElement, idx: number) {
-    cardEl.addEventListener("click", () => {
-      if (this.meldManager.addToCurrentMeld(idx)) {
-        this.moveCardUp(cardEl);
-      } else {
-        this.moveCardDown(cardEl);
-      }
-    });
-  }
-
-  private moveCardUp(cardEl: HTMLImageElement) {
-    cardEl.style.top = `${cardEl.offsetTop - CARD_MOVE_UP_OFFSET}px`;
-  }
-
-  private moveCardDown(cardEl: HTMLImageElement) {
-    cardEl.style.top = `${cardEl.offsetTop + CARD_MOVE_UP_OFFSET}px`;
   }
 
   private addPlayPhaseListener(cardEl: HTMLImageElement, idx: number) {

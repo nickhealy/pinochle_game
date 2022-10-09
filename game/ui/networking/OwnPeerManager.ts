@@ -98,7 +98,8 @@ class OwnPeerManager extends WebRTCManager {
           this._eventEmitter.emit(LobbyEvents.ROUND_START);
           break;
         case "gameplay.player_cards":
-          this.store.set("ownHand", data.hand);
+          // this.store.set("ownHand", data.hand);
+          this.store.set("ownHand", MOCK_OWN_HAND);
           this._eventEmitter.emit(GameplayEvents.OWN_CARDS_RECEIVED);
           break;
         case "gameplay.bid.awaiting_bid":
