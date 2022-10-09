@@ -1,5 +1,5 @@
 import { DataConnection, Peer } from "peerjs";
-import { CardKeys } from "../../backend/gameplay/Deck";
+import { CardKeys, Suit } from "../../backend/gameplay/Deck";
 import { MeldType } from "../../backend/gameplay/Meld";
 import TYPES from "../../inversify-types";
 import main from "../../inversify.config";
@@ -110,6 +110,10 @@ class MockPlayer {
       this.conn = conn;
       this.initializeListeners();
     });
+  }
+
+  chooseTrump(suit: Suit) {
+    this.conn?.send(JSON.stringify(WebRTCSansIOClient.chooseTrump(suit)));
   }
 
   bid(value: number) {

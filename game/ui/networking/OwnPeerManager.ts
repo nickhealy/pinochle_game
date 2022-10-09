@@ -127,6 +127,11 @@ class OwnPeerManager extends WebRTCManager {
             player: data.player,
           });
           break;
+        case "gameplay.pre_play.trump_chosen":
+          this._eventEmitter.emit(GameplayEvents.TRUMP_CHOSEN, {
+            trump: data.trump,
+          }); // only emitted when other players choose trump
+          break;
         case "gameplay.pre_play.awaiting_melds":
           this._eventEmitter.emit(GameplayEvents.AWAITING_MELDS);
           break;
