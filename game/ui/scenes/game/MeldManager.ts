@@ -161,11 +161,16 @@ class MeldManager {
       const { top, left, zIndex } =
         this._meldCoords[this._submittedCardIdxs.length];
 
-      $submittedCardEl.style.top = `${top}px`;
-      $submittedCardEl.style.left = `${left}px`;
-      $submittedCardEl.style.zIndex = `${zIndex}`;
+      if (this._submittedCardIdxs.includes(idx)) {
+        this.moveCardDown($submittedCardEl);
+      } else {
+        // only animate unused cards into meld position
+        $submittedCardEl.style.top = `${top}px`;
+        $submittedCardEl.style.left = `${left}px`;
+        $submittedCardEl.style.zIndex = `${zIndex}`;
 
-      this._submittedCardIdxs.push(idx);
+        this._submittedCardIdxs.push(idx);
+      }
     });
     this._currMeldIdxs = [];
   }
