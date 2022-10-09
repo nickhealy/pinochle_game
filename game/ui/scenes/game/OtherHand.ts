@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { CardKeys } from "../../../backend/gameplay/Deck";
+import { Card, CardKeys } from "../../../backend/gameplay/Deck";
 import { MELD_OFFSET } from "./MeldManager";
 import { CARD_HEIGHT, CARD_OFFSET as OWN_CARD_OFFSET } from "./OwnHand";
 
@@ -20,7 +20,7 @@ class OtherHand {
   private $cards: Array<HTMLImageElement>;
   private $playSpace: HTMLDivElement;
   private _position: OpponentPosition;
-  private cardsInMelds: number = 0;
+  private cardsInMelds: Array<CardKeys> = [];
 
   constructor(opponentPosition: OpponentPosition) {
     this._position = opponentPosition;
@@ -80,13 +80,29 @@ class OtherHand {
     });
   }
 
+  getUnusedMeldCards(cards: Array<CardKeys>) {
+    // only show *new* cards (unused)
+    const unusedCards = cards.reduce((acc, curr) => {
+      if (!this.cardsInMelds.includes(curr)) {
+        acc.push(curr);
+      }
+      return acc;
+    }, [] as Array<CardKeys>);
+
+    if (unusedCards.length === 0) {
+      return cards; // if no cards are being shared between melds, then render as new meld
+    }
+
+    return unusedCards;
+  }
+
   showMeld(cards: Array<CardKeys>) {
     const coords = this._getCardCoords(CARD_OFFSET_MELD, CARD_END_SPACER_MELD);
-    let i = 0;
-    let lastMeldCardIdx = this.cardsInMelds;
-    this.cardsInMelds += cards.length;
+    let lastMeldCardIdx = this.cardsInMelds.length;
 
-    while (lastMeldCardIdx < this.cardsInMelds) {
+    this.cardsInMelds.push(...this.getUnusedMeldCards(cards));
+
+    while (lastMeldCardIdx < this.cardsInMelds.length) {
       const { end: endOffset, side: sideOffset } = coords[lastMeldCardIdx];
       const $cardEl = this.$cards[lastMeldCardIdx];
       if (this._position == OpponentPosition.WEST) {
@@ -99,9 +115,7 @@ class OtherHand {
         $cardEl.style.top = `${sideOffset}px`;
         $cardEl.style.left = `calc(100% - ${endOffset + CARD_HEIGHT}px)`; // todo figure out why this is correct
       }
-      this.turnFaceup($cardEl, cards[i]);
-      lastMeldCardIdx++;
-      i++;
+      this.turnFaceup($cardEl, this.cardsInMelds[lastMeldCardIdx++]);
     }
   }
 

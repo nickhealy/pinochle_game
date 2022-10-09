@@ -89,7 +89,6 @@ class MeldManager {
       .sort();
     const meldKey = currMeldKeys.join("_");
     const meld = MELDS_BY_KEYS[meldKey];
-    debugger;
     if (!meld) {
       return null;
     }
