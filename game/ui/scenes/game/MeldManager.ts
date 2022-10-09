@@ -209,7 +209,7 @@ class MeldManager {
   public addToCurrentMeld(idx: number) {
     // we use idx instead of CardKey because there can be multiple of same CardKey in single hand
     if (this._currMeldIdxs.includes(idx)) {
-      this._currMeldIdxs.splice(this._currMeldIdxs.indexOf(idx));
+      this._currMeldIdxs.splice(this._currMeldIdxs.indexOf(idx), 1);
       this.checkForValidMeld();
       return false;
     }
