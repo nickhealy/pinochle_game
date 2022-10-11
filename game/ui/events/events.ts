@@ -42,6 +42,9 @@ export enum GameplayEvents {
   MELD_ADDED = "meld_added",
   MELDS_COMMITTED = "melds_committed",
   AWAITING_PLAY_START = "awaiting_play_start",
+  PLAY_START = "play_start",
+  PLAYER_PLAY_TURN = "player_play_turn",
+  PLAYER_PLAY_CARD = "player_play_card",
 }
 
 export type AllEvents =

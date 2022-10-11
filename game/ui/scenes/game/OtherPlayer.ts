@@ -25,7 +25,7 @@ class OtherPlayer {
     this.$bidVal = this._$infoContainer.querySelector(
       ".player-bid-val"
     ) as HTMLElement;
-    this.hand = new OtherHand(position); // i could use inversify here, but not really important
+    this.hand = new OtherHand(position, ee); // i could use inversify here, but not really important
     this.meldTally = new MeldTally(position, ee, store);
     this._eventEmitter = ee;
     this._store = store;
@@ -68,23 +68,48 @@ class OtherPlayer {
     this.$bidVal.innerText = `${bid}`;
   }
 
+  resetPlayerInfo() {
+    this.$bidVal.innerText = "";
+  }
+
   showPlayerPass() {
     this.$bidVal.innerText = "PASS";
     this.$bidVal.classList.add("pass");
   }
 
+  _doIfIsPlayerElse(
+    e: Event,
+    ifCb: (...args: Array<any>) => void,
+    elseCb?: (...args: Array<any>) => void
+  ) {
+    // @ts-ignore using typescript was a mistake
+    const { player } = e.detail;
+
+    if (player == this.id) {
+      ifCb();
+    } else if (elseCb) {
+      elseCb();
+    }
+  }
+
+  maybeShowTurnIndicator(e: Event) {
+    // @ts-ignore using typescript was a mistake
+    const { player } = e.detail;
+    if (player !== this.id) {
+      this.removeTurnIndicator();
+    } else {
+      this.showTurnIndicator();
+    }
+  }
+
   initializeSubscriptions() {
     this._eventEmitter.addEventListener(
       GameplayEvents.AWAITING_BID,
-      (event) => {
-        // @ts-ignore using typescript was a mistake
-        const { player } = event.detail;
-        if (player !== this.id) {
-          this.removeTurnIndicator();
-        } else {
-          this.showTurnIndicator();
-        }
-      }
+      this.maybeShowTurnIndicator.bind(this)
+    );
+    this._eventEmitter.addEventListener(
+      GameplayEvents.PLAYER_PLAY_TURN,
+      this.maybeShowTurnIndicator.bind(this)
     );
     this._eventEmitter.addEventListener(
       GameplayEvents.TRUMP_CHOOSING,
@@ -115,6 +140,7 @@ class OtherPlayer {
 
     this._eventEmitter.addEventListener(GameplayEvents.AWAITING_MELDS, () => {
       this._$infoContainer.classList.add("hidden");
+      this.resetPlayerInfo();
     });
 
     this._eventEmitter.addEventListener(GameplayEvents.MELD_ADDED, (event) => {
@@ -124,6 +150,17 @@ class OtherPlayer {
         this.hand.showMeld(meld.cards);
       }
     });
+
+    this._eventEmitter.addEventListener(GameplayEvents.PLAY_START, () => {
+      this._$infoContainer.classList.remove("hidden");
+    });
+
+    this._eventEmitter.addEventListener(
+      GameplayEvents.PLAYER_PLAY_CARD,
+      (event) =>
+        // @ts-ignore
+        this._doIfIsPlayerElse(event, this.hand.playCard(event.detail.card))
+    );
 
     this._store.subscribe(
       "playerIdsByPosition",

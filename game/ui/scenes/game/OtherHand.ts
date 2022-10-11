@@ -1,5 +1,7 @@
 import { injectable } from "inversify";
 import { Card, CardKeys } from "../../../backend/gameplay/Deck";
+import EventEmitter from "../../events/EventEmitter";
+import { GameplayEvents } from "../../events/events";
 import { MELD_OFFSET } from "./MeldManager";
 import { CARD_HEIGHT, CARD_OFFSET as OWN_CARD_OFFSET } from "./OwnHand";
 
@@ -21,8 +23,9 @@ class OtherHand {
   private $playSpace: HTMLDivElement;
   private _position: OpponentPosition;
   private cardsInMelds: Array<CardKeys> = [];
+  private ee: EventEmitter;
 
-  constructor(opponentPosition: OpponentPosition) {
+  constructor(opponentPosition: OpponentPosition, ee: EventEmitter) {
     this._position = opponentPosition;
     this.$playSpace = document.getElementById(
       `${opponentPosition}-card-space`
@@ -31,7 +34,18 @@ class OtherHand {
       "gameplay-container"
     ) as HTMLDivElement;
     this.$cards = this.createCards();
+    this.ee = ee;
+
+    this.addListeners();
   }
+
+  addListeners() {
+    this.ee.addEventListener(GameplayEvents.PLAY_START, () => {
+      this.layoutCards();
+      this.$cards.forEach(this.turnFacedown);
+    });
+  }
+
   createCards() {
     const cards: Array<HTMLImageElement> = [];
     while (cards.length < 12) {
@@ -59,19 +73,14 @@ class OtherHand {
     }
     return coords;
   }
+
   layoutCards() {
     const coords = this._getCardCoords();
     this.$cards.forEach((card, idx) => {
-      if (
-        this._position == OpponentPosition.WEST ||
-        this._position == OpponentPosition.EAST
-      ) {
-        card.style.top = `${coords[idx].side}px`;
-      } else if (this._position == OpponentPosition.NORTH) {
-        card.style.left = `${coords[idx].side}px`;
-      }
+      this._moveCardToCoord(card, coords[idx]);
     });
   }
+
   renderCards() {
     this.layoutCards();
     this.$cards.forEach((card) => {
@@ -96,6 +105,23 @@ class OtherHand {
     return unusedCards;
   }
 
+  _moveCardToCoord(
+    $cardEl: HTMLImageElement,
+    coord: { end: number; side: number }
+  ) {
+    const { end: endOffset, side: sideOffset } = coord;
+    if (this._position == OpponentPosition.WEST) {
+      $cardEl.style.top = `${sideOffset}px`;
+      $cardEl.style.left = `${endOffset}px`;
+    } else if (this._position == OpponentPosition.NORTH) {
+      $cardEl.style.top = `${endOffset}px`;
+      $cardEl.style.left = `${sideOffset}px`;
+    } else if (this._position == OpponentPosition.EAST) {
+      $cardEl.style.top = `${sideOffset}px`;
+      $cardEl.style.left = `calc(100% - ${endOffset + CARD_HEIGHT}px)`; // todo figure out why this is correct
+    }
+  }
+
   showMeld(cards: Array<CardKeys>) {
     const coords = this._getCardCoords(CARD_OFFSET_MELD, CARD_END_SPACER_MELD);
     let lastMeldCardIdx = this.cardsInMelds.length;
@@ -103,24 +129,18 @@ class OtherHand {
     this.cardsInMelds.push(...this.getUnusedMeldCards(cards));
 
     while (lastMeldCardIdx < this.cardsInMelds.length) {
-      const { end: endOffset, side: sideOffset } = coords[lastMeldCardIdx];
       const $cardEl = this.$cards[lastMeldCardIdx];
-      if (this._position == OpponentPosition.WEST) {
-        $cardEl.style.top = `${sideOffset}px`;
-        $cardEl.style.left = `${endOffset}px`;
-      } else if (this._position == OpponentPosition.NORTH) {
-        $cardEl.style.top = `${endOffset}px`;
-        $cardEl.style.left = `${sideOffset}px`;
-      } else if (this._position == OpponentPosition.EAST) {
-        $cardEl.style.top = `${sideOffset}px`;
-        $cardEl.style.left = `calc(100% - ${endOffset + CARD_HEIGHT}px)`; // todo figure out why this is correct
-      }
+      this._moveCardToCoord($cardEl, coords[lastMeldCardIdx]);
       this.turnFaceup($cardEl, this.cardsInMelds[lastMeldCardIdx++]);
     }
   }
 
   private turnFaceup(cardEl: HTMLImageElement, cardKey: CardKeys) {
     cardEl.src = `/cards/${cardKey}.png`;
+  }
+
+  private turnFacedown(cardEl: HTMLImageElement) {
+    cardEl.src = "/cards/card_back_black.png";
   }
 
   private playCardAnimation(card: HTMLImageElement) {

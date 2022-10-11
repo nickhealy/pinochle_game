@@ -123,6 +123,10 @@ class MockPlayer {
   pass() {
     this.conn?.send(JSON.stringify(WebRTCSansIOClient.passBid()));
   }
+
+  playCard(card: CardKeys) {
+    this.conn?.send(JSON.stringify(WebRTCSansIOClient.playCard(card)));
+  }
 }
 
 // @ts-ignore
@@ -145,6 +149,16 @@ globalThis.joinAllPlayers = () => {
   setTimeout(globalThis.annabelle.join.bind(globalThis.annabelle), 1000);
   // @ts-ignore
   setTimeout(globalThis.chris.join.bind(globalThis.chris), 1500);
+};
+
+// @ts-ignore
+globalThis.commitAll = () => {
+  // @ts-ignore
+  globalThis.scott.commitMelds();
+  // @ts-ignore
+  globalThis.chris.commitMelds();
+  // @ts-ignore
+  globalThis.annabelle.commitMelds();
 };
 
 // const mockConnection = new MockConnection();

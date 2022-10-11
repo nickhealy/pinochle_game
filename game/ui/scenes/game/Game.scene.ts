@@ -75,6 +75,15 @@ class GameScene {
         this.bidPrompt.render();
       }
     });
+    this._ee.addEventListener(GameplayEvents.PLAYER_PLAY_TURN, (event) => {
+      // @ts-ignore using typescript was a mistake
+      const { player } = event.detail;
+      if (player !== this.ownId) {
+        // this.bidPrompt.hide();
+      } else {
+        console.log("my turn to play ");
+      }
+    });
     this._ee.addEventListener(GameplayEvents.BID_WINNER, (event) => {
       // will also show bid winner
       this.bidPrompt.hide();

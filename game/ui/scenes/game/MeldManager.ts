@@ -56,6 +56,7 @@ class MeldManager {
   private store: StoreType;
   private ee: EventEmitter;
   private io: OwnPeerManager;
+  private _listeners: Record<number, (e: Event) => void> = {};
 
   constructor(
     @inject<EventEmitter>(TYPES.EventEmitter) ee: EventEmitter,
@@ -75,6 +76,14 @@ class MeldManager {
 
     this.addSubscriptions();
   }
+
+  private createClickListeners = () => {
+    this._$ownCards.forEach(($el, idx) => {
+      // store listeners in dict so we can maintain reference when
+      // removing them later
+      this._listeners[idx] = this._createClickListener(idx, $el);
+    });
+  };
 
   private doesMeldSuitMatchTrump(meld: Array<CardKeys>) {
     const trump = this.store.get("trump");
@@ -130,20 +139,25 @@ class MeldManager {
   }
 
   private addClickListeners() {
+    this.createClickListeners();
     this.$addMeldBtn.addEventListener("click", this.addMeld.bind(this));
     this.$submitMeldsBtn.addEventListener("click", this.submitMelds.bind(this));
 
-    this._$ownCards.forEach(this.handleCardClick.bind(this));
+    this._$ownCards.forEach(this.addClickListener.bind(this));
   }
 
-  private handleCardClick(cardEl: HTMLImageElement, idx: number) {
-    cardEl.addEventListener("click", () => {
+  private addClickListener(cardEl: HTMLImageElement, idx: number) {
+    cardEl.addEventListener("click", this._listeners[idx]);
+  }
+
+  private _createClickListener(idx: number, $cardEl: HTMLImageElement) {
+    return () => {
       if (this.addToCurrentMeld(idx)) {
-        this.moveCardUp(cardEl);
+        this.moveCardUp($cardEl);
       } else {
-        this.moveCardDown(cardEl);
+        this.moveCardDown($cardEl);
       }
-    });
+    };
   }
 
   private moveCardUp(cardEl: HTMLImageElement) {
@@ -198,6 +212,12 @@ class MeldManager {
     this.addClickListeners();
   }
 
+  removeListeners() {
+    this._$ownCards.forEach(($el, idx) => {
+      $el.removeEventListener("click", this._listeners[idx]);
+    });
+  }
+
   public checkForValidMeld() {
     if (this.getCurrentMeldType() === null) {
       this.$addMeldBtn.disabled = true;
@@ -222,6 +242,13 @@ class MeldManager {
     this.ee.addEventListener(GameplayEvents.AWAITING_MELDS, () => {
       this.$addMeldBtn.classList.remove("hidden");
       this.$submitMeldsBtn.classList.remove("hidden");
+    });
+
+    this.ee.addEventListener(GameplayEvents.PLAY_START, () => {
+      this.$addMeldBtn.classList.add("hidden");
+      this.$submitMeldsBtn.classList.add("hidden");
+
+      this.removeListeners();
     });
   }
 }

@@ -25,6 +25,8 @@ const submitMelds = () =>
   _createOutgoingMessage(OutgoingGameplayEvents.COMMIT_MELDS);
 const startPlay = () =>
   _createOutgoingMessage(OutgoingGameplayEvents.START_PLAY);
+const playCard = (card: CardKeys) =>
+  _createOutgoingMessage(OutgoingGameplayEvents.PLAY_CARD, { card });
 
 export default {
   startGame,
@@ -34,4 +36,5 @@ export default {
   addMeld,
   submitMelds,
   startPlay,
+  playCard,
 };

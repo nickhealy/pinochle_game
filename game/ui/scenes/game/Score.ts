@@ -5,6 +5,7 @@ import { GameplayEvents, LobbyEvents } from "../../events/events";
 import { StoreType } from "../../store";
 
 const ROUND_BID_VAL_SELECTOR = "#bid>.round-score-value";
+const ROUND_PLAY_VAL_SELECTOR = "#play>.round-score-value";
 
 @injectable()
 class Score {
@@ -87,6 +88,10 @@ class Score {
         this._updateMeldPoints(newMeldPoints);
       }
     });
+    this.ee.addEventListener(
+      GameplayEvents.PLAY_START,
+      this.initPlayScore.bind(this)
+    );
   }
 
   _getPlayerName(id: string) {
@@ -108,6 +113,13 @@ class Score {
       this._$container.querySelectorAll(ROUND_BID_VAL_SELECTOR)
     );
     $bidEls.forEach(($el) => ($el.innerHTML = "--"));
+  }
+
+  initPlayScore() {
+    const $playScoreEls = Array.from(
+      this._$container.querySelectorAll(ROUND_PLAY_VAL_SELECTOR)
+    );
+    $playScoreEls.forEach(($el) => ($el.innerHTML = `0`));
   }
 
   render() {

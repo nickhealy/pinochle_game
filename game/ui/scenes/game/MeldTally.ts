@@ -80,6 +80,8 @@ class MeldTally {
       }
     });
 
+    this.ee.addEventListener(GameplayEvents.PLAY_START, this.hide.bind(this));
+
     this.store.subscribe("playerIdsByPosition", (ids) => {
       const id =
         (this._position === "own" && this.store.get("ownId")) ||
@@ -114,6 +116,10 @@ class MeldTally {
 
   render() {
     this.$_container.classList.remove("hidden");
+  }
+
+  hide() {
+    this.$_container.classList.add("hidden");
   }
 }
 

@@ -32,6 +32,8 @@ class StartGameBtn {
         this.render();
       }
     });
+
+    this.ee.addEventListener(GameplayEvents.PLAY_START, this.hide.bind(this));
   }
 
   addClickHandlers() {
