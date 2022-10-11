@@ -3,6 +3,8 @@ import { Card, CardKeys } from "../../../backend/gameplay/Deck";
 import TYPES from "../../../inversify-types";
 import EventEmitter from "../../events/EventEmitter";
 import { GameplayEvents } from "../../events/events";
+import OwnPeerManager from "../../networking/OwnPeerManager";
+import WebRTCSansIOClient from "../../networking/WebRTCSansIOClient";
 import { StoreType } from "../../store";
 import MeldManager from "./MeldManager";
 import MeldTally from "./MeldTally";
@@ -34,24 +36,31 @@ const CARD_KEY_ATTR = "card-key";
 class OwnHand {
   _store: StoreType;
   _eventEmitter: EventEmitter;
+  io: OwnPeerManager;
   _$gameplayContainer: HTMLDivElement;
   meldManager: MeldManager;
   meldTally: MeldTally;
   $ownCards: Array<HTMLImageElement> = [];
-  $playSpace: HTMLDivElement;
+  $ownPlaySpace: HTMLDivElement;
+  $playContainer: HTMLDivElement;
   _listeners: Record<number, (e: Event) => void> = {};
 
   constructor(
     @inject<StoreType>(TYPES.Store) store: StoreType,
     @inject<MeldManager>(TYPES.MeldManager) meldManager: MeldManager,
-    @inject<EventEmitter>(TYPES.EventEmitter) eventEmitter: EventEmitter
+    @inject<EventEmitter>(TYPES.EventEmitter) eventEmitter: EventEmitter,
+    @inject<OwnPeerManager>(TYPES.OwnPeerManager) io: OwnPeerManager
   ) {
     this._store = store;
     this._eventEmitter = eventEmitter;
+    this.io = io;
     this._$gameplayContainer = document.getElementById(
       "gameplay-container"
     ) as HTMLDivElement;
-    this.$playSpace = document.getElementById(
+    this.$playContainer = document.getElementById(
+      "play-area"
+    ) as HTMLDivElement;
+    this.$ownPlaySpace = document.getElementById(
       "own-card-space"
     ) as HTMLDivElement;
     this.meldManager = meldManager;
@@ -70,10 +79,10 @@ class OwnHand {
     this._eventEmitter.addEventListener(GameplayEvents.AWAITING_MELDS, () => {
       this.meldManager.registerHand(this.$ownCards);
     });
-    this._eventEmitter.addEventListener(
-      GameplayEvents.PLAY_START,
-      this.addClickListeners.bind(this)
-    );
+    this._eventEmitter.addEventListener(GameplayEvents.PLAY_START, () => {
+      this.$playContainer.classList.remove("hidden");
+      this.addClickListeners();
+    });
   }
 
   addClickListeners() {
@@ -91,10 +100,20 @@ class OwnHand {
 
   private createClickListener(card: HTMLImageElement, idx: number) {
     return () => {
-      this.playCardAnimation(card);
-      this.repositionOwnHand(card);
+      this.playCard(idx, card);
     };
   }
+
+  private playCard(idx: number, card: HTMLImageElement) {
+    this.io.send(WebRTCSansIOClient.playCard(this._store.get("ownHand")[idx]));
+    this.triggerPlayCardAnimations(card);
+  }
+
+  private triggerPlayCardAnimations(card: HTMLImageElement) {
+    this.playCardAnimation(card);
+    this.repositionOwnHand(card);
+  }
+
   private getCardCoords() {
     // calculate position of first card so that hand can be centered
     // add x positions for each card from starting position
@@ -150,7 +169,7 @@ class OwnHand {
 
   private playCardAnimation(card: HTMLImageElement) {
     const { top: playSpaceTopFromVp, left: playSpaceLeftFromVP } =
-      this.$playSpace.getBoundingClientRect();
+      this.$ownPlaySpace.getBoundingClientRect();
     const { top: boardTopFromVp, left: boardLeftFromVp } =
       this._$gameplayContainer.getBoundingClientRect();
     const ownPlaySpaceTopFromBoard = playSpaceTopFromVp - boardTopFromVp;
