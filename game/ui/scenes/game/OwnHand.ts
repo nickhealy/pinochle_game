@@ -39,6 +39,7 @@ class OwnHand {
   meldTally: MeldTally;
   $ownCards: Array<HTMLImageElement> = [];
   $playSpace: HTMLDivElement;
+  _listeners: Record<number, (e: Event) => void> = {};
 
   constructor(
     @inject<StoreType>(TYPES.Store) store: StoreType,
@@ -69,8 +70,31 @@ class OwnHand {
     this._eventEmitter.addEventListener(GameplayEvents.AWAITING_MELDS, () => {
       this.meldManager.registerHand(this.$ownCards);
     });
+    this._eventEmitter.addEventListener(
+      GameplayEvents.PLAY_START,
+      this.addClickListeners.bind(this)
+    );
   }
 
+  addClickListeners() {
+    this.createClickListeners();
+    this.$ownCards.forEach(($card, idx) =>
+      $card.addEventListener("click", this._listeners[idx])
+    );
+  }
+
+  createClickListeners() {
+    this.$ownCards.forEach(
+      ($el, idx) => (this._listeners[idx] = this.createClickListener($el, idx))
+    );
+  }
+
+  private createClickListener(card: HTMLImageElement, idx: number) {
+    return () => {
+      this.playCardAnimation(card);
+      this.repositionOwnHand(card);
+    };
+  }
   private getCardCoords() {
     // calculate position of first card so that hand can be centered
     // add x positions for each card from starting position
@@ -124,15 +148,6 @@ class OwnHand {
     });
   }
 
-  private addPlayPhaseListener(cardEl: HTMLImageElement, idx: number) {
-    cardEl.removeEventListener("click", () => {
-      this.handleOwnCardClick(cardEl, idx);
-    });
-    cardEl.addEventListener("click", () => {
-      this.handleOwnCardClick(cardEl, idx);
-    });
-  }
-
   private playCardAnimation(card: HTMLImageElement) {
     const { top: playSpaceTopFromVp, left: playSpaceLeftFromVP } =
       this.$playSpace.getBoundingClientRect();
@@ -147,11 +162,6 @@ class OwnHand {
   private repositionOwnHand(removedCard: HTMLImageElement) {
     this.$ownCards = this.$ownCards.filter((card) => card !== removedCard);
     this.layoutOwnHand();
-  }
-
-  private handleOwnCardClick(card: HTMLImageElement, idx: number) {
-    this.playCardAnimation(card);
-    this.repositionOwnHand(card);
   }
 
   private initDevTools() {
