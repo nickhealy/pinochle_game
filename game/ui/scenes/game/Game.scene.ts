@@ -165,9 +165,6 @@ class GameScene {
   render() {
     this._container.classList.remove("hidden");
     this.ownHand.render();
-    this.otherPlayerWest.render();
-    this.otherPlayerNorth.render();
-    this.otherPlayerEast.render();
   }
 }
 

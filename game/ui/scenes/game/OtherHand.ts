@@ -19,7 +19,7 @@ export enum OpponentPosition {
 @injectable()
 class OtherHand {
   private _$gameplayContainer: HTMLDivElement;
-  private $cards: Array<HTMLImageElement>;
+  private $cards: Array<HTMLImageElement> = [];
   private $playSpace: HTMLDivElement;
   private _position: OpponentPosition;
   private cardsInMelds: Array<CardKeys> = [];
@@ -33,7 +33,6 @@ class OtherHand {
     this._$gameplayContainer = document.getElementById(
       "gameplay-container"
     ) as HTMLDivElement;
-    this.$cards = this.createCards();
     this.ee = ee;
 
     this.addListeners();
@@ -44,6 +43,11 @@ class OtherHand {
       this.layoutCards();
       this.$cards.forEach(this.turnFacedown);
     });
+
+    this.ee.addEventListener(
+      GameplayEvents.OWN_CARDS_RECEIVED,
+      this.renderCards.bind(this)
+    );
   }
 
   createCards() {
@@ -54,7 +58,7 @@ class OtherHand {
       card.classList.add("card", `${this._position}-opponent-card`);
       cards.push(card);
     }
-    return cards;
+    this.$cards = cards;
   }
   _getCardCoords(sideOffset = CARD_OFFSET, endOffset = CARD_END_SPACER) {
     const coords: Array<{ end: number; side: number }> = [];
@@ -82,6 +86,7 @@ class OtherHand {
   }
 
   renderCards() {
+    this.createCards();
     this.layoutCards();
     this.$cards.forEach((card) => {
       this._$gameplayContainer.append(card);
@@ -167,10 +172,6 @@ class OtherHand {
     this.playCardAnimation(cardEl);
 
     cardEl.setAttribute("data-played", "true"); // this is terrible
-  }
-
-  render() {
-    this.renderCards();
   }
 }
 

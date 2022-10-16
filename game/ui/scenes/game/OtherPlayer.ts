@@ -32,9 +32,6 @@ class OtherPlayer {
 
     this.initializeSubscriptions();
   }
-  render() {
-    this.hand.render();
-  }
 
   get id() {
     return this._store.get("playerIdsByPosition")[this._position];
