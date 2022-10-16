@@ -5,6 +5,7 @@ import { GameplayEvents, LobbyEvents } from "../../events/events";
 import { StoreType } from "../../store";
 
 const ROUND_BID_VAL_SELECTOR = "#bid>.round-score-value";
+const ROUND_MELD_VAL_SELECTOR = "#meld > .round-score-value";
 const ROUND_PLAY_VAL_SELECTOR = "#play>.round-score-value";
 
 @injectable()
@@ -31,7 +32,7 @@ class Score {
   _updateMeldPoints(newMelds: Array<number>) {
     this._meldPoints = newMelds;
     Array.from(
-      this._$container.querySelectorAll("#meld > .round-score-value")
+      this._$container.querySelectorAll(ROUND_MELD_VAL_SELECTOR)
     ).forEach(($el, idx) => ($el.innerHTML = `${this._meldPoints[idx]}`));
   }
 
@@ -98,12 +99,27 @@ class Score {
       GameplayEvents.PLAY_START,
       this.initPlayScore.bind(this)
     );
+    this.ee.addEventListener(GameplayEvents.ROUND_END, (e) => {
+      // @ts-ignore
+      const { score } = e.detail;
+      this._updateGameScore(score);
+      this.resetScore();
+    });
   }
 
+  _updateGameScore(score: Array<number>) {
+    const [$team1Score, $team2Score] = Array.from(
+      document
+        .getElementById("game-score")!
+        .querySelectorAll(".team-score>.score")
+    );
+    $team1Score.innerHTML = `${score[0]}`;
+    $team2Score.innerHTML = `${score[1]}`;
+  }
   _updatePlayPoints(totalPoints: Array<Array<number>>) {
     const playPoints = totalPoints.map((team) => team[1]);
     this._$container
-      .querySelectorAll("#play>.round-score-value")
+      .querySelectorAll(ROUND_PLAY_VAL_SELECTOR)
       .forEach(($val, idx) => ($val.innerHTML = `${playPoints[idx]}`));
   }
 
@@ -121,11 +137,19 @@ class Score {
     );
   }
 
-  zeroOutScore() {
+  resetScore() {
     const $bidEls = Array.from(
       this._$container.querySelectorAll(ROUND_BID_VAL_SELECTOR)
     );
+    const $playEls = Array.from(
+      this._$container.querySelectorAll(ROUND_PLAY_VAL_SELECTOR)
+    );
+    const $meldEls = Array.from(
+      this._$container.querySelectorAll(ROUND_MELD_VAL_SELECTOR)
+    );
     $bidEls.forEach(($el) => ($el.innerHTML = "--"));
+    $playEls.forEach(($el) => ($el.innerHTML = ""));
+    $meldEls.forEach(($el) => ($el.innerHTML = ""));
   }
 
   initPlayScore() {
@@ -136,7 +160,7 @@ class Score {
   }
 
   render() {
-    this.zeroOutScore();
+    this.resetScore();
     this.populateTeams();
     this._$container.classList.remove("hidden");
   }

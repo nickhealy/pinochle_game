@@ -172,6 +172,13 @@ class OwnPeerManager extends WebRTCManager {
             points: data.points,
           });
           break;
+        case "gameplay.post_play.round_end":
+          this._eventEmitter.emit(GameplayEvents.ROUND_END, {
+            score: data.score,
+            hasMadeBid: data.has_made_bid,
+            gameOver: data.game_over,
+          });
+          break;
         default:
           console.error("received unknown webrtc event : ", type, { data });
       }
