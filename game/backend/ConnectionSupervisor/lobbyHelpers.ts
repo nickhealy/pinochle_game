@@ -10,7 +10,15 @@ import {
   ConnectionSupervisorEvents,
 } from "./types";
 
-const _getRandomIdx = () => Math.floor(Math.random() * 4);
+let idx = 0;
+const _getRandomIdx = () => {
+  //@ts-ignore
+  if (!globalThis._useMocks) {
+    return Math.floor(Math.random() * 4);
+  }
+
+  return idx++;
+};
 
 export const shuffleConnectedWorkerKeys = (connectedWorkers: Array<string>) => {
   const shuffledWorkers: Array<string | null> = [null, null, null, null];

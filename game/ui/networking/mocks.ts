@@ -1,9 +1,11 @@
+//@ts-nocheck
 import { DataConnection, Peer } from "peerjs";
 import { CardKeys, Suit } from "../../backend/gameplay/Deck";
 import { MeldType } from "../../backend/gameplay/Meld";
 import TYPES from "../../inversify-types";
 import main from "../../inversify.config";
 import { StoreType } from "../store";
+import HostPeerManager from "./HostPeerManager";
 import WebRTCSansIOClient from "./WebRTCSansIOClient";
 
 // @ts-ignore
@@ -125,6 +127,13 @@ class MockPlayer {
   }
 
   playCard(card: CardKeys) {
+    console.log(`PLAYER ${this.name} playing ${card}`);
+    if (!this.cards.includes(card)) {
+      console.error(`${this.name} does not have ${card}`);
+      return;
+    }
+
+    this.cards.splice(this.cards.indexOf(card), 1);
     this.conn?.send(JSON.stringify(WebRTCSansIOClient.playCard(card)));
   }
 }
@@ -161,9 +170,131 @@ globalThis.commitAll = () => {
   globalThis.annabelle.commitMelds();
 };
 
-// const mockConnection = new MockConnection();
+globalThis.allPass = () => {
+  globalThis.annabelle.pass();
+  globalThis.chris.pass();
+  globalThis.scott.pass();
+};
 
-// @ts-ignore
-// globalThis.mockConnection = mockConnection;
+//@ts-ignore
+globalThis.goToTrickEnd = () => {
+  //@ts-ignore
+  globalThis.host.playCard = (cardKey: CardKeys) => {
+    const card = document.querySelector(
+      `[card-key='${cardKey}']`
+    ) as HTMLImageElement;
+    if (card) {
+      card.click();
+    } else {
+      console.error(`Could not find ${cardKey} in the DOM`);
+    }
+  };
 
-// export default mockConnection as unknown as DataConnection;
+  const withTimeout = (cb: () => void) =>
+    new Promise((res) => {
+      setTimeout(() => {
+        cb();
+        res();
+      }, 1000);
+    });
+
+  const host = globalThis.host;
+  const annabelle = globalThis.annabelle;
+  const chris = globalThis.chris;
+  const scott = globalThis.scott;
+
+  withTimeout(() => {
+    host.playCard("AS");
+    annabelle.playCard("QS");
+    chris.playCard("9S");
+    scott.playCard("9S");
+  })
+    .then(() =>
+      withTimeout(() => {
+        host.playCard("AC");
+        annabelle.playCard("QC");
+        chris.playCard("QC");
+        scott.playCard("9C");
+      })
+    )
+    .then(() =>
+      withTimeout(() => {
+        host.playCard("QH");
+        annabelle.playCard("AH");
+        chris.playCard("QH");
+        scott.playCard("JH");
+      })
+    )
+    .then(() =>
+      withTimeout(() => {
+        annabelle.playCard("AS");
+        chris.playCard("JC");
+        scott.playCard("JS");
+        host.playCard("10S");
+      })
+    )
+    .then(() =>
+      withTimeout(() => {
+        chris.playCard("AC");
+        scott.playCard("9H");
+        host.playCard("10C");
+        annabelle.playCard("KC");
+      })
+    )
+    .then(() =>
+      withTimeout(() => {
+        chris.playCard("AH");
+        scott.playCard("KH");
+        host.playCard("JH");
+        annabelle.playCard("9H");
+      })
+    )
+    .then(() =>
+      withTimeout(() => {
+        chris.playCard("10H");
+        scott.playCard("10H");
+        host.playCard("JC");
+        annabelle.playCard("9D");
+      })
+    )
+    .then(() =>
+      withTimeout(() => {
+        host.playCard("KS");
+        annabelle.playCard("10S");
+        chris.playCard("JD");
+        scott.playCard("KS");
+      })
+    )
+    .then(
+      withTimeout(() => {
+        annabelle.playCard("QD");
+        chris.playCard("10D");
+        scott.playCard("AD");
+        host.playCard("JD");
+      })
+    )
+    .then(
+      withTimeout(() => {
+        annabelle.playCard("10C");
+        chris.playCard("9D");
+        scott.playCard("AD");
+        host.playCard("9C");
+      })
+    )
+    .then(
+      withTimeout(() => {
+        annabelle.playCard("KC");
+        chris.playCard("QD");
+        scott.playCard("KD");
+        host.playCard("QS");
+      })
+    )
+    .then(
+      withTimeout(() => {
+        annabelle.playCard("10D");
+        chris.playCard("KH");
+        scott.playCard("JS");
+        host.playCard("KD");
+      })
+    );
+};

@@ -98,8 +98,8 @@ class OwnPeerManager extends WebRTCManager {
           this._eventEmitter.emit(LobbyEvents.ROUND_START);
           break;
         case "gameplay.player_cards":
-          // this.store.set("ownHand", data.hand);
-          this.store.set("ownHand", MOCK_OWN_HAND);
+          this.store.set("ownHand", data.hand);
+          // this.store.set("ownHand", MOCK_OWN_HAND);
           this._eventEmitter.emit(GameplayEvents.OWN_CARDS_RECEIVED);
           break;
         case "gameplay.bid.awaiting_bid":
@@ -163,6 +163,13 @@ class OwnPeerManager extends WebRTCManager {
           this._eventEmitter.emit(GameplayEvents.PLAYER_PLAY_CARD, {
             player: data.player,
             card: data.card,
+          });
+          break;
+        case "gameplay.play.trick_end":
+          this._eventEmitter.emit(GameplayEvents.TRICK_END, {
+            player: data.player,
+            is_last_trick: data.is_last_trick,
+            points: data.points,
           });
           break;
         default:

@@ -159,7 +159,10 @@ class OtherPlayer {
       GameplayEvents.PLAYER_PLAY_CARD,
       (event) =>
         // @ts-ignore
-        this._doIfIsPlayerElse(event, this.hand.playCard(event.detail.card))
+        this._doIfIsPlayerElse(event, () =>
+          // @ts-ignore
+          this.hand.playCard(event.detail.card)
+        )
     );
 
     this._store.subscribe(

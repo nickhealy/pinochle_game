@@ -28,6 +28,7 @@ export const CARD_OFFSET = 35;
 export const OFFSET_BOTTOM = 15;
 export const CARD_MOVE_UP_OFFSET = 30;
 export const CARD_HEIGHT = 130;
+export const CARD_WIDTH = 95;
 export const CARD_Z_INDEX = 10;
 
 const CARD_KEY_ATTR = "card-key";
@@ -81,6 +82,7 @@ class OwnHand {
     });
     this._eventEmitter.addEventListener(GameplayEvents.PLAY_START, () => {
       this.$playContainer.classList.remove("hidden");
+      this.layoutOwnHand();
       this.addClickListeners();
     });
   }
@@ -107,6 +109,8 @@ class OwnHand {
   private playCard(idx: number, card: HTMLImageElement) {
     this.io.send(WebRTCSansIOClient.playCard(this._store.get("ownHand")[idx]));
     this.triggerPlayCardAnimations(card);
+
+    card.setAttribute("data-played", "true"); // this is terrible
   }
 
   private triggerPlayCardAnimations(card: HTMLImageElement) {
@@ -119,7 +123,7 @@ class OwnHand {
     // add x positions for each card from starting position
     const coords: Array<number> = [];
     const numCards = this.$ownCards.length;
-    const targetWidth = CARD_OFFSET * (numCards - 1) + 95; // numCards - 1 cards show indices, face card shows whole card
+    const targetWidth = CARD_OFFSET * (numCards - 1) + CARD_WIDTH; // numCards - 1 cards show indices, face card shows whole card
     const midWayX = this._$gameplayContainer.offsetWidth / 2;
     const leftWidth = targetWidth / 2;
     const leftStart = Math.floor(midWayX - leftWidth);
@@ -161,9 +165,12 @@ class OwnHand {
   }
 
   private layoutOwnHand() {
+    let zIndex = 20;
     const startingCardPositions = this.getCardCoords();
     this.$ownCards.forEach((card, idx) => {
+      card.style.zIndex = `${zIndex++}`;
       card.style.left = `${startingCardPositions[idx]}px`;
+      card.style.top = `calc(100% - ${OFFSET_BOTTOM + CARD_HEIGHT}px)`;
     });
   }
 

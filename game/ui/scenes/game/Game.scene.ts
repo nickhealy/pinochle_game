@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import TYPES from "../../../inversify-types";
 import OtherPlayer from "./OtherPlayer";
-import OwnHand from "./OwnHand";
+import OwnHand, { CARD_HEIGHT, CARD_WIDTH } from "./OwnHand";
 import { OpponentPosition } from "./OtherHand";
 import { StoreType } from "../../store";
 import EventEmitter from "../../events/EventEmitter";
@@ -75,15 +75,6 @@ class GameScene {
         this.bidPrompt.render();
       }
     });
-    this._ee.addEventListener(GameplayEvents.PLAYER_PLAY_TURN, (event) => {
-      // @ts-ignore using typescript was a mistake
-      const { player } = event.detail;
-      if (player !== this.ownId) {
-        // this.bidPrompt.hide();
-      } else {
-        console.log("my turn to play ");
-      }
-    });
     this._ee.addEventListener(GameplayEvents.BID_WINNER, (event) => {
       // will also show bid winner
       this.bidPrompt.hide();
@@ -99,6 +90,43 @@ class GameScene {
     });
     this._ee.addEventListener(GameplayEvents.AWAITING_MELDS, () => {
       this.trumpPrompt.hide();
+    });
+    this._ee.addEventListener(GameplayEvents.TRICK_END, (event) => {
+      const OFFTABLE_OFFSET = 50;
+      const HALF_VERTICAL = `calc(${this._container.style.height} / 2)`;
+      const HALF_HORIZONTAL = `calc(${this._container.style.width} / 2)`;
+      // @ts-ignore
+      const { player: winningPlayer } = event.detail;
+
+      const $playedCards = Array.from(
+        document.querySelectorAll(".card[data-played=true")
+      ) as Array<HTMLImageElement>;
+
+      $playedCards.forEach(($el) => {
+        const playerIdsXPos = this._store.get("playerIdsByPosition");
+
+        const winningPlayerPos = (
+          Object.keys(playerIdsXPos) as Array<OpponentPosition>
+        ).find((key) => playerIdsXPos[key] === winningPlayer);
+
+        if (winningPlayer === this._store.get("ownId")) {
+          $el.style.top = `calc(100% + ${OFFTABLE_OFFSET}px)`;
+          $el.style.left = HALF_HORIZONTAL;
+        } else if (winningPlayerPos === "north") {
+          $el.style.top = `-${OFFTABLE_OFFSET + CARD_HEIGHT}px`;
+          $el.style.left = HALF_HORIZONTAL;
+        } else if (winningPlayerPos === "west") {
+          $el.style.left = `-${OFFTABLE_OFFSET + CARD_WIDTH}px`;
+          $el.style.top = HALF_VERTICAL;
+        } else if (winningPlayerPos === "east") {
+          $el.style.left = `calc(100% + ${OFFTABLE_OFFSET}px)`;
+          $el.style.top = HALF_VERTICAL;
+        }
+
+        $el.addEventListener("transitionend", () =>
+          $el.parentElement?.removeChild($el)
+        );
+      });
     });
   }
 

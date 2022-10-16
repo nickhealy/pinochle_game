@@ -45,6 +45,7 @@ export enum GameplayEvents {
   PLAY_START = "play_start",
   PLAYER_PLAY_TURN = "player_play_turn",
   PLAYER_PLAY_CARD = "player_play_card",
+  TRICK_END = "trick_end",
 }
 
 export type AllEvents =

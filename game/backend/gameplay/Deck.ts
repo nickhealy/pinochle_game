@@ -1,3 +1,5 @@
+import { FAKE_ORDER } from "./__mocks__/fakeOrder";
+
 export type Suit = "hearts" | "clubs" | "spades" | "diamonds";
 export type Rank = "9" | "J" | "Q" | "K" | "10" | "A";
 export type CardKeys =
@@ -122,6 +124,10 @@ const _sortBySuitThenValue = (left: CardKeys, right: CardKeys) => {
 
 export default {
   getNewHands: () => {
+    //@ts-ignore
+    if (globalThis._useMocks) {
+      return FAKE_ORDER;
+    }
     const hands: CardKeys[][] = [];
     const keys = [
       ...Object.keys(registry),

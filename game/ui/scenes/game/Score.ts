@@ -14,6 +14,7 @@ class Score {
   store: StoreType;
   bids: Array<number> = [0, 0];
   _meldPoints: Array<number> = [0, 0];
+  _playPoints: Array<number> = [0, 0];
   constructor(
     @inject(TYPES.EventEmitter) ee: EventEmitter,
     @inject(TYPES.Store) store: StoreType
@@ -40,7 +41,7 @@ class Score {
   }
 
   _tallyTeamBid(playerId: string, bid: number) {
-    this.bids[this._getTeamIdx(playerId)] += bid;
+    this.bids[this._getTeamIdx(playerId)] = bid;
   }
 
   initializeListeners() {
@@ -88,10 +89,22 @@ class Score {
         this._updateMeldPoints(newMeldPoints);
       }
     });
+    this.ee.addEventListener(GameplayEvents.TRICK_END, (e) => {
+      //@ts-ignore
+      const { points } = e.detail;
+      this._updatePlayPoints(points);
+    });
     this.ee.addEventListener(
       GameplayEvents.PLAY_START,
       this.initPlayScore.bind(this)
     );
+  }
+
+  _updatePlayPoints(totalPoints: Array<Array<number>>) {
+    const playPoints = totalPoints.map((team) => team[1]);
+    this._$container
+      .querySelectorAll("#play>.round-score-value")
+      .forEach(($val, idx) => ($val.innerHTML = `${playPoints[idx]}`));
   }
 
   _getPlayerName(id: string) {

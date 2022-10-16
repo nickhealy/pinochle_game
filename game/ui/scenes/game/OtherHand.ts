@@ -157,7 +157,7 @@ class OtherHand {
       this._position == OpponentPosition.WEST ||
       this._position == OpponentPosition.EAST
     ) {
-      card.style.transform = "rotate(90deg)";
+      card.style.transform = "rotate(0deg)";
     }
   }
 
@@ -165,6 +165,8 @@ class OtherHand {
     const cardEl = this.$cards.shift()!; // safe to assume this exists here
     this.turnFaceup(cardEl, cardKey);
     this.playCardAnimation(cardEl);
+
+    cardEl.setAttribute("data-played", "true"); // this is terrible
   }
 
   render() {
