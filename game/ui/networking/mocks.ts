@@ -195,7 +195,7 @@ globalThis.goToTrickEnd = () => {
       setTimeout(() => {
         cb();
         res();
-      }, 1000);
+      }, 1500);
     });
 
   const host = globalThis.host;

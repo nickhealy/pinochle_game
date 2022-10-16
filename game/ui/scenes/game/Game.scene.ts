@@ -92,16 +92,24 @@ class GameScene {
       this.trumpPrompt.hide();
     });
     this._ee.addEventListener(GameplayEvents.TRICK_END, (event) => {
-      const OFFTABLE_OFFSET = 50;
-      const HALF_VERTICAL = `calc(${this._container.style.height} / 2)`;
-      const HALF_HORIZONTAL = `calc(${this._container.style.width} / 2)`;
       // @ts-ignore
       const { player: winningPlayer } = event.detail;
 
-      const $playedCards = Array.from(
-        document.querySelectorAll(".card[data-played=true")
-      ) as Array<HTMLImageElement>;
+      this.queueTrickWinAnimation(winningPlayer);
+    });
+  }
 
+  private queueTrickWinAnimation(winningPlayer: string) {
+    const OFFTABLE_OFFSET = 50;
+    const HALF_VERTICAL = `calc(${this._container.style.height} / 2)`;
+    const HALF_HORIZONTAL = `calc(${this._container.style.width} / 2)`;
+    const TRICK_WIN_ANIM_TIMEOUT = 1500;
+
+    const $playedCards = Array.from(
+      document.querySelectorAll(".card[data-played=true")
+    ) as Array<HTMLImageElement>;
+
+    const _moveCardsToWinningPlayer = () => {
       $playedCards.forEach(($el) => {
         const playerIdsXPos = this._store.get("playerIdsByPosition");
 
@@ -127,7 +135,9 @@ class GameScene {
           $el.parentElement?.removeChild($el)
         );
       });
-    });
+    };
+
+    setTimeout(_moveCardsToWinningPlayer, TRICK_WIN_ANIM_TIMEOUT);
   }
 
   private assignPlayerIds() {
